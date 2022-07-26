@@ -1,0 +1,23 @@
+{
+  "name": "wdr-ddj-cloud",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wdr-data/wdr-ddj-cloud.git"
+  },
+  "author": "Jannes Höke",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wdr-data/wdr-ddj-cloud/issues"
+  },
+  "homepage": "https://github.com/wdr-data/wdr-ddj-cloud#readme",
+  "dependencies": {
+    "serverless": "^3.21.0",
+    "serverless-python-requirements": "^5.4.0"
+  }
+}

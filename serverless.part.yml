@@ -1,0 +1,133 @@
+service: wdr-ddj-cloud
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  stage: '${env:STAGE}'
+  bucketName: 'wdr-ddj-cloud-${self:provider.stage}'
+  pythonRequirements:
+    usePipenv: true
+    slim: true
+
+package:
+  include:
+    - 'ddj_cloud/**'
+  exclude:
+    - 'node_modules/**'
+    - 'venv/**'
+
+resources:
+  Resources:
+    # S3 Bucket to hold scraping results
+    DataBucket:
+      Type: 'AWS::S3::Bucket'
+      Properties:
+        BucketName: '${self:custom.bucketName}'
+        AccessControl: 'PublicRead'
+        PublicAccessBlockConfiguration:
+          {
+            'BlockPublicAcls': false,
+            'BlockPublicPolicy': false,
+            'IgnorePublicAcls': false,
+            'RestrictPublicBuckets': false,
+          }
+        CorsConfiguration:
+          [
+            {
+              'AllowedHeaders': ['Authorization'],
+              'AllowedMethods': ['GET'],
+              'AllowedOrigins': ['*'],
+              'ExposeHeaders': [],
+            },
+          ]
+
+    # # Cache Policy for CORS support
+    # CORSCachePolicy:
+    #   Type: AWS::CloudFront::CachePolicy
+    #   Properties:
+    #     CachePolicyConfig:
+    #       Comment: 'Cache Policy that respects headers needed for CORS to work correctly'
+    #       DefaultTTL: 86400
+    #       MaxTTL: 31536000
+    #       MinTTL: 1
+    #       Name: 'CachePolicyCORS'
+    #       ParametersInCacheKeyAndForwardedToOrigin:
+    #         CookiesConfig:
+    #           CookieBehavior: 'none'
+    #         EnableAcceptEncodingBrotli: 'true'
+    #         EnableAcceptEncodingGzip: 'true'
+    #         HeadersConfig:
+    #           HeaderBehavior: 'whitelist'
+    #           Headers:
+    #             - Origin
+    #             - Access-Control-Request-Method
+    #             - Access-Control-Request-Headers
+    #         QueryStringsConfig:
+    #           QueryStringBehavior: 'none'
+
+    DataBucketDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Comment: 'CloudFront Distribution for S3 Bucket ${self:custom.bucketName}'
+          Enabled: 'true'
+          HttpVersion: 'http2'
+          IPV6Enabled: 'true'
+          PriceClass: 'PriceClass_All' # Distribute worldwide
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - GET
+              - HEAD
+            TargetOriginId: 's3-origin-${self:service}-data-${self:provider.stage}'
+            ViewerProtocolPolicy: 'redirect-to-https'
+            Compress: 'true'
+            OriginRequestPolicyId: '88a5eaf4-2fd4-4709-b370-b4c650ea3fcf' # Managed-CORS-S3Origin
+            CachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6' # Managed-CachingOptimized  # Ref: CORSCachePolicy
+          Origins:
+            - DomainName: '${self:custom.bucketName}.s3.amazonaws.com'
+              Id: 's3-origin-${self:service}-data-${self:provider.stage}'
+              # S3OriginConfig:
+              #   OriginAccessIdentity: origin-access-identity/cloudfront/DATABUCKET
+
+provider:
+  name: aws
+  region: eu-central-1
+  runtime: python3.9
+  stage: ${self:custom.stage}
+  stackTags:
+    PRODUCT: wdr-ddj-cloud
+  environment:
+    BUCKET_NAME: ${self:custom.bucketName}
+    SENTRY_URI: ${env:SENTRY_URI}
+    CLOUDFRONT_ID:
+      Ref: DataBucketDistribution
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: 'arn:aws:s3:::${self:custom.bucketName}/*'
+
+    - Effect: Allow
+      Action:
+        - 'cloudfront:ListDistributions'
+      Resource: '*'
+
+    - Effect: Allow
+      Action:
+        - 'cloudfront:GetDistribution'
+        - 'cloudfront:GetDistributionConfig'
+        - 'cloudfront:ListInvalidations'
+        - 'cloudfront:GetInvalidation'
+        - 'cloudfront:CreateInvalidation'
+      Resource: { Fn::GetAtt: [DataBucketDistribution, Arn] }
+
+functions:
+  scrape:
+    handler: handler.scrape
+    timeout: 120
+    events:
+      - schedule:
+          name: ${self:service}-${self:provider.stage}-scrape
+          rate: rate(15 minutes)
+          enabled: true

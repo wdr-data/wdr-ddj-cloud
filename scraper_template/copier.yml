@@ -1,0 +1,3 @@
+scraper_name:
+  type: str
+  help: 'The name your new scraper'

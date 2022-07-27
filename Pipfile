@@ -23,8 +23,10 @@ tzdata = "*"
 
 [dev-packages]
 click = "~=8.1"
-cookiecutter = "~=2.1"
 black = "*"
+copier = "~=6.1"
+copier-templates-extensions = "~=0.2"
+python-slugify = "~=6.1"
 
 [requires]
 python_version = "3.9"

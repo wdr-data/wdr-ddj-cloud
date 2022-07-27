@@ -1,15 +1,11 @@
 import importlib
-import json
 from pathlib import Path
+import re
 import sys
-import tempfile
 
 import click
-from cookiecutter.main import _patch_import_path_for_repo
-from cookiecutter.generate import generate_context, generate_files
-from cookiecutter.prompt import prompt_for_config
-from cookiecutter.utils import rmtree
-from cookiecutter.exceptions import FailedHookException
+from copier import Worker, AnswersMap
+from slugify import slugify
 
 
 BASE_DIR = Path(__file__).parent
@@ -23,38 +19,46 @@ def cli():
     ...
 
 
+def _transform_answers(answers: AnswersMap):
+    scraper_name = answers.user["scraper_name"]
+
+    ## Generate valid Python module name from entered text
+    # Start off with a slug
+    scraper_module = slugify(scraper_name, separator="_")
+    # Remove leading numbers and underscores
+    scraper_module = re.sub(r"^[0-9_]*", "", scraper_module)
+
+    # Assign result to new key in init dict
+    answers.init["scraper_module"] = scraper_module
+
+
 @cli.command("new")
-def new_scraper():
+@click.option("-p", "--pretend", is_flag=True)
+def new_scraper(pretend: bool):
 
-    # Set up and run cookiecutter
-    repo_dir = str(TEMPLATE_DIR)
-    context = generate_context(context_file=str(TEMPLATE_DIR / "cookiecutter.json"))
-    import_patch = _patch_import_path_for_repo(repo_dir)
+    # Set up copier worker
+    worker = Worker(
+        src_path=str(TEMPLATE_DIR),
+        dst_path=SCRAPERS_DIR,
+        pretend=pretend,
+    )
 
-    with import_patch:
-        context["cookiecutter"] = prompt_for_config(context)
+    # Run prompts
+    answers = worker.answers
 
-    context["cookiecutter"]["_template"] = TEMPLATE_NAME
-    context["cookiecutter"]["_output_dir"] = str(SCRAPERS_DIR)
+    # Update answers as needed
+    _transform_answers(answers)
 
-    try:
-        with import_patch:
-            scraper_dir = generate_files(
-                repo_dir=repo_dir,
-                context=context,
-                overwrite_if_exists=False,
-                skip_if_file_exists=False,
-                output_dir=str(SCRAPERS_DIR),
-                accept_hooks=True,
-            )
-    except FailedHookException:
-        return 1
+    # Run templating and file copy
+    worker.run_copy()
 
-    scraper_path = Path(scraper_dir)
-    click.echo(f"New scraper created in {scraper_path}")
+    if pretend:
+        click.echo("This was a pretend-run, no files have been created")
+        return
 
-    context = dict(context["cookiecutter"])
+    click.echo(f"New scraper created in {SCRAPERS_DIR / answers.combined['scraper_module']}")
 
+    context = dict(worker.answers.combined)
     print(context)
 
 

@@ -12,14 +12,50 @@ _exclude:
   # Custom excludes
   - 'extensions'
 
-scraper_name:
+display_name:
   type: str
   help: 'The human-readable display name of your new scraper'
 
-scraper_module:
+module_name:
   type: str
   help: |-
     The name of the Python module for your scraper.
        Please ensure this is a valid Python module name!
-  when: '{{ scraper_name != scraper_name | modulify }}'
-  default: '{{ scraper_name | modulify }}'
+  when: '{{ display_name != display_name | modulify }}'
+  default: '{{ display_name | modulify }}'
+
+description:
+  type: str
+  help: Enter a description for your scraper
+  multiline: True
+
+contact_name:
+  type: str
+  help: Please enter your name
+
+contact_email:
+  type: str
+  help: Please enter an email address (or equivalent) that can be used to contact you
+
+interval:
+  type: str
+  help: 'How often should the scraper run?'
+  choices:
+    'Once every 15 minutes': '15min'
+    'Once every hour': 'hourly'
+    'Once a day': 'daily'
+    'Custom': 'custom'
+
+interval_custom:
+  type: str
+  help: |-
+    Enter a custom rate expression
+       See https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+  when: "{{ interval == 'custom' }}"
+
+preset:
+  type: str
+  help: 'Choose a preset'
+  choices:
+    'Minimal': 'minimal'
+    'pandas': 'pandas'

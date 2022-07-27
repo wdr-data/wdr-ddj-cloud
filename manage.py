@@ -64,7 +64,7 @@ def list_scrapers():
 @cli.command("test")
 @click.option("-s", "--scraper", type=str)
 def test_scraper(scraper):
-    scraper = importlib.import_module(f"ddj_cloud.scrapers.{scraper}")
+    scraper = importlib.import_module(f"ddj_cloud.scrapers.{scraper}.{scraper}")
     scraper.run()
 
 

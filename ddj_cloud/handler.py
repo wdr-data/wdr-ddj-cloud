@@ -12,7 +12,7 @@ from ddj_cloud.utils.date_and_time import local_now
 
 def scrape(event, context):
     scraper_name = event["scraper"]
-    scraper = importlib.import_module(f"ddj_cloud.scrapers.{scraper_name}")
+    scraper = importlib.import_module(f"ddj_cloud.scrapers.{scraper_name}.{scraper_name}")
 
     with sentry_sdk.configure_scope() as scope:
         scope.set_tag("scraper", scraper_name)

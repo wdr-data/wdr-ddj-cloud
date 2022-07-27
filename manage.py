@@ -1,11 +1,9 @@
 import importlib
 from pathlib import Path
-import re
 import sys
 
 import click
 from copier import Worker, AnswersMap
-from slugify import slugify
 
 
 BASE_DIR = Path(__file__).parent
@@ -20,16 +18,7 @@ def cli():
 
 
 def _transform_answers(answers: AnswersMap):
-    scraper_name = answers.user["scraper_name"]
-
-    ## Generate valid Python module name from entered text
-    # Start off with a slug
-    scraper_module = slugify(scraper_name, separator="_")
-    # Remove leading numbers and underscores
-    scraper_module = re.sub(r"^[0-9_]*", "", scraper_module)
-
-    # Assign result to new key in init dict
-    answers.init["scraper_module"] = scraper_module
+    ...
 
 
 @cli.command("new")
@@ -52,14 +41,19 @@ def new_scraper(pretend: bool):
     # Run templating and file copy
     worker.run_copy()
 
+    context = {
+        **worker.answers.default,
+        **worker.answers.user,
+        **worker.answers.init,
+    }
+    print(context)
+
     if pretend:
         click.echo("This was a pretend-run, no files have been created")
         return
 
     click.echo(f"New scraper created in {SCRAPERS_DIR / answers.combined['scraper_module']}")
 
-    context = dict(worker.answers.combined)
-    print(context)
 
 
 @cli.command("list")

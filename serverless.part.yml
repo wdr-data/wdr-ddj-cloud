@@ -1,3 +1,5 @@
+configValidationMode: error
+
 service: wdr-ddj-cloud
 
 plugins:
@@ -5,17 +7,29 @@ plugins:
 
 custom:
   stage: '${env:STAGE}'
-  bucketName: 'wdr-ddj-cloud-${self:provider.stage}'
+  bucketName: '${self:service}-${env:STAGE}'
   pythonRequirements:
     usePipenv: true
+    # We're very short on space, so we remove as much from the requirements as possible
     slim: true
 
+    slimPatterns:
+      # Remove tests
+      - '**/tests/**'
+      # googleapiclient/discovery_cache/documents contains about 60MB of JSON
+      # We only want to take what we need here
+      - 'googleapiclient/discovery_cache/documents/!(bigquery.v2.json)'
+
+    # These are available on the default Python Lambda image
+    noDeploy:
+      - botocore
+      - boto3
+
 package:
-  include:
+  # Ignore everything but the ddj_cloud module
+  patterns:
+    - '!**'
     - 'ddj_cloud/**'
-  exclude:
-    - 'node_modules/**'
-    - 'venv/**'
 
 resources:
   Resources:
@@ -33,40 +47,46 @@ resources:
             'RestrictPublicBuckets': false,
           }
         CorsConfiguration:
-          [
-            {
-              'AllowedHeaders': ['Authorization'],
-              'AllowedMethods': ['GET'],
-              'AllowedOrigins': ['*'],
-              'ExposeHeaders': [],
-            },
-          ]
+          CorsRules:
+            - {
+                'AllowedHeaders': ['Authorization'],
+                'AllowedMethods': ['GET', 'HEAD'],
+                'AllowedOrigins': ['*'],
+                'ExposedHeaders': [],
+              }
 
-    # # Cache Policy for CORS support
-    # CORSCachePolicy:
-    #   Type: AWS::CloudFront::CachePolicy
-    #   Properties:
-    #     CachePolicyConfig:
-    #       Comment: 'Cache Policy that respects headers needed for CORS to work correctly'
-    #       DefaultTTL: 86400
-    #       MaxTTL: 31536000
-    #       MinTTL: 1
-    #       Name: 'CachePolicyCORS'
-    #       ParametersInCacheKeyAndForwardedToOrigin:
-    #         CookiesConfig:
-    #           CookieBehavior: 'none'
-    #         EnableAcceptEncodingBrotli: 'true'
-    #         EnableAcceptEncodingGzip: 'true'
-    #         HeadersConfig:
-    #           HeaderBehavior: 'whitelist'
-    #           Headers:
-    #             - Origin
-    #             - Access-Control-Request-Method
-    #             - Access-Control-Request-Headers
-    #         QueryStringsConfig:
-    #           QueryStringBehavior: 'none'
+    # Cache Policy for CORS support
+    CORSCachePolicy:
+      Type: AWS::CloudFront::CachePolicy
+      Properties:
+        CachePolicyConfig:
+          Comment: 'Cache Policy that respects headers needed for CORS to work correctly'
+          DefaultTTL: 3600
+          MaxTTL: 31536000
+          MinTTL: 1
+          Name: 'CachePolicyCORS'
+          ParametersInCacheKeyAndForwardedToOrigin:
+            CookiesConfig:
+              CookieBehavior: 'none'
+            EnableAcceptEncodingBrotli: 'true'
+            EnableAcceptEncodingGzip: 'true'
+            HeadersConfig:
+              HeaderBehavior: 'whitelist'
+              Headers:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            QueryStringsConfig:
+              QueryStringBehavior: 'none'
 
-    DataBucketDistribution:
+    CloudFrontDistributionDataBucketOriginAccessIdentity:
+      Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: 'Origin Access Identity for accessing protected S3 resources'
+
+    # CloudFront Distribution for DataBucket
+    CloudFrontDistributionDataBucket:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
@@ -83,51 +103,61 @@ resources:
             ViewerProtocolPolicy: 'redirect-to-https'
             Compress: 'true'
             OriginRequestPolicyId: '88a5eaf4-2fd4-4709-b370-b4c650ea3fcf' # Managed-CORS-S3Origin
-            CachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6' # Managed-CachingOptimized  # Ref: CORSCachePolicy
+            CachePolicyId:
+              Ref: CORSCachePolicy
           Origins:
-            - DomainName: '${self:custom.bucketName}.s3.amazonaws.com'
+            - DomainName: '${self:custom.bucketName}.s3.${self:provider.region}.amazonaws.com'
               Id: 's3-origin-${self:service}-data-${self:provider.stage}'
-              # S3OriginConfig:
-              #   OriginAccessIdentity: origin-access-identity/cloudfront/DATABUCKET
+              S3OriginConfig:
+                OriginAccessIdentity:
+                  Fn::Join:
+                    - ''
+                    - - 'origin-access-identity/cloudfront/'
+                      - Ref: CloudFrontDistributionDataBucketOriginAccessIdentity
 
 provider:
   name: aws
   region: eu-central-1
   runtime: python3.9
   stage: ${self:custom.stage}
+  tags:
+    PRODUCT: ${self:service}
   stackTags:
-    PRODUCT: wdr-ddj-cloud
+    PRODUCT: ${self:service}
+  stackName: 'cf-stack-${self:service}-${self:custom.stage}'
   environment:
+    STAGE: ${self:custom.stage}
     BUCKET_NAME: ${self:custom.bucketName}
-    SENTRY_URI: ${env:SENTRY_URI}
+    SENTRY_DSN: ${env:SENTRY_DSN}
     CLOUDFRONT_ID:
-      Ref: DataBucketDistribution
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - s3:*
-      Resource: 'arn:aws:s3:::${self:custom.bucketName}/*'
+      Ref: CloudFrontDistributionDataBucket
+  iam:
+    role:
+      statements:
+        # S3
+        - Effect: Allow
+          Action:
+            - s3:*
+          Resource: 'arn:aws:s3:::${self:custom.bucketName}/*'
 
-    - Effect: Allow
-      Action:
-        - 'cloudfront:ListDistributions'
-      Resource: '*'
+        # Cloudfront
+        - Effect: Allow
+          Action:
+            - 'cloudfront:ListDistributions'
+          Resource: '*'
 
-    - Effect: Allow
-      Action:
-        - 'cloudfront:GetDistribution'
-        - 'cloudfront:GetDistributionConfig'
-        - 'cloudfront:ListInvalidations'
-        - 'cloudfront:GetInvalidation'
-        - 'cloudfront:CreateInvalidation'
-      Resource: { Fn::GetAtt: [DataBucketDistribution, Arn] }
-
-functions:
-  scrape:
-    handler: handler.scrape
-    timeout: 120
-    events:
-      - schedule:
-          name: ${self:service}-${self:provider.stage}-scrape
-          rate: rate(15 minutes)
-          enabled: true
+        - Effect: Allow
+          Action:
+            - 'cloudfront:GetDistribution'
+            - 'cloudfront:GetDistributionConfig'
+            - 'cloudfront:ListInvalidations'
+            - 'cloudfront:GetInvalidation'
+            - 'cloudfront:CreateInvalidation'
+          Resource:
+            Fn::Join:
+              - ''
+              - - 'arn:aws:cloudfront::'
+                - Ref: AWS::AccountId
+                - ':distribution/'
+                - Ref: CloudFrontDistributionDataBucket
+# Functions are generated at deploy time by manage.py

@@ -53,6 +53,29 @@ interval_custom:
        See https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
   when: "{{ interval == 'custom' }}"
 
+memory_size:
+  type: str
+  help: |-
+    How much CPU/RAM does the scraper need?
+       Note: Scrapers have a maximum runtime of 15 minutes.
+       If your scraper is very CPU-intensive, choose a bigger option to ensure it finishes.
+  choices:
+    'small - 512MB RAM': '512'
+    'default - 1024MB RAM': '1024'
+    'big - 4096MB RAM': '4096'
+    'huge - 8192MB RAM': '8192'
+  default: '1024'
+
+ephemeral_storage:
+  type: str
+  help: How much temporary local file storage does the scraper need?
+  choices:
+    'default - 512MB': '512'
+    'medium - 2GB': '2048'
+    'big - 4GB': '4096'
+    'huge - 8GB': '8192'
+  default: '512'
+
 preset:
   type: str
   help: 'Choose a preset'

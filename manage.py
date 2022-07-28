@@ -7,6 +7,7 @@ import shutil
 
 import click
 from copier import Worker, AnswersMap
+import yaml
 
 
 BASE_DIR = Path(__file__).parent
@@ -103,7 +104,6 @@ def new_scraper(pretend: bool):
         **worker.answers.user,
         **worker.answers.init,
     }
-    print(context)
 
     if pretend:
         click.echo("This was a pretend-run, no files have been created")
@@ -114,9 +114,17 @@ def new_scraper(pretend: bool):
     click.echo(f"Updating {SCRAPERS_CONFIG_NAME}... ", nl=False)
     new_entry = {**context}
 
-    new_entry["intervals"] = [context["interval_custom"] or context["interval"]]
-    del new_entry["interval"]
-    del new_entry["interval_custom"]
+    # Convert user-provided interval to a more generalized format for future proofing
+    event = {
+        "type": "schedule",
+        "enabled": True,
+        "data": {
+            "interval": new_entry.pop("interval"),
+            "interval_custom": new_entry.pop("interval_custom"),
+        },
+    }
+
+    new_entry["events"] = [event]
 
     scrapers_config.append(new_entry)
     _save_scrapers_config(scrapers_config)
@@ -157,6 +165,59 @@ def delete_scraper(module_name):
 def test_scraper(module_name):
     scraper = importlib.import_module(f"ddj_cloud.scrapers.{module_name}.{module_name}")
     scraper.run()
+
+
+@cli.command("generate")
+def generate_serverless_yml():
+    with open(BASE_DIR / "serverless.part.yml", encoding="utf-8") as fp:
+        serverless_part_yml = yaml.safe_load(fp)
+
+    functions = serverless_part_yml.get("functions", {})
+    scrapers_config = _load_scrapers_config()
+
+    rate_presets = {
+        "15min": "rate(15 minutes)",
+        "hourly": "rate(1 hour)",
+        "daily": "cron(17 1 * * ? *)",
+    }
+
+    for scraper in scrapers_config:
+        events = []
+
+        for i, event in enumerate(scraper["events"]):
+            if event["type"] == "schedule":
+                name = "${self:service}-${self:provider.stage}-" + f'{scraper["module_name"]}-{i}'
+                rate = event["data"]["interval_custom"] or rate_presets[event["data"]["interval"]]
+                events.append(
+                    {
+                        "schedule": {
+                            "name": name,
+                            "rate": rate,
+                            "enabled": event["enabled"],
+                            "input": {
+                                "module_name": scraper["module_name"],
+                            },
+                        }
+                    }
+                )
+
+        function_definition = {
+            "handler": "ddj_cloud.handler.scrape",
+            "timeout": 120,
+            "memorySize": int(scraper["memory_size"]),
+            "ephemeralStorageSize": int(scraper["ephemeral_storage"]),
+            "description": scraper["description"],
+            "events": events,
+        }
+
+        # We use pascal case for the key, otherwise they literally put "Underscore" there
+        name_pascal_case = scraper["module_name"].replace("_", " ").title().replace(" ", "")
+        functions[name_pascal_case] = function_definition
+
+    serverless_part_yml["functions"] = functions
+
+    with open(BASE_DIR / "serverless.yml", "w", encoding="utf-8") as fp:
+        yaml.dump(serverless_part_yml, fp)
 
 
 if __name__ == "__main__":

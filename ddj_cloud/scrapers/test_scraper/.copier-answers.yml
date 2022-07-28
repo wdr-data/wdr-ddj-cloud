@@ -1,0 +1,15 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: X:\work\wdr-ddj-cloud\scraper_template
+contact_email: mail@jhoeke.de
+contact_name: Jannes Höke
+description: 'Dies ist ein Scraper, um das Deployment zu testen.
+
+    Mal gucken, wie es läuft.'
+display_name: Test Scraper
+ephemeral_storage: '512'
+interval: custom
+interval_custom: rate(1 minute)
+memory_size: '512'
+module_name: test_scraper
+preset: pandas
+

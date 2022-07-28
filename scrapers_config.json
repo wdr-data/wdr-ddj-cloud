@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "display_name": "Test Scraper",
+        "module_name": "test_scraper",
+        "description": "Dies ist ein Scraper, um das Deployment zu testen.\nMal gucken, wie es läuft.",
+        "contact_name": "Jannes Höke",
+        "contact_email": "mail@jhoeke.de",
+        "memory_size": "512",
+        "ephemeral_storage": "512",
+        "preset": "pandas",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "custom",
+                    "interval_custom": "rate(1 minute)"
+                }
+            }
+        ]
+    }
+]

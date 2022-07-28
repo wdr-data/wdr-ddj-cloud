@@ -129,6 +129,7 @@ def upload_dataframe(
     change_notification: Optional[str] = None,
     compare: Optional[Callable] = None,
 ):
+    filename = filename.lstrip("/")
 
     if compare is None:
         compare = simple_compare
@@ -162,7 +163,7 @@ def upload_dataframe(
 
         # Create CloudFront invalidation
         if create_cloudfront_invalidation:
-            _create_cloudfront_invalidation([filename, f"{timestamp}/{filename}"])
+            _create_cloudfront_invalidation([f"/{filename}", f"/{timestamp}/{filename}"])
 
         # Notify
         if change_notification:

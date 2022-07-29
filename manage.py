@@ -1,12 +1,13 @@
 import importlib
 import json
+import os
 from pathlib import Path
 import sys
-from typing import Optional
+from typing import Optional, Tuple
 import shutil
 
 import click
-from copier import Worker, AnswersMap
+from copier import Worker
 import yaml
 
 
@@ -18,8 +19,56 @@ SCRAPERS_CONFIG_NAME = "scrapers_config.json"
 SCRAPERS_CONFIG_PATH = BASE_DIR / SCRAPERS_CONFIG_NAME
 
 
-def _transform_answers(answers: AnswersMap):
-    ...
+def _success(
+    text: str,
+    *,
+    nl: bool = True,
+    echo_kwargs: Optional[dict] = None,
+    style_kwargs: Optional[dict] = None,
+):
+    click.echo(
+        click.style(text, fg="green", bold=True, **(style_kwargs or {})),
+        nl=nl,
+        **(echo_kwargs or {}),
+    )
+
+
+def _warn(
+    text: str,
+    *,
+    nl: bool = True,
+    echo_kwargs: Optional[dict] = None,
+    style_kwargs: Optional[dict] = None,
+):
+    click.echo(
+        click.style(text, fg="yellow", bold=True, **(style_kwargs or {})),
+        nl=nl,
+        **(echo_kwargs or {}),
+    )
+
+
+def _error(
+    text: str,
+    *,
+    nl: bool = True,
+    echo_kwargs: Optional[dict] = None,
+    style_kwargs: Optional[dict] = None,
+):
+    click.echo(
+        click.style(text, fg="red", bold=True, **(style_kwargs or {})), nl=nl, **(echo_kwargs or {})
+    )
+
+
+def _info(
+    text: str,
+    *,
+    nl: bool = True,
+    echo_kwargs: Optional[dict] = None,
+    style_kwargs: Optional[dict] = None,
+):
+    click.echo(
+        click.style(text, fg="bright_blue", **(style_kwargs or {})), nl=nl, **(echo_kwargs or {})
+    )
 
 
 def _load_scrapers_config() -> list[dict]:
@@ -43,28 +92,43 @@ def _find_scraper_by_name(name: str, scraper_config: list[dict]) -> Optional[dic
     return by_display_name.get(name) or by_module_name.get(name)
 
 
-def _delete_scraper(scraper: dict, scrapers_config) -> list[dict]:
-    click.echo(f"Deleting {SCRAPERS_DIR / scraper['module_name']}... ", nl=False)
+def _delete_scraper(scraper: dict, scrapers_config) -> Tuple[bool, list[dict]]:
+    _warn(f"Warning: This will delete all files at {SCRAPERS_DIR / scraper['module_name']}")
+    _info("To continue, please type ", nl=False)
+    click.echo(click.style("DELETE", fg="bright_red", bold=True), nl=False)
+    if "DELETE" != click.prompt("", default="", show_default=False):
+        _warn("Aborting!")
+        return False, scrapers_config
+
+    _info(f"Deleting {SCRAPERS_DIR / scraper['module_name']}... ")
     shutil.rmtree(SCRAPERS_DIR / scraper["module_name"])
-    click.echo("✅")
+    _success("Success!")
 
     # Update scrapers config
-    click.echo("Updating scrapers_config.json... ", nl=False)
+    _info("Updating scrapers_config.json... ")
     scrapers_config = [s for s in scrapers_config if s["module_name"] != scraper["module_name"]]
     _save_scrapers_config(scrapers_config)
-    click.echo("✅")
+    _success("Success!")
 
     # Return updated config
-    return scrapers_config
+    return True, scrapers_config
 
 
-@click.group()
+@click.group(help="Management utility for wdr-ddj-cloud. Each command has their own --help option.")
 def cli():
     ...
 
 
-@cli.command("new")
-@click.option("-p", "--pretend", is_flag=True)
+@cli.command(
+    "new",
+    help="Create a new scraper. This will ask you a bunch of questions to gather information from you and then set up the new scraper automatically.",
+)
+@click.option(
+    "-p",
+    "--pretend",
+    is_flag=True,
+    help="Do a dry-run of the questionnaire but don't write any files.",
+)
 def new_scraper(pretend: bool):
 
     # Set up copier worker
@@ -77,24 +141,18 @@ def new_scraper(pretend: bool):
     # Run prompts
     answers = worker.answers
 
-    # Update answers as needed
-    _transform_answers(answers)
-
     # Check if scraper exists already
     scrapers_config = _load_scrapers_config()
     if existing_scraper := (
         _find_scraper_by_name(answers.combined["display_name"], scrapers_config)
         or _find_scraper_by_name(answers.combined["module_name"], scrapers_config)
     ):
-        if "DELETE" == click.prompt(
-            "A scraper with this name already exists. \nTo delete the existing scraper and continue, type DELETE",
-            default="",
-            show_default=False,
-        ):
-            scrapers_config = _delete_scraper(existing_scraper, scrapers_config)
-        else:
-            click.echo("Aborting!")
-            return 1
+        _info(
+            "A scraper with this name already exists. Do you want to delete the existing scraper and continue?"
+        )
+        deleted_existing, scrapers_config = _delete_scraper(existing_scraper, scrapers_config)
+        if not deleted_existing:
+            sys.exit(0)
 
     # Run templating and file copy
     worker.run_copy()
@@ -106,12 +164,13 @@ def new_scraper(pretend: bool):
     }
 
     if pretend:
-        click.echo("This was a pretend-run, no files have been created")
-        return
+        _warn("This was a pretend-run, no files have been created")
+        sys.exit(0)
 
-    click.echo(f"New scraper created in {SCRAPERS_DIR / answers.combined['module_name']}")
+    _success(f"New scraper created in {SCRAPERS_DIR / answers.combined['module_name']}")
 
-    click.echo(f"Updating {SCRAPERS_CONFIG_NAME}... ", nl=False)
+    _info(f'Updating "{SCRAPERS_CONFIG_NAME}"... ')
+
     new_entry = {**context}
 
     # Convert user-provided interval to a more generalized format for future proofing
@@ -128,47 +187,86 @@ def new_scraper(pretend: bool):
 
     scrapers_config.append(new_entry)
     _save_scrapers_config(scrapers_config)
-    click.echo("✅")
+
+    _success("Success!")
+    _info(
+        f'Tip: You can test your scraper with "pipenv run manage test {new_entry["module_name"]}"'
+    )
 
 
-@cli.command("list")
+@cli.command("list", help="Print a list of all configured scrapers.")
 def list_scrapers():
     scrapers_config = _load_scrapers_config()
 
     for i, scraper in enumerate(scrapers_config):
-        click.echo(f'Display name: {scraper["display_name"]}')
-        click.echo(f"Module name: {scraper['module_name']}")
-        click.echo(f"Contact: {scraper['contact_name']} <{scraper['contact_email']}>")
-        click.echo(f"Intervals: {', '.join(scraper['intervals'])}")
-        click.echo("Description:")
+        click.echo(click.style("Display name: ", bold=True) + scraper["display_name"])
+        click.echo(click.style("Module name: ", bold=True) + scraper["module_name"])
+        click.echo(
+            click.style("Contact: ", bold=True)
+            + f"{scraper['contact_name']} <{scraper['contact_email']}>"
+        )
+        click.echo(
+            click.style("Intervals: ", bold=True)
+            + ", ".join(
+                f"{'✅' if event['enabled'] else '❌'} {event['data']['interval_custom'] or event['data']['interval']}"
+                for event in scraper["events"]
+            )
+        )
+        click.echo(click.style("Description: ", bold=True))
         click.echo(scraper["description"])
 
         if i + 1 != len(scrapers_config):
             click.echo("")
-            click.echo("---")
+            click.echo(click.style("---", bold=True))
             click.echo("")
 
 
-@cli.command("delete")
+@cli.command("delete", help="Delete a scraper completely.")
 @click.argument("module_name", type=str)
 def delete_scraper(module_name):
     scrapers_config = _load_scrapers_config()
     scraper = _find_scraper_by_name(module_name, scrapers_config)
+
     if scraper is None:
-        click.echo(f'Scraper "{module_name}" not found.')
-        return 1
+        _error(f'Error: Scraper "{module_name}" not found in "{SCRAPERS_CONFIG_NAME}".')
+        sys.exit(1)
+
     scrapers_config = _delete_scraper(scraper, scrapers_config)
 
 
-@cli.command("test")
+@cli.command("test", help="Test a scraper locally.")
 @click.argument("module_name", type=str)
 def test_scraper(module_name):
-    scraper = importlib.import_module(f"ddj_cloud.scrapers.{module_name}.{module_name}")
-    scraper.run()
+    _info(f'Loading scraper module "{module_name}"...')
+
+    # Disable S3/CloudFront for local testing
+    os.environ["USE_LOCAL_FILESYSTEM"] = "1"
+
+    try:
+        scraper = importlib.import_module(f"ddj_cloud.scrapers.{module_name}.{module_name}")
+    except ImportError:
+        _error(f'Error: Could not find scraper module "{module_name}" in {SCRAPERS_DIR}')
+        sys.exit(1)
+    except:
+        _error("Error: Something went wrong during import :(")
+        raise
+
+    _success("Scraper loaded successfully!")
+
+    _info("Running scraper now!\n")
+    try:
+        scraper.run()
+    except Exception as e:
+        _error("Scraper failed! Logging error...\n")
+        raise
 
 
-@cli.command("generate")
+@cli.command("generate", help='Generate the "serverless.yml" for deployment.')
 def generate_serverless_yml():
+    _info(
+        f'Generating "serverless.yml" from "serverless.part.yml" and "{SCRAPERS_CONFIG_NAME}"... '
+    )
+
     with open(BASE_DIR / "serverless.part.yml", encoding="utf-8") as fp:
         serverless_part_yml = yaml.safe_load(fp)
 
@@ -218,6 +316,8 @@ def generate_serverless_yml():
 
     with open(BASE_DIR / "serverless.yml", "w", encoding="utf-8") as fp:
         yaml.dump(serverless_part_yml, fp)
+
+    click.echo("Success!")
 
 
 if __name__ == "__main__":

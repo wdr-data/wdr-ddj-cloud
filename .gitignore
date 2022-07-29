@@ -21,6 +21,7 @@ var/
 __pycache__
 
 .serverless
+.serverless-python-cache
 serverless.yml
 local_filesystem/
 

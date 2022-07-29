@@ -25,6 +25,12 @@ custom:
       - botocore
       - boto3
 
+    # Configure custom cache location for CI
+    useStaticCache: true
+    useDownloadCache: true
+    cacheLocation: './.serverless-python-cache'
+    staticCacheMaxVersions: 1
+
 package:
   # Ignore everything but the ddj_cloud module
   patterns:

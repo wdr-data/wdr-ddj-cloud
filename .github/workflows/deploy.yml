@@ -1,0 +1,66 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches: [main, production]
+
+jobs:
+  scraper:
+    # Disable deployment for now
+    if: ${{ false }}
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['16.x']
+        python-version: ['3.9']
+        pipenv-version: ['2022.7.4']
+
+    steps:
+      # Checkout repository
+      - uses: actions/checkout@v3
+
+      # Environment variables
+      - name: Set environment variables for staging
+        if: endsWith(github.ref, '/main')
+        run: |
+          echo "STAGE=staging" >> $GITHUB_ENV
+
+      - name: Set environment variables for production
+        if: endsWith(github.ref, '/production')
+        run: |
+          echo "STAGE=prod" >> $GITHUB_ENV
+
+      # Set up Python and install dependencies
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pipenv'
+
+      - name: Install pipenv
+        run: pip install "pipenv==${{ matrix.pipenv-version }}"
+
+      - run: pipenv sync --dev
+
+      # Set up Serverless for deployment
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci --production
+
+      # Deploy
+      - name: Generate serverless.yml
+        run: pipenv run manage generate
+
+      - name: Deploy with serverless
+        run: pipenv run npx serverless deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}

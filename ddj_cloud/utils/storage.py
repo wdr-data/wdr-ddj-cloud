@@ -12,10 +12,11 @@ import sentry_sdk
 
 from ddj_cloud.utils.date_and_time import local_today
 
-USE_LOCAL_FILESYSTEM = os.environ.get("USE_LOCAL_FILESYSTEM", False)
+USE_LOCAL_STORAGE = os.environ.get("USE_LOCAL_STORAGE", False)
+STORAGE_EVENTS = []
 
-if USE_LOCAL_FILESYSTEM:
-    LOCAL_FILESYSTEM_ROOT = Path(__file__).parent.parent.parent / "local_filesystem"
+if USE_LOCAL_STORAGE:
+    LOCAL_STORAGE_ROOT = Path(__file__).parent.parent.parent / "local_storage"
 else:
     try:
         BUCKET_NAME = os.environ["BUCKET_NAME"]
@@ -56,16 +57,22 @@ class DownloadFailedException(Exception):
     pass
 
 
-def download_file(filename: str) -> BytesIO:
+def download_file(filename: str, *, record_event: bool = True) -> BytesIO:
     try:
-        if USE_LOCAL_FILESYSTEM:
-            with open(LOCAL_FILESYSTEM_ROOT / filename, "rb") as fp:
+        if USE_LOCAL_STORAGE:
+            with open(LOCAL_STORAGE_ROOT / filename, "rb") as fp:
                 bio = BytesIO(fp.read())
         else:
             bio = BytesIO()
             s3.download_fileobj(BUCKET_NAME, filename, bio)
     except:
+        if record_event:
+            STORAGE_EVENTS.append({"type": "download", "filename": filename, "found": False})
+
         raise DownloadFailedException(f"Failed to download file {filename}")
+
+    if record_event:
+        STORAGE_EVENTS.append({"type": "download", "filename": filename, "found": True})
 
     bio.seek(0)
     return bio
@@ -78,11 +85,11 @@ def upload_file(
     acl: Optional[str] = "public-read",
     content_type: Optional[str] = None,
 ):
-    if USE_LOCAL_FILESYSTEM:
+    if USE_LOCAL_STORAGE:
         # Ensure path exists
-        (LOCAL_FILESYSTEM_ROOT / filename).parent.mkdir(parents=True, exist_ok=True)
+        (LOCAL_STORAGE_ROOT / filename).parent.mkdir(parents=True, exist_ok=True)
 
-        with open(LOCAL_FILESYSTEM_ROOT / filename, "wb") as fp:
+        with open(LOCAL_STORAGE_ROOT / filename, "wb") as fp:
             fp.write(bio.getbuffer())
 
     else:
@@ -97,6 +104,8 @@ def upload_file(
             },
         )
 
+    STORAGE_EVENTS.append({"type": "upload", "filename": filename})
+
 
 def _create_cloudfront_invalidation(
     filenames=Union[str, List[str]],
@@ -108,7 +117,7 @@ def _create_cloudfront_invalidation(
 
     caller_reference = caller_reference or str(uuid4())
 
-    if cloudfront:
+    if not USE_LOCAL_STORAGE and cloudfront:
         return cloudfront.create_invalidation(
             DistributionId=CLOUDFRONT_ID,
             InvalidationBatch={
@@ -142,11 +151,10 @@ def upload_dataframe(
     file_exists = True
 
     try:
-        s3.download_fileobj(BUCKET_NAME, filename, bio_old)
-    except ClientError:
+        bio_old = download_file(filename, record_event=False)
+        bio_old.seek(0)
+    except DownloadFailedException:
         file_exists = False
-
-    bio_old.seek(0)
 
     if not file_exists or not compare(bio_old.read(), write):
 
@@ -168,3 +176,6 @@ def upload_dataframe(
         # Notify
         if change_notification:
             sentry_sdk.capture_message(change_notification)
+
+    else:
+        STORAGE_EVENTS.append({"type": "existed", "filename": filename})

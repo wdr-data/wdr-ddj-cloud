@@ -23,7 +23,7 @@ __pycache__
 .serverless
 .serverless-python-cache
 serverless.yml
-local_filesystem/
+local_storage/
 
 node_modules
 .env

@@ -17,6 +17,8 @@ TEMPLATE_DIR = BASE_DIR / TEMPLATE_NAME
 SCRAPERS_DIR = BASE_DIR / "ddj_cloud" / "scrapers"
 SCRAPERS_CONFIG_NAME = "scrapers_config.json"
 SCRAPERS_CONFIG_PATH = BASE_DIR / SCRAPERS_CONFIG_NAME
+LOCAL_STORAGE_NAME = "local_storage"
+LOCAL_STORAGE_PATH = BASE_DIR / LOCAL_STORAGE_NAME
 
 
 def _success(
@@ -240,7 +242,7 @@ def test_scraper(module_name):
     _info(f'Loading scraper module "{module_name}"...')
 
     # Disable S3/CloudFront for local testing
-    os.environ["USE_LOCAL_FILESYSTEM"] = "1"
+    os.environ["USE_LOCAL_STORAGE"] = "1"
 
     try:
         scraper = importlib.import_module(f"ddj_cloud.scrapers.{module_name}.{module_name}")
@@ -259,6 +261,31 @@ def test_scraper(module_name):
     except Exception as e:
         _error("Scraper failed! Logging error...\n")
         raise
+
+    _success("Scraper ran succesfully!")
+
+    # Print storage events
+    from ddj_cloud.utils import storage
+
+    _info("\nThe scraper performed the following actions:")
+    for fs_event in storage.STORAGE_EVENTS:
+        if fs_event["type"] == "download":
+            if fs_event["found"]:
+                _info(f'- Downloaded file "{fs_event["filename"]}" from storage')
+            else:
+                _info(
+                    f'- Attempted to download non-existing file "{fs_event["filename"]}" from storage'
+                )
+        elif fs_event["type"] == "upload":
+            _info(f'- Uploaded file "{fs_event["filename"]}" to storage')
+        elif fs_event["type"] == "existed":
+            _info(
+                f'- Attempted to upload a file "{fs_event["filename"]}" that was identical to the file in storage'
+            )
+
+    _info("\nTip: During local testing, no files are actually uploaded to AWS.")
+    _info("Instead, files are saved locally to the following directory:")
+    _info(str(LOCAL_STORAGE_PATH))
 
 
 @cli.command("generate", help='Generate the "serverless.yml" for deployment.')

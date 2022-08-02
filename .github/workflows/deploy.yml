@@ -57,7 +57,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .serverless-python-cache
-          key: serverless-python-cache-{{ hashFiles('**/pipfile.lock', '**/serverless.part.yml') }}
+          key: serverless-python-cache-${{ hashFiles('**/pipfile.lock', '**/serverless.part.yml') }}
 
       # Deploy
       - name: Generate serverless.yml

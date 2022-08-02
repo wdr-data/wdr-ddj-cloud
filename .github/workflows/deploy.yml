@@ -54,6 +54,14 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci --production
 
+      # Additional caching
+      - name: Cache serverless-python-requirements
+        id: serverless-python-cache
+        uses: actions/cache@v3
+        with:
+          path: .serverless-python-cache
+          key: serverless-python-cache-{{ hashFiles('**/pipfile.lock', '**/serverless.part.yml') }}
+
       # Deploy
       - name: Generate serverless.yml
         run: pipenv run manage generate

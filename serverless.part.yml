@@ -12,8 +12,12 @@ custom:
     usePipenv: true
     # We're very short on space, so we remove as much from the requirements as possible
     slim: true
+    slimPatternsAppendDefaults: false
 
     slimPatterns:
+      # Defaults
+      - '**/*.py[c|o]'
+      - '**/__pycache__*'
       # Remove tests
       - '**/tests/**'
       # googleapiclient/discovery_cache/documents contains about 60MB of JSON

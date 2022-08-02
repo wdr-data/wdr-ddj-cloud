@@ -328,7 +328,7 @@ def generate_serverless_yml():
 
         function_definition = {
             "handler": "ddj_cloud.handler.scrape",
-            "timeout": 120,
+            "timeout": 60 * 15,  # 15 minutes is the max. timeout allowed by AWS
             "memorySize": int(scraper["memory_size"]),
             "ephemeralStorageSize": int(scraper["ephemeral_storage"]),
             "description": scraper["description"],

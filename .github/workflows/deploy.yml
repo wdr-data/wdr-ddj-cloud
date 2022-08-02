@@ -6,9 +6,6 @@ on:
 
 jobs:
   scraper:
-    # Disable deployment for now
-    if: ${{ false }}
-
     runs-on: ubuntu-latest
 
     strategy:

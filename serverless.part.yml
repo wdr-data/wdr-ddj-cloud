@@ -70,7 +70,7 @@ resources:
           DefaultTTL: 3600
           MaxTTL: 31536000
           MinTTL: 1
-          Name: 'CachePolicyCORS'
+          Name: 'CachePolicyCORS-${self:custom.stage}'
           ParametersInCacheKeyAndForwardedToOrigin:
             CookiesConfig:
               CookieBehavior: 'none'
@@ -130,7 +130,7 @@ provider:
     PRODUCT: ${self:service}
   stackTags:
     PRODUCT: ${self:service}
-  stackName: 'cf-stack-${self:service}-${self:custom.stage}'
+  stackName: '${self:service}-${self:custom.stage}-cf-stack'
   environment:
     STAGE: ${self:custom.stage}
     BUCKET_NAME: ${self:custom.bucketName}

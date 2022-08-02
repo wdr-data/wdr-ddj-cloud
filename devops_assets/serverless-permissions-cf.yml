@@ -1,6 +1,6 @@
 ---
-AWSTemplateFormatVersion: "2010-09-09"
-Description: "Cloudformation stack to manage permission to deploy a serverless service"
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Cloudformation stack to manage permission to deploy a serverless service'
 
 Parameters:
   ServiceName:
@@ -13,172 +13,201 @@ Resources:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       PolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
-            Action: "cloudformation:ValidateTemplate"
-            Resource: "*"
+            Action: 'cloudformation:ValidateTemplate'
+            Resource: '*'
 
           - Effect: Allow
             Action:
-              - "cloudformation:Describe*"
-              - "cloudformation:List*"
-              - "cloudformation:Get*"
-              - "cloudformation:PreviewStackUpdate"
-              - "cloudformation:CreateStack"
-              - "cloudformation:UpdateStack"
+              - 'cloudformation:Describe*'
+              - 'cloudformation:List*'
+              - 'cloudformation:Get*'
+              - 'cloudformation:PreviewStackUpdate'
+              - 'cloudformation:CreateStack'
+              - 'cloudformation:UpdateStack'
+              - 'cloudformation:RollbackStack'
+              - 'cloudformation:CreateChangeSet'
+              - 'cloudformation:ExecuteChangeSet'
+              - 'cloudformation:DeleteChangeSet'
+
+              - 'cloudformation:TagResource'
+              - 'cloudformation:UntagResource'
             Resource:
-              - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${ServiceName}-*"
+              - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${ServiceName}-*'
 
   ServerlessDeployS3Policy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       PolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Action:
-              - "s3:*"
+              - 's3:*'
             Resource:
-              - !Sub "arn:aws:s3:::${ServiceName}-*"
+              - !Sub 'arn:aws:s3:::${ServiceName}-*'
 
           - Effect: Allow
             Action:
-              - "s3:*"
+              - 's3:*'
             Resource:
-              - !Sub "arn:aws:s3:::${ServiceName}-*/*"
+              - !Sub 'arn:aws:s3:::${ServiceName}-*/*'
 
   ServerlessDeployLogsPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       PolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Action:
-              - "logs:DescribeLogGroups"
-            Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group::log-stream:*"
+              - 'logs:DescribeLogGroups'
+            Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group::log-stream:*'
 
           - Effect: Allow
             Action:
-              - "logs:CreateLogGroup"
-              - "logs:CreateLogStream"
-              - "logs:DeleteLogGroup"
-              - "logs:DeleteLogStream"
-              - "logs:DescribeLogStreams"
-              - "logs:FilterLogEvents"
-              - "logs:PutMetricFilter"
-            Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:log-stream:*"
+              - 'logs:CreateLogGroup'
+              - 'logs:CreateLogStream'
+              - 'logs:DeleteLogGroup'
+              - 'logs:DeleteLogStream'
+              - 'logs:DescribeLogStreams'
+              - 'logs:FilterLogEvents'
+              - 'logs:PutMetricFilter'
+
+              - 'logs:TagLogGroup'
+              - 'logs:UntagLogGroup'
+            Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:log-stream:*'
 
   ServerlessDeployIAMPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       PolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Action:
-              - "iam:GetRole"
-              - "iam:PassRole"
-              - "iam:CreateRole"
-              - "iam:DeleteRole"
-              - "iam:DetachRolePolicy"
-              - "iam:PutRolePolicy"
-              - "iam:AttachRolePolicy"
-              - "iam:DeleteRolePolicy"
+              - 'iam:GetRole'
+              - 'iam:PassRole'
+              - 'iam:CreateRole'
+              - 'iam:DeleteRole'
+              - 'iam:GetRolePolicy'
+              - 'iam:DetachRolePolicy'
+              - 'iam:PutRolePolicy'
+              - 'iam:AttachRolePolicy'
+              - 'iam:DeleteRolePolicy'
+
+              - 'iam:TagPolicy'
+              - 'iam:UntagPolicy'
+
+              - 'iam:TagRole'
+              - 'iam:UntagRole'
             Resource:
-              - !Sub "arn:aws:iam::${AWS::AccountId}:role/${ServiceName}-*"
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:role/${ServiceName}-*'
 
   ServerlessDeployLambdaPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       PolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Action:
-              - "apigateway:GET"
-              - "apigateway:POST"
-              - "apigateway:PUT"
-              - "apigateway:DELETE"
-              - "apigateway:PATCH"
+              - 'apigateway:GET'
+              - 'apigateway:POST'
+              - 'apigateway:PUT'
+              - 'apigateway:DELETE'
+              - 'apigateway:PATCH'
             Resource:
-              - !Sub "arn:aws:apigateway:${AWS::Region}::/restapis"
-              - !Sub "arn:aws:apigateway:${AWS::Region}::/restapis/*"
+              - !Sub 'arn:aws:apigateway:${AWS::Region}::/restapis'
+              - !Sub 'arn:aws:apigateway:${AWS::Region}::/restapis/*'
 
           - Effect: Allow
             Action:
-              - "lambda:*"
+              - 'lambda:*'
             Resource:
-              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ServiceName}-*"
+              - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ServiceName}-*'
 
           - Effect: Allow
             Action:
-              - "ec2:DescribeSecurityGroups"
-              - "ec2:DescribeSubnets"
-              - "ec2:DescribeVpcs"
-            Resource: "*"
+              - 'ec2:DescribeSecurityGroups'
+              - 'ec2:DescribeSubnets'
+              - 'ec2:DescribeVpcs'
+            Resource: '*'
 
           - Effect: Allow
             Action:
-              - "events:Put*"
-              - "events:Remove*"
-              - "events:Delete*"
-              - "events:Describe*"
+              - 'events:Put*'
+              - 'events:Remove*'
+              - 'events:Delete*'
+              - 'events:Describe*'
+
+              - 'events:TagResource'
+              - 'events:UntagResource'
             Resource:
-              - !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/${ServiceName}-*"
+              - !Sub 'arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/${ServiceName}-*'
 
           - Effect: Allow
             Action:
-              - "states:CreateStateMachine"
+              - 'states:CreateStateMachine'
             Resource:
-              - !Sub "arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:*"
+              - !Sub 'arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:*'
 
           - Effect: Allow
             Action:
-              - "states:DescribeStateMachine"
-              - "states:DeleteStateMachine"
-              - "states:UpdateStateMachine"
-            Resource:
-              - !Sub "arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:${ServiceName}-*"
+              - 'states:DescribeStateMachine'
+              - 'states:DeleteStateMachine'
+              - 'states:UpdateStateMachine'
 
-  ServerlessDeployDynamoDBPolicy:
+              - 'states:TagResource'
+              - 'states:UntagResource'
+            Resource:
+              - !Sub 'arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:${ServiceName}-*'
+
+  ServerlessCloudFrontPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       PolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Action:
-              - dynamodb:CreateTable
-              - dynamodb:DescribeTimeToLive
-              - dynamodb:UpdateTimeToLive
-              - dynamodb:DescribeTable
-              - dynamodb:UpdateTable
-            Resource:
-              - !Sub "arn:aws:dynamodb:*:*:table/${ServiceName}-*"
-          - Effect: Allow
-            Action:
-              - dynamodb:ListTables
-            Resource:
-              - "*"
-          - Effect: Allow
-            Action:
-              - dynamodb:DescribeLimits
-              - dynamodb:DescribeReservedCapacity
-              - dynamodb:DescribeReservedCapacityOfferings
-              - dynamodb:PurchaseReservedCapacityOfferings
-            Resource:
-              - "*"
+              - 'cloudfront:ListDistributions'
+              - 'cloudfront:GetDistribution'
+              - 'cloudfront:GetDistributionConfig'
+              - 'cloudfront:CreateDistribution'
+              - 'cloudfront:UpdateDistribution'
+              - 'cloudfront:DeleteDistribution'
 
-  ServerlessDeployStepFunctionsPolicy:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Action:
-              - "states:TagResource"
+              - 'cloudfront:ListCloudFrontOriginAccessIdentities'
+              - 'cloudfront:GetCloudFrontOriginAccessIdentity'
+              - 'cloudfront:GetCloudFrontOriginAccessIdentityConfig'
+              - 'cloudfront:CreateCloudFrontOriginAccessIdentity'
+              - 'cloudfront:UpdateCloudFrontOriginAccessIdentity'
+              - 'cloudfront:DeleteCloudFrontOriginAccessIdentity'
+
+              - 'cloudfront:ListCachePolicies'
+              - 'cloudfront:GetCachePolicy'
+              - 'cloudfront:GetCachePolicyConfig'
+              - 'cloudfront:CreateCachePolicy'
+              - 'cloudfront:UpdateCachePolicy'
+              - 'cloudfront:DeleteCachePolicy'
+
+              - 'cloudfront:ListOriginRequestPolicies'
+              - 'cloudfront:GetOriginRequestPolicy'
+              - 'cloudfront:GetOriginRequestPolicyConfig'
+              - 'cloudfront:CreateOriginRequestPolicy'
+              - 'cloudfront:UpdateOriginRequestPolicy'
+              - 'cloudfront:DeleteOriginRequestPolicy'
+
+              - 'cloudfront:ListInvalidations'
+              - 'cloudfront:GetInvalidation'
+              - 'cloudfront:CreateInvalidation'
+
+              - 'acm:ListCertificates'
+
+              - 'cloudfront:TagResource'
+              - 'cloudfront:UntagResource'
             Resource:
-              - "*"
+              - '*'

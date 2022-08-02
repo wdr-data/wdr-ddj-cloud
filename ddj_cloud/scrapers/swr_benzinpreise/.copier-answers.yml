@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: X:\work\wdr-ddj-cloud\scraper_template
+contact_email: mail@jhoeke.de
+contact_name: Jannes Höke
+description: 'Täglich upgedatete Benzinpreise aus NRW
+
+  Quelle ist 123Tanken via SWR'
+display_name: SWR Benzinpreise
+ephemeral_storage: '512'
+interval: hourly
+interval_custom: null
+memory_size: '1024'
+module_name: swr_benzinpreise
+preset: pandas

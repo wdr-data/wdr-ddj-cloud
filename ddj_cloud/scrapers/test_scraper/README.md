@@ -1,6 +1,6 @@
 # Test Scraper
 
-**Contact:** Jannes Höke <mail@jhoeke.de>
+**Contact:** Jannes Höke (mail@jhoeke.de)
 
 Dies ist ein Scraper, um das Deployment zu testen.
 

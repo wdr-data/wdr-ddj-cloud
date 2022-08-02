@@ -11,10 +11,30 @@
         "events": [
             {
                 "type": "schedule",
-                "enabled": true,
+                "enabled": false,
                 "data": {
                     "interval": "custom",
                     "interval_custom": "rate(1 minute)"
+                }
+            }
+        ]
+    },
+    {
+        "display_name": "SWR Benzinpreise",
+        "module_name": "swr_benzinpreise",
+        "description": "Täglich upgedatete Benzinpreise aus NRW\nQuelle ist 123Tanken via SWR",
+        "contact_name": "Jannes Höke",
+        "contact_email": "mail@jhoeke.de",
+        "memory_size": "1024",
+        "ephemeral_storage": "512",
+        "preset": "pandas",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "hourly",
+                    "interval_custom": null
                 }
             }
         ]

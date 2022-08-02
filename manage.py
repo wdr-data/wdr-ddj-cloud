@@ -344,7 +344,7 @@ def generate_serverless_yml():
     with open(BASE_DIR / "serverless.yml", "w", encoding="utf-8") as fp:
         yaml.dump(serverless_part_yml, fp)
 
-    click.echo("Success!")
+    _success("Success!")
 
 
 if __name__ == "__main__":

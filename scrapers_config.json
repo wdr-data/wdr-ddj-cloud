@@ -17,7 +17,8 @@
                     "interval_custom": "rate(1 minute)"
                 }
             }
-        ]
+        ],
+        "extra_env": []
     },
     {
         "display_name": "SWR Benzinpreise",
@@ -37,6 +38,9 @@
                     "interval_custom": null
                 }
             }
+        ],
+        "extra_env": [
+            "SWR_BENZINPREISE_SERVICE_ACCOUNT"
         ]
     }
 ]

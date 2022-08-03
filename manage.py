@@ -186,6 +186,7 @@ def new_scraper(pretend: bool):
     }
 
     new_entry["events"] = [event]
+    new_entry["extra_env"] = []
 
     scrapers_config.append(new_entry)
     _save_scrapers_config(scrapers_config)
@@ -326,6 +327,10 @@ def generate_serverless_yml():
                     }
                 )
 
+        extra_env_vars = {
+            var: "${env:" + var + "}" for var in scraper["extra_env"]
+        }
+
         function_definition = {
             "handler": "ddj_cloud.handler.scrape",
             "timeout": 60 * 15,  # 15 minutes is the max. timeout allowed by AWS
@@ -333,6 +338,7 @@ def generate_serverless_yml():
             "ephemeralStorageSize": int(scraper["ephemeral_storage"]),
             "description": scraper["description"],
             "events": events,
+            "environment": extra_env_vars,
         }
 
         # We use pascal case for the key, otherwise they literally put "Underscore" there

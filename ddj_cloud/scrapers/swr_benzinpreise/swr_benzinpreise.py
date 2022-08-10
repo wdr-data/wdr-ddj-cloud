@@ -90,7 +90,17 @@ def run():
 
     # Load data
     df_tageswerte = pd.DataFrame(load_tageswerte(bigquery_client))  # Full history since 2022-01-01
-    df_latest = df_tageswerte[df_tageswerte["day"] == df_tageswerte["day"].max()]  # Latest entry
+
+    # Latest data in some kind of dashboard format
+    df_latest = df_tageswerte[df_tageswerte["day"] == df_tageswerte["day"].max()].copy()
+    df_latest.replace(
+        {
+            "octane95": "Super E5",
+            "e10": "Super E10",
+            "diesel": "Diesel",
+        },
+        inplace=True,
+    )
 
     # Expand data
     tageswerte_expanded_dfs = [

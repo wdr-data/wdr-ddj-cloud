@@ -320,6 +320,7 @@ def upload_dataframe(
     upload_file(
         write,
         filename,
+        content_type="text/csv",
         acl=acl,
         compare_fn=compare_fn,
         create_cloudfront_invalidation=create_cloudfront_invalidation,

@@ -1,12 +1,14 @@
 import json
 import os
 from functools import reduce, partial
+import datetime as dt
 
 from google.cloud import bigquery
 import numpy as np
 import pandas as pd
 
 from ddj_cloud.utils import bigquery as bigquery_utils
+from ddj_cloud.utils.date_and_time import local_today
 from ddj_cloud.utils.storage import upload_dataframe
 
 PROJECT = "swr-data-1"
@@ -91,11 +93,11 @@ def run():
     df_latest = df_tageswerte[df_tageswerte["day"] == df_tageswerte["day"].max()]  # Latest entry
 
     # Expand data
-    expanded_dfs = [
+    tageswerte_expanded_dfs = [
         expand_column(df_tageswerte, "type", fuel_type, ["day"])
         for fuel_type in ["octane95", "e10", "diesel"]
     ]
-    df_expanded = reduce(
+    df_tageswerte_expanded = reduce(
         partial(
             pd.merge,
             how="outer",
@@ -103,10 +105,15 @@ def run():
             copy=False,
             validate="one_to_one",
         ),
-        expanded_dfs,
+        tageswerte_expanded_dfs,
     )
 
+    df_tageswerte_30_days_expanded = df_tageswerte_expanded[
+        df_tageswerte_expanded["day"] >= (local_today() - dt.timedelta(days=30))
+    ]
+
     # Upload to S3
-    upload_dataframe(df_expanded, "swr_benzinpreise/history.csv")
+    upload_dataframe(df_tageswerte_expanded, "swr_benzinpreise/history.csv")
+    upload_dataframe(df_tageswerte_30_days_expanded, "swr_benzinpreise/history_30_days.csv")
     upload_dataframe(df_tageswerte, "swr_benzinpreise/history_original.csv")
     upload_dataframe(df_latest, "swr_benzinpreise/latest.csv")

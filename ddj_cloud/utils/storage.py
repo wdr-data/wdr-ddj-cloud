@@ -1,4 +1,5 @@
 import os
+from os.path import commonprefix as common_prefix
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
@@ -13,6 +14,8 @@ from ddj_cloud.utils.date_and_time import local_today
 
 USE_LOCAL_STORAGE = os.environ.get("USE_LOCAL_STORAGE", False)
 STORAGE_EVENTS = []
+
+CLOUDFRONT_INVALIDATIONS_TO_CREATE = []
 
 if USE_LOCAL_STORAGE:
     LOCAL_STORAGE_ROOT = Path(__file__).parent.parent.parent / "local_storage"
@@ -61,6 +64,9 @@ def describe_events(*, clear: bool = False) -> list[str]:
 
         elif fs_event["type"] == "existed":
             return f'Attempted to upload a file "{fs_event["filename"]}" that was identical to the file in storage'
+
+        elif fs_event["type"] == "invalidation":
+            return f'Created CloudFront invalidation for "{fs_event["path"]}"'
 
         else:
             return f'Unknown event type "{fs_event["type"]}"'
@@ -264,7 +270,7 @@ def upload_file(
     bio_new = BytesIO(content)
 
     # Upload file with ACL and content type
-    uploaded_files = _upload_file(
+    _upload_file(
         bio_new,
         filename,
         acl=acl,
@@ -273,7 +279,7 @@ def upload_file(
 
     # Create CloudFront invalidation
     if create_cloudfront_invalidation:
-        _create_cloudfront_invalidation(uploaded_files)
+        _queue_cloudfront_invalidation(filename)
 
     # Notify
     if change_notification:
@@ -316,28 +322,38 @@ def upload_dataframe(
     )
 
 
-def _create_cloudfront_invalidation(
-    filenames: Union[str, list[str]],
-    *,
-    caller_reference: Optional[str] = None,
-) -> Any:
+def _queue_cloudfront_invalidation(filename: str) -> Any:
     """Internal function to create a CloudFront invalidation"""
-    if isinstance(filenames, str):
-        filenames = [filenames]
 
     # Make sure paths start with /
-    filenames = ["/" + f.lstrip("/") for f in filenames]
+    filename = "/" + filename.lstrip("/")
+    CLOUDFRONT_INVALIDATIONS_TO_CREATE.append(filename)
+
+
+def run_cloudfront_invalidations(*, caller_reference: Optional[str] = None):
+    """Run CloudFront invalidations"""
 
     caller_reference = caller_reference or str(uuid4())
 
+    if not CLOUDFRONT_INVALIDATIONS_TO_CREATE:
+        return
+
+    invalidation_path = common_prefix(CLOUDFRONT_INVALIDATIONS_TO_CREATE) + "*"
+
+    if "/" not in invalidation_path:
+        raise Exception("CloudFront invalidation path is too broad:", invalidation_path)
+
     if not USE_LOCAL_STORAGE and cloudfront:
-        return cloudfront.create_invalidation(
+        STORAGE_EVENTS.append({"type": "invalidation", "path": invalidation_path})
+        cloudfront.create_invalidation(
             DistributionId=CLOUDFRONT_ID,
             InvalidationBatch={
                 "Paths": {
-                    "Quantity": len(filenames),
-                    "Items": filenames,
+                    "Quantity": 1,
+                    "Items": invalidation_path,
                 },
                 "CallerReference": caller_reference,
             },
         )
+
+    CLOUDFRONT_INVALIDATIONS_TO_CREATE.clear()

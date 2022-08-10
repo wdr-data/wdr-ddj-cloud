@@ -32,6 +32,14 @@ def scrape(event, context):
             print(e)
             sentry_sdk.capture_exception(e)
 
+        # Run CloudFront invalidation
+        try:
+            storage.run_cloudfront_invalidations()
+        except Exception as e:
+            print(f"Cloudfront invalidation failed with:")
+            print(e)
+            sentry_sdk.capture_exception(e)
+
         print("The scraper performed the following storage operations:")
         for storage_event_description in storage.describe_events():
             print("-", storage_event_description)

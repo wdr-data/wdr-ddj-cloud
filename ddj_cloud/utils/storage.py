@@ -34,6 +34,45 @@ else:
         print("Warning: CloudFront client not created")
 
 
+def describe_events(*, clear: bool = False) -> list[str]:
+    """Describe the events that have been recorded by the storage module.
+
+    Args:
+        clear (bool, optional): Clear the events after they have been described. Defaults to False.
+
+    Returns:
+        list[str]: List of events
+    """
+
+    def _describe(fs_event):
+        if fs_event["type"] == "download":
+            if fs_event["success"]:
+                return f'Downloaded file "{fs_event["filename"]}" from storage'
+            else:
+                return (
+                    f'Attempted to download non-existing file "{fs_event["filename"]}" from storage'
+                )
+
+        elif fs_event["type"] == "upload":
+            return f'Uploaded file "{fs_event["filename"]}" to storage'
+
+        elif fs_event["type"] == "archive":
+            return f'Archived file "{fs_event["original_filename"]}" to "{fs_event["archived_filename"]}"'
+
+        elif fs_event["type"] == "existed":
+            return f'Attempted to upload a file "{fs_event["filename"]}" that was identical to the file in storage'
+
+        else:
+            return f'Unknown event type "{fs_event["type"]}"'
+
+    descriptions = [_describe(fs_event) for fs_event in STORAGE_EVENTS]
+
+    if clear:
+        STORAGE_EVENTS.clear()
+
+    return descriptions
+
+
 def simple_compare(old: Any, new: Any) -> bool:
     return old == new
 
@@ -101,10 +140,10 @@ def download_file(filename: str) -> BytesIO:
     try:
         bio = _download_file(filename)
     except DownloadFailedException:
-        STORAGE_EVENTS.append({"type": "download", "filename": filename, "found": False})
+        STORAGE_EVENTS.append({"type": "download", "filename": filename, "success": False})
         raise
 
-    STORAGE_EVENTS.append({"type": "download", "filename": filename, "found": True})
+    STORAGE_EVENTS.append({"type": "download", "filename": filename, "success": True})
 
     return bio
 

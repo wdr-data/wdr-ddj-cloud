@@ -279,6 +279,10 @@ def test_scraper(module_name):
                 )
         elif fs_event["type"] == "upload":
             _info(f'- Uploaded file "{fs_event["filename"]}" to storage')
+        elif fs_event["type"] == "archive":
+            _info(
+                f'- Archived file "{fs_event["original_filename"]}" to "{fs_event["archived_filename"]}"'
+            )
         elif fs_event["type"] == "existed":
             _info(
                 f'- Attempted to upload a file "{fs_event["filename"]}" that was identical to the file in storage'
@@ -327,9 +331,7 @@ def generate_serverless_yml():
                     }
                 )
 
-        extra_env_vars = {
-            var: "${env:" + var + "}" for var in scraper["extra_env"]
-        }
+        extra_env_vars = {var: "${env:" + var + "}" for var in scraper["extra_env"]}
 
         function_definition = {
             "handler": "ddj_cloud.handler.scrape",

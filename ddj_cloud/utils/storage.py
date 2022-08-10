@@ -171,14 +171,19 @@ def __upload_file(
 
     else:
         # Upload file with ACL and content type
+        extra_args = {}
+
+        if acl is not None:
+            extra_args["ACL"] = acl
+
+        if content_type is not None:
+            extra_args["ContentType"] = content_type
+
         s3.upload_fileobj(
             bio,
             BUCKET_NAME,
             filename,
-            ExtraArgs={
-                "ACL": acl,
-                "ContentType": content_type,
-            },
+            ExtraArgs=extra_args,
         )
 
 

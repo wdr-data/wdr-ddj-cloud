@@ -293,7 +293,7 @@ def upload_dataframe(
     change_notification: Optional[str] = None,
     compare_fn: Callable[[bytes, bytes], bool] = simple_compare,
     acl: Optional[str] = "public-read",
-    create_cloudfront_invalidation: bool = True,
+    create_cloudfront_invalidation: bool = False,
 ):
     """Upload a dataframe to storage.
 
@@ -306,7 +306,7 @@ def upload_dataframe(
         change_notification (str, optional): Notification text that should be sent to Sentry if the file was updated. Defaults to None.
         compare_fn (Callable, optional): Function to use to compare existing file with new file. Defaults to ``simple_compare``.
         acl (str, optional): ACL to use when uploading. Defaults to ``"public-read"``.
-        create_cloudfront_invalidation (bool, optional): Whether to create a CloudFront invalidation. Defaults to True.
+        create_cloudfront_invalidation (bool, optional): Whether to create a CloudFront invalidation. Defaults to False.
     """
     # Convert to csv and encode to get bytes
     write = df.to_csv(index=False).encode("utf-8")

@@ -155,12 +155,14 @@ def download_file(filename: str) -> BytesIO:
 
 
 def __upload_file(
-    bio: BytesIO,
+    content: bytes,
     filename: str,
     *,
     acl: Optional[str] = None,
     content_type: Optional[str] = None,
 ):
+    bio = BytesIO(content)
+
     """Internal file upload function"""
     if USE_LOCAL_STORAGE:
         # Ensure path exists
@@ -168,6 +170,8 @@ def __upload_file(
 
         with open(LOCAL_STORAGE_ROOT / filename, "wb") as fp:
             fp.write(bio.getbuffer())
+
+        bio.close()
 
     else:
         # Upload file with ACL and content type
@@ -188,7 +192,7 @@ def __upload_file(
 
 
 def _upload_file(
-    bio: BytesIO,
+    content: bytes,
     filename: str,
     *,
     acl: Optional[str] = None,
@@ -199,15 +203,14 @@ def _upload_file(
     filenames = [filename]
 
     # Upload file normally
-    __upload_file(bio, filename, acl=acl, content_type=content_type)
+    __upload_file(content, filename, acl=acl, content_type=content_type)
     STORAGE_EVENTS.append({"type": "upload", "filename": filename})
-    bio.seek(0)
 
     # Upload archived version
     if archive:
         timestamp = local_today().isoformat()
         filename_archive = f"archive/{timestamp}/{filename}"
-        __upload_file(bio, filename_archive, acl=acl, content_type=content_type)
+        __upload_file(content, filename_archive, acl=acl, content_type=content_type)
         STORAGE_EVENTS.append(
             {
                 "type": "archive",
@@ -271,12 +274,9 @@ def upload_file(
         STORAGE_EVENTS.append({"type": "existed", "filename": filename})
         return
 
-    # Create new file-like object for upload
-    bio_new = BytesIO(content)
-
     # Upload file with ACL and content type
     _upload_file(
-        bio_new,
+        content,
         filename,
         acl=acl,
         content_type=content_type,

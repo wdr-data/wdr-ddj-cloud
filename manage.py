@@ -268,21 +268,10 @@ def test_scraper(module_name):
     # Print storage events
     from ddj_cloud.utils import storage
 
-    _info("\nThe scraper performed the following actions:")
-    for fs_event in storage.STORAGE_EVENTS:
-        if fs_event["type"] == "download":
-            if fs_event["found"]:
-                _info(f'- Downloaded file "{fs_event["filename"]}" from storage')
-            else:
-                _info(
-                    f'- Attempted to download non-existing file "{fs_event["filename"]}" from storage'
-                )
-        elif fs_event["type"] == "upload":
-            _info(f'- Uploaded file "{fs_event["filename"]}" to storage')
-        elif fs_event["type"] == "existed":
-            _info(
-                f'- Attempted to upload a file "{fs_event["filename"]}" that was identical to the file in storage'
-            )
+    _info("\nThe scraper performed the following storage operations:")
+
+    for event_description in storage.describe_events():
+        _info(f"- {event_description}")
 
     _info("\nTip: During local testing, no files are actually uploaded to AWS.")
     _info("Instead, files are saved locally to the following directory:")
@@ -327,9 +316,7 @@ def generate_serverless_yml():
                     }
                 )
 
-        extra_env_vars = {
-            var: "${env:" + var + "}" for var in scraper["extra_env"]
-        }
+        extra_env_vars = {var: "${env:" + var + "}" for var in scraper["extra_env"]}
 
         function_definition = {
             "handler": "ddj_cloud.handler.scrape",

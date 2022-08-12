@@ -173,41 +173,8 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-              - 'cloudfront:ListDistributions'
-              - 'cloudfront:GetDistribution'
-              - 'cloudfront:GetDistributionConfig'
-              - 'cloudfront:CreateDistribution'
-              - 'cloudfront:UpdateDistribution'
-              - 'cloudfront:DeleteDistribution'
-
-              - 'cloudfront:ListCloudFrontOriginAccessIdentities'
-              - 'cloudfront:GetCloudFrontOriginAccessIdentity'
-              - 'cloudfront:GetCloudFrontOriginAccessIdentityConfig'
-              - 'cloudfront:CreateCloudFrontOriginAccessIdentity'
-              - 'cloudfront:UpdateCloudFrontOriginAccessIdentity'
-              - 'cloudfront:DeleteCloudFrontOriginAccessIdentity'
-
-              - 'cloudfront:ListCachePolicies'
-              - 'cloudfront:GetCachePolicy'
-              - 'cloudfront:GetCachePolicyConfig'
-              - 'cloudfront:CreateCachePolicy'
-              - 'cloudfront:UpdateCachePolicy'
-              - 'cloudfront:DeleteCachePolicy'
-
-              - 'cloudfront:ListOriginRequestPolicies'
-              - 'cloudfront:GetOriginRequestPolicy'
-              - 'cloudfront:GetOriginRequestPolicyConfig'
-              - 'cloudfront:CreateOriginRequestPolicy'
-              - 'cloudfront:UpdateOriginRequestPolicy'
-              - 'cloudfront:DeleteOriginRequestPolicy'
-
-              - 'cloudfront:ListInvalidations'
-              - 'cloudfront:GetInvalidation'
-              - 'cloudfront:CreateInvalidation'
-
+              - 'cloudfront:*'
               - 'acm:ListCertificates'
 
-              - 'cloudfront:TagResource'
-              - 'cloudfront:UntagResource'
             Resource:
               - '*'

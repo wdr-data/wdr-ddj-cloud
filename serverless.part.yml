@@ -35,6 +35,11 @@ custom:
     cacheLocation: './.serverless-python-cache'
     staticCacheMaxVersions: 1
 
+  customDomainBaseNews: scrapers.data.wdr.news
+  acmCertificateId: 0a7c94b9-edf4-44ee-9736-ac4a3b86cf73
+
+  customDomainNameNews: '${self:provider.stage}.${self:custom.customDomainBaseNews}'
+
 package:
   # Ignore everything but the ddj_cloud module
   patterns:
@@ -56,38 +61,84 @@ resources:
             'IgnorePublicAcls': false,
             'RestrictPublicBuckets': false,
           }
+        # CORS config is needed for OPTIONS to work
         CorsConfiguration:
           CorsRules:
             - {
-                'AllowedHeaders': ['Authorization'],
+                'AllowedHeaders': ['*'],
                 'AllowedMethods': ['GET', 'HEAD'],
                 'AllowedOrigins': ['*'],
                 'ExposedHeaders': [],
               }
 
-    # Cache Policy for CORS support
-    CORSCachePolicy:
+    # CachePolicy for CloudFront
+    CustomCachePolicy:
       Type: AWS::CloudFront::CachePolicy
       Properties:
         CachePolicyConfig:
-          Comment: 'Cache Policy that respects headers needed for CORS to work correctly'
-          DefaultTTL: 3600
-          MaxTTL: 31536000
-          MinTTL: 1
-          Name: 'CachePolicyCORS-${self:custom.stage}'
+          Name: 'CachePolicyCustom-${self:service}-${self:custom.stage}'
+          Comment: 'Custom CachePolicy for ${self:service}-${env:STAGE}'
+          DefaultTTL: 600
+          MaxTTL: 86400
+          MinTTL: 0
           ParametersInCacheKeyAndForwardedToOrigin:
-            CookiesConfig:
-              CookieBehavior: 'none'
             EnableAcceptEncodingBrotli: 'true'
             EnableAcceptEncodingGzip: 'true'
+            CookiesConfig:
+              CookieBehavior: 'none'
             HeadersConfig:
               HeaderBehavior: 'whitelist'
+              # Don't include Origin or Request-Headers in cache key cause we don't care
               Headers:
-                - Origin
                 - Access-Control-Request-Method
-                - Access-Control-Request-Headers
             QueryStringsConfig:
               QueryStringBehavior: 'none'
+
+    # OriginRequestPolicy for CloudFront
+    CustomOriginRequestPolicy:
+      Type: AWS::CloudFront::OriginRequestPolicy
+      Properties:
+        OriginRequestPolicyConfig:
+          Name: 'OriginRequestPolicyCustom-${self:service}-${self:custom.stage}'
+          Comment: 'Custom OriginRequestPolicy for ${self:service}-${env:STAGE}'
+          CookiesConfig:
+            CookieBehavior: 'none'
+          # Don't forward any user headers to S3
+          HeadersConfig:
+            HeaderBehavior: 'none'
+          QueryStringsConfig:
+            QueryStringBehavior: 'none'
+
+    # ResponseHeadersPolicy for CloudFront
+    CustomResponseHeadersPolicy:
+      Type: AWS::CloudFront::ResponseHeadersPolicy
+      Properties:
+        ResponseHeadersPolicyConfig:
+          Name: 'ResponseHeadersPolicyCustom-${self:service}-${self:custom.stage}'
+          Comment: 'Custom ResponseHeadersPolicy for ${self:service}-${env:STAGE}'
+          CorsConfig:
+            AccessControlAllowCredentials: 'false'
+            AccessControlAllowHeaders:
+              Items:
+                - '*'
+            AccessControlAllowMethods:
+              Items:
+                - 'GET'
+                - 'HEAD'
+                - 'OPTIONS'
+            AccessControlAllowOrigins:
+              Items:
+                - '*'
+            AccessControlExposeHeaders:
+              Items:
+                - '*'
+            AccessControlMaxAgeSec: 600
+            OriginOverride: 'true'
+          CustomHeadersConfig:
+            Items:
+              - Header: 'Cache-Control'
+                Override: 'false'
+                Value: 'no-cache'
 
     CloudFrontDistributionDataBucketOriginAccessIdentity:
       Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
@@ -105,19 +156,43 @@ resources:
           HttpVersion: 'http2'
           IPV6Enabled: 'true'
           PriceClass: 'PriceClass_All' # Distribute worldwide
+
+          # ACM Certificate and DNS must be set up manually
+          Aliases:
+            - '${self:custom.customDomainNameNews}'
+          ViewerCertificate:
+            AcmCertificateArn:
+              Fn::Sub: arn:aws:acm:us-east-1:${AWS::AccountId}:certificate/${self:custom.acmCertificateId}
+            MinimumProtocolVersion: 'TLSv1.2_2021'
+            SslSupportMethod: 'sni-only'
+
           DefaultCacheBehavior:
             AllowedMethods:
               - GET
               - HEAD
+              - OPTIONS
+            CachedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
             TargetOriginId: 's3-origin-${self:service}-data-${self:provider.stage}'
             ViewerProtocolPolicy: 'redirect-to-https'
             Compress: 'true'
-            OriginRequestPolicyId: '88a5eaf4-2fd4-4709-b370-b4c650ea3fcf' # Managed-CORS-S3Origin
+            OriginRequestPolicyId:
+              Ref: CustomOriginRequestPolicy
             CachePolicyId:
-              Ref: CORSCachePolicy
+              Ref: CustomCachePolicy
+            ResponseHeadersPolicyId:
+              Ref: CustomResponseHeadersPolicy
           Origins:
             - DomainName: '${self:custom.bucketName}.s3.${self:provider.region}.amazonaws.com'
               Id: 's3-origin-${self:service}-data-${self:provider.stage}'
+              # Always send CORS headers to S3 to make sure OPTIONS works
+              OriginCustomHeaders:
+                - HeaderName: Origin
+                  HeaderValue: example.com
+                - HeaderName: Access-Control-Request-Headers
+                  HeaderValue: Content-Type
               S3OriginConfig:
                 OriginAccessIdentity:
                   Fn::Join:

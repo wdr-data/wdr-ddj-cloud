@@ -36,9 +36,11 @@ custom:
     staticCacheMaxVersions: 1
 
   customDomainBaseNews: scrapers.data.wdr.news
-  acmCertificateId: 0a7c94b9-edf4-44ee-9736-ac4a3b86cf73
+  customDomainBaseWdrDe: scrapers.data.wdr.de
+  acmCertificateId: 09a7667f-ce0e-4ca7-8ee3-31ba79f75f80
 
   customDomainNameNews: '${self:provider.stage}.${self:custom.customDomainBaseNews}'
+  customDomainNameWdrDe: '${self:provider.stage}.${self:custom.customDomainBaseWdrDe}'
 
 package:
   # Ignore everything but the ddj_cloud module
@@ -160,6 +162,7 @@ resources:
           # ACM Certificate and DNS must be set up manually
           Aliases:
             - '${self:custom.customDomainNameNews}'
+            - '${self:custom.customDomainNameWdrDe}'
           ViewerCertificate:
             AcmCertificateArn:
               Fn::Sub: arn:aws:acm:us-east-1:${AWS::AccountId}:certificate/${self:custom.acmCertificateId}

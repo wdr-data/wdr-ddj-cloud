@@ -283,6 +283,17 @@ def test_scraper(module_name):
     _info(str(LOCAL_STORAGE_PATH))
 
 
+@cli.command("test-all", help="Test all scrapers locally.")
+def test_all_scrapers():
+    scrapers_config = _load_scrapers_config()
+
+    for scraper in scrapers_config:
+        try:
+            test_scraper([scraper["module_name"]])
+        except:
+            print("")
+
+
 @cli.command("generate", help='Generate the "serverless.yml" for deployment.')
 def generate_serverless_yml():
     _info(

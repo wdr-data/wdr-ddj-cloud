@@ -88,6 +88,18 @@ The testing script will show you if any errors occurred during the execution of 
 
 Once you are happy with your scraper, you need to commit your changes and push them to GitHub.
 
+Basic steps are as follows.
+
+To commit your changes, select the "Source Control" tab in Visual Studio Code and enter a commit message. Then click the checkmark icon to commit your changes.
+
+![Committing](docs/images/vscode_commit.png?raw=true 'Committing')
+
+When asked if you want to stage all changes, select "Yes".
+
+To push your changes, select the 🔄 icon in the menu bar at the bottom left of Visual Studio Code.
+
+![Synchronizing changes](docs/images/vscode_sync.png?raw=true 'Synchronizing changes')
+
 Refer to [this guide](https://code.visualstudio.com/docs/sourcecontrol/overview) for more information on how to work with Git in Visual Studio Code.
 
 If you created a new branch, you should create a pull request to merge your changes into the `main` branch. Otherwise, your changes will automatically be deployed to the staging deployment on AWS.

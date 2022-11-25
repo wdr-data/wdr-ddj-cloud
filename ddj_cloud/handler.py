@@ -17,12 +17,17 @@ from ddj_cloud.utils import storage
 
 def scrape(event, context):
     module_name = event["module_name"]
-    scraper = importlib.import_module(f"ddj_cloud.scrapers.{module_name}.{module_name}")
 
     with sentry_sdk.configure_scope() as scope:
         scope.set_tag("scraper", module_name)
         try:
-            scraper.run()
+            scraper = importlib.import_module(f"ddj_cloud.scrapers.{module_name}.{module_name}")
+
+            if getattr(scraper, "run", None):
+                scraper.run()
+            else:
+                print("No run function found")
+
             now = local_now()
             print(f"Ran {module_name} at {now}")
         except Exception as e:

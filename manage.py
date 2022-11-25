@@ -245,20 +245,25 @@ def test_scraper(module_name):
     # Disable S3/CloudFront for local testing
     os.environ["USE_LOCAL_STORAGE"] = "1"
 
+    if not (SCRAPERS_DIR / module_name).exists():
+        _error(f'Error: Scraper "{module_name}" not found in "{SCRAPERS_DIR}".')
+        sys.exit(1)
+
     try:
         scraper = importlib.import_module(f"ddj_cloud.scrapers.{module_name}.{module_name}")
-    except ImportError:
-        _error(f'Error: Could not find scraper module "{module_name}" in {SCRAPERS_DIR}')
-        sys.exit(1)
     except:
-        _error("Error: Something went wrong during import :(")
+        _error("Error: Something went wrong during import :(\n")
         raise
 
     _success("Scraper loaded successfully!")
 
-    _info("Running scraper now!\n")
     try:
-        scraper.run()
+        if getattr(scraper, "run", None):
+            _info("Running scraper now!\n")
+            scraper.run()
+        else:
+            _warn("Warning: Scraper has no run() method")
+
     except Exception as e:
         _error("Scraper failed! Logging error...\n")
         raise

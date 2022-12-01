@@ -84,5 +84,26 @@
             }
         ],
         "extra_env": []
+    },
+    {
+        "display_name": "ententeich",
+        "module_name": "ententeich",
+        "description": "das ist ein testscraper \n",
+        "contact_name": "christian basl",
+        "contact_email": "baslchristian@gmail.com",
+        "memory_size": "512",
+        "ephemeral_storage": "512",
+        "preset": "pandas",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "15min",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": []
     }
 ]

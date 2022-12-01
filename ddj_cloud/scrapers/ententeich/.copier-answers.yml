@@ -1,0 +1,13 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: C:\Users\chris\Documents\GitHub\WDR Repository\wdr-ddj-cloud\scraper_template
+contact_email: baslchristian@gmail.com
+contact_name: christian basl
+description: "das ist ein testscraper \n"
+display_name: ententeich
+ephemeral_storage: '512'
+interval: 15min
+interval_custom: null
+memory_size: '512'
+module_name: ententeich
+preset: pandas
+

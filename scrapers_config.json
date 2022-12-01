@@ -42,5 +42,26 @@
         "extra_env": [
             "SWR_BENZINPREISE_SERVICE_ACCOUNT"
         ]
+    },
+    {
+        "display_name": "firsttry_elena",
+        "module_name": "firsttry_elena",
+        "description": "elenas test scraper\n",
+        "contact_name": "elena",
+        "contact_email": "elena.riedlinger@wdr.de",
+        "memory_size": "1024",
+        "ephemeral_storage": "512",
+        "preset": "pandas",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "daily",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": []
     }
 ]

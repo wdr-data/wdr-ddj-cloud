@@ -63,5 +63,26 @@
             }
         ],
         "extra_env": []
+    },
+    {
+        "display_name": "Testscrape_WDR_DDJ_Nandor",
+        "module_name": "testscrape_wdr_ddj_nandor",
+        "description": "Jannes ist schuld.",
+        "contact_name": "Nandor",
+        "contact_email": "nandor@hulverscheidt.com",
+        "memory_size": "512",
+        "ephemeral_storage": "512",
+        "preset": "pandas",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "15min",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": []
     }
 ]

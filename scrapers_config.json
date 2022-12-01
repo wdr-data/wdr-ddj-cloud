@@ -105,5 +105,26 @@
             }
         ],
         "extra_env": []
+    },
+    {
+        "display_name": "Test",
+        "module_name": "test",
+        "description": "M1 war das Problem",
+        "contact_name": "Peter Schneider",
+        "contact_email": "peter.schneider@fm.wdr.de",
+        "memory_size": "1024",
+        "ephemeral_storage": "512",
+        "preset": "pandas",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "hourly",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": []
     }
 ]

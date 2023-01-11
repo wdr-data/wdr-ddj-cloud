@@ -12,7 +12,7 @@ jobs:
       matrix:
         node-version: ['16.x']
         python-version: ['3.9']
-        pipenv-version: ['2022.7.4']
+        pipenv-version: ['2022.12.19']
 
     steps:
       # Checkout repository

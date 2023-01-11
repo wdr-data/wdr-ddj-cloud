@@ -28,6 +28,7 @@ copier = "~=6.1"
 copier-templates-extensions = "~=0.2"
 python-slugify = "~=6.1"
 pipenv = "*"
+colorama = "*"
 
 [requires]
 python_version = "3.9"

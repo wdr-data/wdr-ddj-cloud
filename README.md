@@ -26,7 +26,7 @@ In a terminal, run the following command to install `pipenv`:
 
 You can verify that `pipenv` is installed by running:
 
-    pipenv --version
+    python -m pipenv --version
 
 You can now close the terminal.
 
@@ -38,7 +38,7 @@ Use the Windows Explorer to navigate to the folder where you want to clone the r
 
 You will be prompted for your GitHub username and password.
 
-You can now open the cloned repository in Visual Studio Code by running the following command in the terminal:
+You can now open the cloned repository in Visual Studio Code by running the following command in the same git bash window:
 
     code wdr-ddj-cloud
 
@@ -48,7 +48,7 @@ Once the repository is open in Visual Studio Code, you can close the git bash te
 
 Before we can start, we need to install the dependencies for the project. Open a terminal in Visual Studio Code by selecting "Terminal" -> "New Terminal" from the menu. Then run the following command to install the dependencies:
 
-    pipenv sync --dev
+    python -m pipenv sync --dev
 
 If this is your first time running this command, `pipenv` will create a virtual environment for the project and install all dependencies. This may take a while. After completion, it is recommended to restart Visual Studio Code.
 

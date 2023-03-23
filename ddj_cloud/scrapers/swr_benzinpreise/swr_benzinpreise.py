@@ -82,7 +82,7 @@ def run():
 
     if SERVICE_ACCOUNT_ENV_VAR in os.environ:
         service_account_info = json.loads(os.environ[SERVICE_ACCOUNT_ENV_VAR])
-        bigquery_client = bigquery_utils.make_client(service_account_info)
+        bigquery_client = bigquery_utils.make_client(service_account_info, location="US")
     else:
         print("Service account not found in environment, BigQuery client could not be created")
         print(f"Please set the environment variable {SERVICE_ACCOUNT_ENV_VAR}")

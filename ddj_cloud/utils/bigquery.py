@@ -8,7 +8,17 @@ from google.cloud.bigquery.job.query import QueryJobConfig
 from google.oauth2 import service_account
 
 
-def make_client(service_account_info: dict) -> bigquery.Client:
+def make_client(service_account_info: dict, **kwargs) -> bigquery.Client:
+    """
+    Make a BigQuery client from a parsed service account JSON file, provided as a dict.
+
+    Args:
+        service_account_info (dict): The parsed service account JSON file
+        **kwargs: Additional keyword arguments to pass to the bigquery.Client constructor
+
+    Returns:
+        bigquery.Client: A BigQuery client
+    """
     credentials = service_account.Credentials.from_service_account_info(
         service_account_info,
         scopes=[
@@ -19,6 +29,7 @@ def make_client(service_account_info: dict) -> bigquery.Client:
     return bigquery.Client(
         credentials=credentials,
         project=credentials.project_id,
+        **kwargs,
     )
 
 

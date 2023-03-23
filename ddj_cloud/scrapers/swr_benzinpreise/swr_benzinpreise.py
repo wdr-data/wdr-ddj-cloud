@@ -12,13 +12,13 @@ from ddj_cloud.utils.date_and_time import local_today
 from ddj_cloud.utils.storage import upload_dataframe
 
 PROJECT = "swr-data-1"
-DATASET = bigquery.DatasetReference(PROJECT, "123Tanken")
-TABLE_TAGESWERTE = "tageswerte"
-TABLE_AUFLOESUNG = "aufloesung"
+DATASET = bigquery.DatasetReference(PROJECT, "Bundeskartellamt")
+TABLE_TAGESWERTE = "markttransparenzstelle_tageswerte"
+TABLE_AUFLOESUNG = "markttransparenzstelle_aufloesung"
 
 
 def load_tageswerte(client: bigquery.Client):
-    query = "SELECT * FROM `@table_name` WHERE ags = @ags ORDER BY day DESC, type ASC"
+    query = "SELECT * FROM `@table_name` WHERE ags = @ags ORDER BY meldedatum DESC, type ASC"
     query = bigquery_utils.insert_table_name(query, TABLE_TAGESWERTE, "@table_name")
 
     job_config = bigquery.QueryJobConfig(
@@ -47,8 +47,12 @@ def load_tageswerte(client: bigquery.Client):
             inplace=True,
         )
         df["type"] = df["type"].map({1: "octane95", 2: "e10", 3: "diesel"})
-        df.drop_duplicates(subset=["type", "day"], inplace=True, ignore_index=True)
+        df.drop_duplicates(subset=["type", "meldedatum"], inplace=True, ignore_index=True)
         df.reset_index(drop=True)
+
+        # Backwards compatibility
+        df.rename(columns={"meldedatum": "day"}, inplace=True)
+
         return df.replace({np.nan: None})
 
     yield from bigquery_utils.iter_results(
@@ -82,7 +86,7 @@ def run():
 
     if SERVICE_ACCOUNT_ENV_VAR in os.environ:
         service_account_info = json.loads(os.environ[SERVICE_ACCOUNT_ENV_VAR])
-        bigquery_client = bigquery_utils.make_client(service_account_info)
+        bigquery_client = bigquery_utils.make_client(service_account_info, location="EU")
     else:
         print("Service account not found in environment, BigQuery client could not be created")
         print(f"Please set the environment variable {SERVICE_ACCOUNT_ENV_VAR}")

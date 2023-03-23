@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/wdr-data/wdr-ddj-cloud#readme",
   "dependencies": {
-    "serverless": "^3.21.0",
-    "serverless-python-requirements": "^5.4.0"
+    "serverless": "^3.26.0",
+    "serverless-python-requirements": "^6.0.0"
   }
 }

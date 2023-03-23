@@ -37,7 +37,7 @@ else:
         print("Warning: CloudFront client not created")
 
 
-def describe_events(*, clear: bool = False) -> list[str]:
+def describe_events(*, clear: bool = True) -> list[str]:
     """Describe the events that have been recorded by the storage module.
 
     Args:

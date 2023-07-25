@@ -9,7 +9,9 @@ custom:
   stage: '${env:STAGE}'
   bucketName: '${self:service}-${env:STAGE}'
   pythonRequirements:
-    usePipenv: true
+    # We render requirements.txt manually due to weirdness
+    usePipenv: false
+
     # We're very short on space, so we remove as much from the requirements as possible
     slim: true
     slimPatternsAppendDefaults: false

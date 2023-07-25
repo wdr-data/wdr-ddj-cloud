@@ -25,5 +25,7 @@ __pycache__
 serverless.yml
 local_storage/
 
+requirements.txt
+
 node_modules
 .env

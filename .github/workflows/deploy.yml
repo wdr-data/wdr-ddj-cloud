@@ -65,6 +65,9 @@ jobs:
       - name: Generate serverless.yml
         run: pipenv run manage generate
 
+      - name: Check pipenv version
+        run: pipenv --version
+
       - name: Deploy with serverless
         run: pipenv run npx serverless deploy
         env:

@@ -132,7 +132,6 @@ def cli():
     help="Do a dry-run of the questionnaire but don't write any files.",
 )
 def new_scraper(pretend: bool):
-
     # Set up copier worker
     worker = Worker(
         src_path=str(TEMPLATE_DIR),

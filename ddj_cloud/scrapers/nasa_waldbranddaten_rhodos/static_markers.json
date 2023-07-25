@@ -1,0 +1,808 @@
+[
+    {
+        "title": "Rhodos",
+        "id": "m44",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -10,
+        "offsetX": 35,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            28.2320119,
+            36.4450032
+        ],
+        "orgLatLng": [
+            28.2320119,
+            36.4450032
+        ]
+    },
+    {
+        "title": "Pefki",
+        "id": "m43",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -10,
+        "offsetX": 35,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            28.0577565,
+            36.0654128
+        ],
+        "orgLatLng": [
+            28.0577565,
+            36.0654128
+        ]
+    },
+    {
+        "title": "Pefkoi",
+        "id": "m42",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -10,
+        "offsetX": 35,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": false,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            28.21562642269953,
+            36.42933444051904
+        ]
+    },
+    {
+        "title": "Kolympia",
+        "id": "m41",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -12,
+        "offsetX": 46,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            "28.161216790466984",
+            "36.25137803630081"
+        ]
+    },
+    {
+        "title": "Faliraki",
+        "id": "m40",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -13,
+        "offsetX": 38,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            "28.20067954888402",
+            "36.33901846921913"
+        ]
+    },
+    {
+        "title": "Charaki",
+        "id": "m39",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -13,
+        "offsetX": 41,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            28.09932393443546,
+            36.167086692856785
+        ]
+    },
+    {
+        "title": "Lindos",
+        "id": "m38",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -13,
+        "offsetX": 36,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            "28.086363385205587",
+            "36.09133845994586"
+        ]
+    },
+    {
+        "title": "Kiotari",
+        "id": "m37",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -1,
+        "offsetX": 27,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            27.95888627210843,
+            36.04870519657338
+        ]
+    },
+    {
+        "title": "Gennadi",
+        "id": "m36",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -3,
+        "offsetX": -32,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            27.924043299886534,
+            36.02341770877483
+        ]
+    },
+    {
+        "title": "Asklipio",
+        "id": "m35",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -14,
+        "offsetX": -39,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            27.9368364677008,
+            36.07261373523964
+        ]
+    },
+    {
+        "title": "Laerma",
+        "id": "m34",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle-sm",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 0.42,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -13,
+        "offsetX": -35,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            27.943464278494957,
+            36.15438304751936
+        ]
+    },
+    {
+        "title": "Rhodos",
+        "id": "m33",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "none",
+            "path": "M0,0",
+            "horiz-adv-x": 1000,
+            "scale": 1,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#333333",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "middle-center",
+        "offsetY": 0,
+        "offsetX": 0,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": true,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 20,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            27.948992941819142,
+            36.31414231391449
+        ]
+    },
+    {
+        "title": "Hafen Rhodos",
+        "id": "m32",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "ship",
+            "path": "M1011-18q10 11 25 11t25-11l71-71-50-50-46 46-47-46q-10-11-25-11t-25 11l-46 46-46-46q-11-11-26-11t-25 11l-46 46-46-46q-11-11-25-11t-25 11l-47 46-46-46q-11-11-25-11t-25 11l-47 46-46-46q-11-11-25-11t-25 11l-47 46-46-46q-10-11-25-11t-25 11l-46 46-47-46q-10-11-25-11t-25 11l-71 71 50 50 46-46 47 46q10 11 25 11t25-11l46-46 46 46q11 11 25 11t26-11l46-46 46 46q11 11 25 11t25-11l47-46 46 46q11 11 25 11t25-11l47-46 46 46q11 11 25 11t25-11l46-46 47 46q10 11 25 11t25-11l46-46z m-879 22q-10-11-25-11t-25 11l-71 71 50 50 46-46 47 46q10 11 25 11t25-11l46-46 36 36v164l-117 175q-10 14-4 31t22 23l99 32v167h71v72h143v71h143v-71h143v-72h71v-167l99-32q17-6 22-23t-4-31l-117-175v-164l11 10q10 11 25 11t25-11l46-46 47 46q10 11 25 11t25-11l71-71-50-50-46 46-47-46q-10-11-25-11t-25 11l-46 46-46-46q-11-11-26-11t-25 11l-46 46-46-46q-11-11-25-11t-25 11l-47 46-46-46q-11-11-25-11t-25 11l-47 46-46-46q-11-11-25-11t-25 11l-47 46-46-46q-10-11-25-11t-25 11l-46 46z m225 632v-72l214 72 215-72v72h-72v71h-285v-71h-72z",
+            "horiz-adv-x": 1142.9,
+            "scale": 1,
+            "height": 700,
+            "width": 1143
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#114f8c",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "top-center",
+        "offsetY": 22,
+        "offsetX": -63,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 11,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            28.240829910976572,
+            36.46018387753003
+        ]
+    },
+    {
+        "title": "Flughafen Rhodos",
+        "id": "m29",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "airport-3",
+            "path": "M268-120l124 400-180 0-112-100-100 0 80 170-80 170 100 0 112-100 180 0-124 400 100 0 224-400 274 0t36-4 46-11 36-21 16-34q0-32-38-49t-74-19l-38-2-258 0-224-400-100 0z",
+            "horiz-adv-x": 1000,
+            "scale": 1,
+            "height": 700,
+            "width": 1006.6666666666665
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#114f8c",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": -21,
+        "offsetX": -73,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 11,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            28.088004807477205,
+            36.40567130992579
+        ]
+    }
+]

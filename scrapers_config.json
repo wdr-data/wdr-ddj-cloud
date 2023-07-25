@@ -42,5 +42,30 @@
         "extra_env": [
             "SWR_BENZINPREISE_SERVICE_ACCOUNT"
         ]
+    },
+    {
+        "display_name": "NASA Waldbranddaten Rhodos",
+        "module_name": "nasa_waldbranddaten_rhodos",
+        "description": "Lade Daten zu Waldbränden von einer NASA API um eine Datawrapper Karte zu füttern ",
+        "contact_name": "Jannes Höke",
+        "contact_email": "mail@jhoeke.de",
+        "memory_size": "512",
+        "ephemeral_storage": "512",
+        "preset": "pandas",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "hourly",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": [
+            "NASA_WALDBRANDDATEN_RHODOS_MAP_KEY",
+            "NASA_WALDBRANDDATEN_RHODOS_CHART_ID",
+            "NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN"
+        ]
     }
 ]

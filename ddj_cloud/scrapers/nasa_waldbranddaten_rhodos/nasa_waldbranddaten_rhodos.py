@@ -6,7 +6,7 @@ import json
 import pandas as pd
 
 from ddj_cloud.utils.storage import upload_dataframe
-from ...utils.datawrapper import Datawrapper
+from ddj_cloud.utils.datawrapper_patched import Datawrapper
 
 MAP_KEY = os.environ.get("NASA_WALDBRANDDATEN_RHODOS_MAP_KEY")
 DATAWRAPPER_TOKEN = os.environ.get("NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN")

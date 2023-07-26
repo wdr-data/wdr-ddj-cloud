@@ -23,13 +23,13 @@ jobs:
         if: endsWith(github.ref, '/main')
         run: |
           echo "STAGE=staging" >> $GITHUB_ENV
-          echo "NASA_WALDBRANDDATEN_RHODOS_CHART_ID=SzTxK" >> $GITHUB_ENV
+          echo "NASA_WALDBRANDDATEN_RHODOS_CHART_ID=2zgmZ" >> $GITHUB_ENV
 
       - name: Set environment variables for production
         if: endsWith(github.ref, '/production')
         run: |
           echo "STAGE=prod" >> $GITHUB_ENV
-          echo "NASA_WALDBRANDDATEN_RHODOS_CHART_ID=SzTxK" >> $GITHUB_ENV
+          echo "NASA_WALDBRANDDATEN_RHODOS_CHART_ID=nru3h" >> $GITHUB_ENV
 
       # Set up Python and install dependencies
       - name: Set up Python ${{ matrix.python-version }}

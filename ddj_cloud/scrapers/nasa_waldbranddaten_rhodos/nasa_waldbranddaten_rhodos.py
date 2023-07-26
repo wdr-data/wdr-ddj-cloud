@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 import datetime as dt
 import json
+from typing import Union
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
@@ -13,32 +15,43 @@ DATAWRAPPER_TOKEN = os.environ.get("NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN
 CHART_ID = os.environ.get("NASA_WALDBRANDDATEN_RHODOS_CHART_ID")
 
 CURRENT_DIR = Path(__file__).parent
+NASA_API_BASE_URL = "https://firms.modaps.eosdis.nasa.gov/api"
+INSTRUMENT = "VIIRS_SNPP_NRT"
+
+MAP_EXTENT_NW = [36.488223, 27.486474]
+MAP_EXTENT_SE = [35.851543, 28.307467]
+
+MAP_EXTENT = [
+    MAP_EXTENT_NW[1],
+    MAP_EXTENT_SE[1],
+    MAP_EXTENT_SE[0],
+    MAP_EXTENT_NW[0],
+]  # West, South, East, North
 
 
-def make_nasa_url(date: dt.date):
-    location_str = "27.648249,35.843826,28.337617,36.494931"
-    url = f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{MAP_KEY}/VIIRS_SNPP_NRT/{location_str}/1/{date.isoformat()}"
+def make_nasa_data_url(date: Union[dt.date, str]):
+    if isinstance(date, str):
+        date = dt.date.fromisoformat(date)
+
+    map_extent = ",".join(map(str, MAP_EXTENT))
+
+    url = f"{NASA_API_BASE_URL}/area/csv/{MAP_KEY}/{INSTRUMENT}/{map_extent}/1/{date.isoformat()}"
     return url
 
 
 def run():
-    # Get today's date
-    day = dt.date.today()
-    df = None
+    # Check data availability
+    url = f"{NASA_API_BASE_URL}/data_availability/csv/{MAP_KEY}/{INSTRUMENT}"
+    df_avail = pd.read_csv(url, sep=",", decimal=".", low_memory=False)
+    print(df_avail)
+    latest_data_day: str = df_avail.loc[df_avail["data_id"] == INSTRUMENT, "max_date"].values[0]
+    print("Latest data day:", latest_data_day)
 
-    for _ in range(2):
-        print(f"Trying to get data for {day.isoformat()}...")
+    # Get the data for the latest day
+    url = make_nasa_data_url(latest_data_day)
+    df = pd.read_csv(url, sep=",", decimal=".", low_memory=False)
 
-        # Get the url for the current date
-        url = make_nasa_url(day)
-        df = pd.read_csv(url, sep=",", decimal=".", low_memory=False)
-
-        if len(df) == 0:
-            day = day - dt.timedelta(days=1)
-            continue
-
-        print(f"Got data for {day.isoformat()}!")
-        break
+    print(f"Got data for {latest_data_day}!")
 
     if df is None:
         raise Exception("Borked.")
@@ -51,7 +64,7 @@ def run():
 
     dw = Datawrapper(access_token=DATAWRAPPER_TOKEN)
 
-    print(dw.account_info())
+    print("Datawrapper account info:", dw.account_info())
 
     props = dw.chart_properties(CHART_ID)
     # print(json.dumps(props))
@@ -69,6 +82,16 @@ def run():
             "markerColor": "#be0000",
             "scale": 0.3,
             "icon": {"path": "M0 1000h1000v-1000h-1000z", "height": 1000, "width": 1000},
+            "anchor": "bottom-right",
+            "offsetY": 0,
+            "offsetX": 0,
+            "visible": True,
+            "visibility": {"mobile": True, "desktop": True},
+            "tooltip": {
+                "enabled": False,
+                "text": "",
+            },
+            "text": {},
         }
         markers.append(marker)
 
@@ -76,6 +99,17 @@ def run():
         static_markers = json.load(fp)
 
     resp = dw.add_data_json(CHART_ID, {"markers": [*static_markers, *markers]})
+    resp.raise_for_status()
 
-    print(resp.status_code)
-    print(resp.text)
+    print("Updated markers.")
+
+    # Update notes
+    day_formatted = dt.date.fromisoformat(latest_data_day).strftime("%d.%m.%Y")
+    now_berlin = dt.datetime.now(tz=ZoneInfo("Europe/Berlin")).strftime("%H:%M, %d.%m.%Y")
+    notes = f"Basierend auf NASA-Daten vom {day_formatted}, zuletzt aktualisiert um {now_berlin}."
+    dw.update_metadata(CHART_ID, {"annotate": {"notes": notes}})
+    print("Updated notes.")
+
+    # Publish the chart
+    dw.publish_chart(CHART_ID, display=False)
+    print("Published chart.")

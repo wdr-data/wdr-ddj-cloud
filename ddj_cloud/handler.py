@@ -46,7 +46,7 @@ def scrape(event, context):
             sentry_sdk.capture_exception(e)
 
         print("The scraper performed the following storage operations:")
-        for storage_event_description in storage.describe_events():
+        for storage_event_description in storage.describe_events(clear=False):
             print("-", storage_event_description)
 
     body = {

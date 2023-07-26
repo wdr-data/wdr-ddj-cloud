@@ -8,7 +8,7 @@ It provides tools to quickly and easily create new scrapers, deploy them to AWS 
 
 ## Prerequisites
 
-An installation of Python 3.9 is required, even if you already have working Python installation with a different version. You can install it via the Windows Store [here](https://www.microsoft.com/store/productId/9P7QFQMJRFP7).
+An installation of Python 10 is required, even if you already have working Python installation with a different version. You can install it via the Windows Store [here](https://www.microsoft.com/store/productId/9PJPW5LDXLZ5).
 
 You also need [Git](https://git-scm.com/downloads) and [Visual Studio Code](https://code.visualstudio.com/Download) or another editor of your choice to contribute a scraper to this project. It is recommended to install the [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Pylance extension](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) for Visual Studio Code.
 
@@ -92,13 +92,13 @@ Basic steps are as follows.
 
 To commit your changes, select the "Source Control" tab in Visual Studio Code and enter a commit message. Then click the checkmark icon to commit your changes.
 
-![Committing](docs/images/vscode_commit.png?raw=true 'Committing')
+![Committing](docs/images/vscode_commit.png?raw=true "Committing")
 
 When asked if you want to stage all changes, select "Yes".
 
 To push your changes, select the 🔄 icon in the menu bar at the bottom left of Visual Studio Code.
 
-![Synchronizing changes](docs/images/vscode_sync.png?raw=true 'Synchronizing changes')
+![Synchronizing changes](docs/images/vscode_sync.png?raw=true "Synchronizing changes")
 
 Refer to [this guide](https://code.visualstudio.com/docs/sourcecontrol/overview) for more information on how to work with Git in Visual Studio Code.
 

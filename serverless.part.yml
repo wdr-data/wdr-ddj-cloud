@@ -9,7 +9,9 @@ custom:
   stage: '${env:STAGE}'
   bucketName: '${self:service}-${env:STAGE}'
   pythonRequirements:
-    usePipenv: true
+    # We render requirements.txt manually due to weirdness
+    usePipenv: false
+
     # We're very short on space, so we remove as much from the requirements as possible
     slim: true
     slimPatternsAppendDefaults: false
@@ -206,7 +208,7 @@ resources:
 provider:
   name: aws
   region: eu-central-1
-  runtime: python3.9
+  runtime: python3.10
   stage: ${self:custom.stage}
   tags:
     PRODUCT: ${self:service}

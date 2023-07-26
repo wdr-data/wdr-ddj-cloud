@@ -80,7 +80,7 @@ def run():
     dt_latest = df["acq_datetime"].max()
 
     for _, row in df.iterrows():
-        marker_age = (row["acq_datetime"] - dt_earliest) / (dt_latest - dt_earliest)
+        # marker_age = (row["acq_datetime"] - dt_earliest) / (dt_latest - dt_earliest)
         marker_dt = row["acq_datetime"].astimezone(TZ_BERLIN)
 
         marker = {
@@ -89,7 +89,7 @@ def run():
             "title": "",
             "coordinates": [row["longitude"], row["latitude"]],
             "markerColor": "#be0000",
-            "scale": 0.3 - (0.1 * (1 - marker_age)),
+            "scale": 0.25,
             "icon": {"path": "M0 1000h1000v-1000h-1000z", "height": 1000, "width": 1000},
             "anchor": "bottom-right",
             "offsetY": 0,
@@ -98,7 +98,7 @@ def run():
             "visibility": {"mobile": True, "desktop": True},
             "tooltip": {
                 "enabled": True,
-                "text": f"{marker_dt.strftime('%d.%m.%Y, %H:%M')} Uhr",
+                "text": f"Dieses Feuer wurde von der NASA am {marker_dt.strftime('%d.%m.%Y um %H:%M Uhr')} registriert.",
             },
             "text": {},
         }

@@ -122,6 +122,8 @@ def run():
         dt_earliest_str = dt_earliest.astimezone(TZ_BERLIN).strftime("%d.%m.%Y um %H:%M")
         dt_latest_str = dt_latest.astimezone(TZ_BERLIN).strftime("%d.%m.%Y um %H:%M")
         dt_range_str = f"vom {dt_earliest_str} bis zum {dt_latest_str}"
+    elif dt_latest == dt_earliest:
+        dt_range_str = f"am {dt_earliest.astimezone(TZ_BERLIN).strftime('%d.%m.%Y um %H:%M')}"
     else:
         dt_earliest_str = dt_earliest.astimezone(TZ_BERLIN).strftime("%d.%m.%Y zwischen %H:%M")
         dt_latest_str = dt_latest.astimezone(TZ_BERLIN).strftime("%H:%M")

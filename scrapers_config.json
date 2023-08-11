@@ -67,5 +67,26 @@
             "NASA_WALDBRANDDATEN_RHODOS_CHART_ID",
             "NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN"
         ]
+    },
+    {
+        "display_name": "NASA Waldbranddaten Maui",
+        "module_name": "nasa_waldbranddaten_maui",
+        "description": "Lade Daten zu Waldbränden von einer NASA API um eine Datawrapper Karte zu füttern",
+        "contact_name": "Jannes Höke",
+        "contact_email": "mail@jhoeke.de",
+        "memory_size": "512",
+        "ephemeral_storage": "512",
+        "preset": "minimal",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "hourly",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": []
     }
 ]

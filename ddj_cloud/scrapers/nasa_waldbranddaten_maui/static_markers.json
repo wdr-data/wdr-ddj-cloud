@@ -1,0 +1,418 @@
+[
+    {
+        "title": "Hāna Airport",
+        "id": "m6",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "airport-3",
+            "path": "M268-120l124 400-180 0-112-100-100 0 80 170-80 170 100 0 112-100 180 0-124 400 100 0 224-400 274 0t36-4 46-11 36-21 16-34q0-32-38-49t-74-19l-38-2-258 0-224-400-100 0z",
+            "horiz-adv-x": 1000,
+            "height": 700,
+            "width": 1006.6666666666665
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#333333",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "top-right",
+        "offsetY": 9,
+        "offsetX": -14,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -156.01637422585733,
+            20.81011247466027
+        ],
+        "orgLatLng": [
+            -156.01637422585733,
+            20.81011247466027
+        ]
+    },
+    {
+        "title": "Flughafen Kahului",
+        "id": "m5",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "airport-3",
+            "path": "M268-120l124 400-180 0-112-100-100 0 80 170-80 170 100 0 112-100 180 0-124 400 100 0 224-400 274 0t36-4 46-11 36-21 16-34q0-32-38-49t-74-19l-38-2-258 0-224-400-100 0z",
+            "horiz-adv-x": 1000,
+            "height": 700,
+            "width": 1006.6666666666665
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#333333",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "top-right",
+        "offsetY": 9,
+        "offsetX": -14,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -156.43020861639533,
+            20.910409550282402
+        ],
+        "orgLatLng": [
+            -156.43020861639533,
+            20.910409550282402
+        ]
+    },
+    {
+        "title": "Kapalua Airport\n",
+        "id": "m4",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "airport-3",
+            "path": "M268-120l124 400-180 0-112-100-100 0 80 170-80 170 100 0 112-100 180 0-124 400 100 0 224-400 274 0t36-4 46-11 36-21 16-34q0-32-38-49t-74-19l-38-2-258 0-224-400-100 0z",
+            "horiz-adv-x": 1000,
+            "height": 700,
+            "width": 1006.6666666666665
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#333333",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "top-right",
+        "offsetY": 10,
+        "offsetX": -8,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -156.67766935479725,
+            20.983958966603545
+        ],
+        "orgLatLng": [
+            -156.67766935479725,
+            20.983958966603545
+        ]
+    },
+    {
+        "title": "Maui",
+        "id": "m3",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "none",
+            "path": "M0,0"
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#333333",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "middle-center",
+        "offsetY": 0,
+        "offsetX": 0,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": true,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 19,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -156.251725495296,
+            20.826353423753602
+        ]
+    },
+    {
+        "title": "Wailuku",
+        "id": "m2",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 1,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 0.7,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "middle-left",
+        "offsetY": 0,
+        "offsetX": 0,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#000000",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -156.50472,
+            20.89111
+        ],
+        "orgLatLng": [
+            -156.50472,
+            20.89111
+        ]
+    },
+    {
+        "title": "Kīhei",
+        "id": "m1",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 1,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 0.7,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-left",
+        "offsetY": 0,
+        "offsetX": 0,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#000000",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -156.45446,
+            20.75548
+        ],
+        "orgLatLng": [
+            -156.45446,
+            20.75548
+        ]
+    },
+    {
+        "title": "Hāna",
+        "id": "m0",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 1,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 0.7,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "middle-right",
+        "offsetY": 0,
+        "offsetX": 0,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#000000",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -155.99028,
+            20.75806
+        ],
+        "orgLatLng": [
+            -155.99028,
+            20.75806
+        ]
+    }
+]

@@ -24,12 +24,14 @@ jobs:
         run: |
           echo "STAGE=staging" >> $GITHUB_ENV
           echo "NASA_WALDBRANDDATEN_RHODOS_CHART_ID=2zgmZ" >> $GITHUB_ENV
+          echo "NASA_WALDBRANDDATEN_MAUI_CHART_ID=XNvar" >> $GITHUB_ENV
 
       - name: Set environment variables for production
         if: endsWith(github.ref, '/production')
         run: |
           echo "STAGE=prod" >> $GITHUB_ENV
           echo "NASA_WALDBRANDDATEN_RHODOS_CHART_ID=nru3h" >> $GITHUB_ENV
+          echo "NASA_WALDBRANDDATEN_MAUI_CHART_ID=folgL" >> $GITHUB_ENV
 
       # Set up Python and install dependencies
       - name: Set up Python ${{ matrix.python-version }}
@@ -76,6 +78,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SWR_BENZINPREISE_SERVICE_ACCOUNT: ${{ secrets.SWR_BENZINPREISE_SERVICE_ACCOUNT }}
+          # Map key and datawrapper token are shared between staging and production and different scrapers
           NASA_WALDBRANDDATEN_RHODOS_MAP_KEY: ${{ secrets.NASA_WALDBRANDDATEN_RHODOS_MAP_KEY }}
           NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN: ${{ secrets.NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN }}
           NASA_WALDBRANDDATEN_RHODOS_CHART_ID: ${{ env.NASA_WALDBRANDDATEN_RHODOS_CHART_ID }}
+          NASA_WALDBRANDDATEN_MAUI_CHART_ID: ${{ env.NASA_WALDBRANDDATEN_MAUI_CHART_ID }}

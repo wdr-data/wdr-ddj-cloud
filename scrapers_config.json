@@ -87,6 +87,10 @@
                 }
             }
         ],
-        "extra_env": []
+        "extra_env": [
+            "NASA_WALDBRANDDATEN_MAUI_CHART_ID",
+            "NASA_WALDBRANDDATEN_RHODOS_MAP_KEY",
+            "NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN"
+        ]
     }
 ]

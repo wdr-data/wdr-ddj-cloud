@@ -1,4 +1,66 @@
 [
+
+    {
+        "title": "Lahaina",
+        "id": "m7",
+        "wikidata": null,
+        "type": "point",
+        "icon": {
+            "id": "circle",
+            "path": "M1000 350a500 500 0 0 0-500-500 500 500 0 0 0-500 500 500 500 0 0 0 500 500 500 500 0 0 0 500-500z",
+            "horiz-adv-x": 1000,
+            "scale": 1,
+            "height": 700,
+            "width": 1000
+        },
+        "scale": 0.7,
+        "textPosition": null,
+        "markerColor": "#1d6360",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "middle-left",
+        "offsetY": 0,
+        "offsetX": 0,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#000000",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -156.682205,
+            20.883892
+        ],
+        "orgLatLng": [
+            -156.682205,
+            20.883892
+        ]
+    },
     {
         "title": "Hāna Airport",
         "id": "m6",

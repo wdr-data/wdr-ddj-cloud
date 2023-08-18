@@ -92,5 +92,30 @@
             "NASA_WALDBRANDDATEN_RHODOS_MAP_KEY",
             "NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN"
         ]
+    },
+    {
+        "display_name": "NASA Waldbranddaten Teneriffa",
+        "module_name": "nasa_waldbranddaten_teneriffa",
+        "description": null,
+        "contact_name": "Jannes Höke",
+        "contact_email": "mail@jhoeke.de",
+        "memory_size": "512",
+        "ephemeral_storage": "512",
+        "preset": "minimal",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "hourly",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": [
+            "NASA_WALDBRANDDATEN_TENERIFFA_CHART_ID",
+            "NASA_WALDBRANDDATEN_RHODOS_MAP_KEY",
+            "NASA_WALDBRANDDATEN_TENERIFFA_DATAWRAPPER_TOKEN"
+        ]
     }
 ]

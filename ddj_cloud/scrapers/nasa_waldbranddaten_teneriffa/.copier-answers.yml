@@ -1,0 +1,13 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: X:\work\ddj\wdr-ddj-cloud\scraper_template
+contact_email: mail@jhoeke.de
+contact_name: Jannes Höke
+description: null
+display_name: NASA Waldbranddaten Teneriffa
+ephemeral_storage: '512'
+interval: hourly
+interval_custom: null
+memory_size: '512'
+module_name: nasa_waldbranddaten_teneriffa
+preset: minimal
+

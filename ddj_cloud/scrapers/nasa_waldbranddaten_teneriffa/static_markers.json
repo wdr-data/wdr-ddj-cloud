@@ -1,5 +1,125 @@
 [
     {
+        "title": "Flughafen Teneriffa Süd",
+        "id": "mNaN",
+        "wikidata": "Q821984",
+        "type": "point",
+        "icon": {
+            "id": "airport-3",
+            "path": "M268-120l124 400-180 0-112-100-100 0 80 170-80 170 100 0 112-100 180 0-124 400 100 0 224-400 274 0t36-4 46-11 36-21 16-34q0-32-38-49t-74-19l-38-2-258 0-224-400-100 0z",
+            "horiz-adv-x": 1000,
+            "height": 700,
+            "width": 1006.6666666666665
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#333333",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "bottom-center",
+        "offsetY": 0,
+        "offsetX": 0,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -16.5720056,
+            28.046141
+        ],
+        "orgLatLng": [
+            -16.5720056,
+            28.046141
+        ]
+    },
+    {
+        "title": "Flughafen Teneriffa Nord",
+        "id": "mNaN",
+        "wikidata": "Q932514",
+        "type": "point",
+        "icon": {
+            "id": "airport-3",
+            "path": "M268-120l124 400-180 0-112-100-100 0 80 170-80 170 100 0 112-100 180 0-124 400 100 0 224-400 274 0t36-4 46-11 36-21 16-34q0-32-38-49t-74-19l-38-2-258 0-224-400-100 0z",
+            "horiz-adv-x": 1000,
+            "height": 700,
+            "width": 1006.6666666666665
+        },
+        "scale": 1,
+        "textPosition": null,
+        "markerColor": "#333333",
+        "markerSymbol": "",
+        "markerTextColor": "#333333",
+        "anchor": "top-left",
+        "offsetY": 7,
+        "offsetX": 4,
+        "labelStyle": "plain",
+        "text": {
+            "bold": false,
+            "italic": false,
+            "uppercase": false,
+            "space": false,
+            "color": "#333333",
+            "fontSize": 14,
+            "halo": "#f2f3f0"
+        },
+        "class": "",
+        "rotate": 0,
+        "visible": true,
+        "locked": false,
+        "preset": "-",
+        "visibility": {
+            "mobile": true,
+            "desktop": true
+        },
+        "tooltip": {
+            "enabled": false,
+            "text": ""
+        },
+        "connectorLine": {
+            "enabled": false,
+            "arrowHead": "lines",
+            "type": "curveRight",
+            "targetPadding": 3,
+            "stroke": 1,
+            "lineLength": 0
+        },
+        "coordinates": [
+            -16.3412247,
+            28.4827575
+        ],
+        "orgLatLng": [
+            -16.3412247,
+            28.4827575
+        ]
+    },
+    {
         "title": "El Rosario",
         "id": "m4",
         "wikidata": "Q176624",
@@ -12,14 +132,14 @@
             "height": 700,
             "width": 1000
         },
-        "scale": 1,
+        "scale": 0.7,
         "textPosition": null,
-        "markerColor": "#333333",
+        "markerColor": "#1d6360",
         "markerSymbol": "",
         "markerTextColor": "#333333",
-        "anchor": "bottom-center",
-        "offsetY": -1,
-        "offsetX": 28,
+        "anchor": "bottom-right",
+        "offsetY": -3,
+        "offsetX": -5,
         "labelStyle": "plain",
         "text": {
             "bold": false,
@@ -61,7 +181,7 @@
         ]
     },
     {
-        "title": "Santa Cruz de Tenerife",
+        "title": "Santa Cruz<br>de Tenerife",
         "id": "m3",
         "wikidata": "Q14328",
         "type": "point",
@@ -73,14 +193,14 @@
             "height": 700,
             "width": 1000
         },
-        "scale": 1,
+        "scale": 0.7,
         "textPosition": null,
-        "markerColor": "#333333",
+        "markerColor": "#1d6360",
         "markerSymbol": "",
         "markerTextColor": "#333333",
-        "anchor": "bottom-center",
-        "offsetY": -41,
-        "offsetX": -54,
+        "anchor": "top-right",
+        "offsetY": 0,
+        "offsetX": 0,
         "labelStyle": "plain",
         "text": {
             "bold": false,

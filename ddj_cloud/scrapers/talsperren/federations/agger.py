@@ -1,5 +1,4 @@
 import datetime as dt
-from zoneinfo import ZoneInfo
 
 import requests
 

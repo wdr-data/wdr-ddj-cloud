@@ -1,5 +1,4 @@
-from typing import Generator, Iterable, Optional
-import datetime as dt
+from typing import Generator
 import re
 
 import bs4
@@ -7,7 +6,7 @@ import dateparser
 import requests
 import sentry_sdk
 
-from ..common import ReservoirRecord, Federation, TZ_BERLIN, skip_errors_and_none
+from ..common import ReservoirRecord, Federation, TZ_BERLIN
 
 
 class GelsenwasserFederation(Federation):

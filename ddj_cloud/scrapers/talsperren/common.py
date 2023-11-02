@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import datetime as dt
-from typing import Any, Callable, Generator, Iterable, Optional, TypeVar
+from typing import Callable, Generator, Iterable, Optional, TypeVar
 from typing_extensions import Protocol
 from zoneinfo import ZoneInfo
 

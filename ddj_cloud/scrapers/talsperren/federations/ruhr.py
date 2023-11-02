@@ -1,4 +1,4 @@
-from typing import Iterable, Optional
+from typing import Iterable
 import bs4
 import datetime as dt
 import requests

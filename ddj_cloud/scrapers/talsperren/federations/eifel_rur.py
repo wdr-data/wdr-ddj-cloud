@@ -87,6 +87,7 @@ class EifelRurFederation(Federation):
                 float(row["value"]),
             )
             for row in rows[1:]
+            if float(row["value"]) >= 0  # Negative values seem to be errors
         ]
 
     def get_data(

@@ -43,6 +43,7 @@ class AggerFederation(Federation):
                 row[value_idx],
             )
             for row in data[0]["data"]
+            if row[value_idx] >= 0  # Negative values seem to be errors
         ]
 
     def get_data(self, **kwargs) -> list[ReservoirRecord]:

@@ -1,8 +1,9 @@
 import datetime as dt
+from typing import Iterable
 
 import requests
 
-from ..common import TZ_UTC, ReservoirRecord, Federation
+from ..common import TZ_UTC, ReservoirRecord, Federation, apply_guarded
 
 
 class WupperFederation(Federation):
@@ -113,9 +114,6 @@ class WupperFederation(Federation):
             if row[value_idx] is not None
         ]
 
-    def get_data(self, **kwargs) -> list[ReservoirRecord]:
-        return [
-            record
-            for name in self.reservoirs.keys()
-            for record in self._get_reservoir_records(name)
-        ]
+    def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:
+        for records in apply_guarded(self._get_reservoir_records, self.reservoirs.keys()):
+            yield from records

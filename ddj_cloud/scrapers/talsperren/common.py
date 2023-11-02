@@ -39,7 +39,7 @@ T1 = TypeVar("T1")
 T2 = TypeVar("T2")
 
 
-def skip_errors_and_none(
+def apply_guarded(
     func: Callable[[T2], Optional[T1]],
     data: Iterable[T2],
 ) -> Generator[T1, None, None]:
@@ -49,6 +49,6 @@ def skip_errors_and_none(
             if result is not None:
                 yield result
         except Exception as e:
-            print("Skipping reservoir due to error:")
+            print("Skipping due to error:")
             print(e)
             sentry_sdk.capture_exception(e)

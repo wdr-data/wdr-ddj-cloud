@@ -2,6 +2,7 @@ from io import BytesIO
 
 import pandas as pd
 import datetime as dt
+import sentry_sdk
 
 from ddj_cloud.utils.storage import (
     DownloadFailedException,
@@ -37,7 +38,12 @@ def run():
     # Get data from all federations
     data = []
     for federation in federations:
-        data.extend(federation.get_data(start=start))
+        try:
+            data.extend(federation.get_data(start=start))
+        except Exception as e:
+            print("Skipping federation due to error:")
+            print(e)
+            sentry_sdk.capture_exception(e)
 
     # Parse into data frame
     df_new = pd.DataFrame(data)

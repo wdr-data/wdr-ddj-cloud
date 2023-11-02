@@ -1,8 +1,9 @@
 import datetime as dt
+from typing import Generator, Iterable
 
 import requests
 
-from ..common import ReservoirRecord, Federation, TZ_UTC
+from ..common import ReservoirRecord, Federation, TZ_UTC, apply_guarded
 
 
 class AggerFederation(Federation):
@@ -46,9 +47,6 @@ class AggerFederation(Federation):
             if row[value_idx] >= 0  # Negative values seem to be errors
         ]
 
-    def get_data(self, **kwargs) -> list[ReservoirRecord]:
-        return [
-            record
-            for name in self.reservoirs.keys()
-            for record in self._get_reservoir_records(name)
-        ]
+    def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:
+        for records in apply_guarded(self._get_reservoir_records, self.reservoirs.keys()):
+            yield from records

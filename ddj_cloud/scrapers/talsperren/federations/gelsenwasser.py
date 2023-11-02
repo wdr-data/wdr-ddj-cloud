@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Generator, Iterable
 import re
 
 import bs4
@@ -6,7 +6,7 @@ import dateparser
 import requests
 import sentry_sdk
 
-from ..common import ReservoirRecord, Federation, TZ_BERLIN
+from ..common import ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
 
 
 class GelsenwasserFederation(Federation):
@@ -76,9 +76,6 @@ class GelsenwasserFederation(Federation):
             content_mio_m3,
         )
 
-    def get_data(self, **kwargs) -> list[ReservoirRecord]:
-        return [
-            record
-            for name in self.reservoirs.keys()
-            for record in self._get_reservoir_records(name)
-        ]
+    def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:
+        for records in apply_guarded(self._get_reservoir_records, self.reservoirs.keys()):
+            yield from records

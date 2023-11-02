@@ -1,10 +1,10 @@
 import datetime as dt
-from typing import Optional
+from typing import Iterable, Optional
 
 import bs4
 import requests
 
-from ..common import ReservoirRecord, Federation, TZ_BERLIN
+from ..common import ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
 
 
 class EifelRurFederation(Federation):
@@ -95,9 +95,9 @@ class EifelRurFederation(Federation):
         *,
         start: Optional[dt.datetime] = None,
         end: Optional[dt.datetime] = None,
-    ) -> list[ReservoirRecord]:
-        return [
-            record
-            for name in self.reservoirs.keys()
-            for record in self._get_reservoir_records(name, start, end)
-        ]
+    ) -> Iterable[ReservoirRecord]:
+        for records in apply_guarded(
+            lambda name: self._get_reservoir_records(name, start=start, end=end),
+            self.reservoirs.keys(),
+        ):
+            yield from records

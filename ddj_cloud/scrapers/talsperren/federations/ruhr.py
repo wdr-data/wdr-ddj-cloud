@@ -4,7 +4,7 @@ import datetime as dt
 import requests
 import re
 
-from ..common import ReservoirRecord, Federation, TZ_BERLIN, skip_errors_and_none
+from ..common import ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
 
 
 class RuhrFederation(Federation):
@@ -78,4 +78,4 @@ class RuhrFederation(Federation):
 
         coord_divs: bs4.ResultSet[bs4.Tag] = coords_div.find_all("div", recursive=False)  # type: ignore
 
-        return skip_errors_and_none(self._parse_coord_div, coord_divs)
+        return apply_guarded(self._parse_coord_div, coord_divs)

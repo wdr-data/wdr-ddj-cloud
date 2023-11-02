@@ -1,0 +1,54 @@
+from dataclasses import dataclass
+import datetime as dt
+from typing import Any, Callable, Generator, Iterable, Optional, TypeVar
+from typing_extensions import Protocol
+from zoneinfo import ZoneInfo
+
+import sentry_sdk
+
+TZ_UTC = ZoneInfo("UTC")
+TZ_BERLIN = ZoneInfo("Europe/Berlin")
+
+
+@dataclass
+class ReservoirRecord:
+    federation_name: str
+    name: str
+    ts_measured: dt.datetime
+    capacity_mio_m3: float
+    content_mio_m3: float
+    fill_ratio: Optional[float] = None
+
+
+class Federation(Protocol):
+    name: str
+
+    def __init__(self) -> None:
+        ...
+
+    def get_data(
+        self,
+        *,
+        start: Optional[dt.datetime] = None,
+        end: Optional[dt.datetime] = None,
+    ) -> Iterable[ReservoirRecord]:
+        ...
+
+
+T1 = TypeVar("T1")
+T2 = TypeVar("T2")
+
+
+def skip_errors_and_none(
+    func: Callable[[T2], Optional[T1]],
+    data: Iterable[T2],
+) -> Generator[T1, None, None]:
+    for item in data:
+        try:
+            result = func(item)
+            if result is not None:
+                yield result
+        except Exception as e:
+            print("Skipping reservoir due to error:")
+            print(e)
+            sentry_sdk.capture_exception(e)

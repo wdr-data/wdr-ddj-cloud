@@ -1,0 +1,13 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: X:\work\ddj\wdr-ddj-cloud\scraper_template
+contact_email: mail@jhoeke.de
+contact_name: Jannes Höke
+description: Sammelt die Füllstände verschiedener Talsperren in NRW.
+display_name: Talsperren
+ephemeral_storage: '512'
+interval: custom
+interval_custom: rate(3 hours)
+memory_size: '512'
+module_name: talsperren
+preset: pandas
+

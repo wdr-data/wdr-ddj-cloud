@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 import datetime as dt
-from typing import Callable, Generator, Iterable, Optional, TypeVar
-from typing_extensions import Protocol
+from typing import Callable, Generator, Iterable, Optional, TypeVar, Protocol
 from zoneinfo import ZoneInfo
 
 import sentry_sdk

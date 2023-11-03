@@ -118,7 +118,9 @@ def run():
         languages=["en"],
     ).strftime("%d.%m.%Y um %H:%M")
 
-    if dt_latest.date() != dt_earliest.date():
+    if len(df) == 0:
+        dt_range_str = "in den letzten 24-48 Stunden"
+    elif dt_latest.date() != dt_earliest.date():
         dt_earliest_str = dt_earliest.astimezone(TZ_BERLIN).strftime("%d.%m.%Y um %H:%M")
         dt_latest_str = dt_latest.astimezone(TZ_BERLIN).strftime("%d.%m.%Y um %H:%M")
         dt_range_str = f"vom {dt_earliest_str} bis zum {dt_latest_str}"

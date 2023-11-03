@@ -15,6 +15,7 @@ _exclude:
 display_name:
   type: str
   help: "The human-readable display name of your new scraper"
+  validator: "{% if display_name.strip() == '' %}Can not be empty{% endif %}"
 
 module_name:
   type: str
@@ -28,14 +29,17 @@ description:
   type: str
   help: Enter a description for your scraper
   multiline: True
+  validator: "{% if description.strip() == '' %}Can not be empty{% endif %}"
 
 contact_name:
   type: str
   help: Please enter your name
+  validator: "{% if contact_name.strip() == '' %}Can not be empty{% endif %}"
 
 contact_email:
   type: str
   help: Please enter an email address (or equivalent) that can be used to contact you
+  validator: "{% if contact_email.strip() == '' %}Can not be empty{% endif %}"
 
 interval:
   type: str

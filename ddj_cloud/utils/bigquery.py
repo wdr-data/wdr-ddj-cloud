@@ -79,7 +79,14 @@ def iter_results(
 
     rows = client.list_rows(destination, page_size=10000)
 
+    # HACK: To avoid having to ship `pyarrow` (too big for Lambda), disable the
+    # import check in google-cloud-bigquery
+    from google.cloud.bigquery import _pandas_helpers
+
+    imports_verifier_orig = _pandas_helpers.verify_pandas_imports
+    _pandas_helpers.verify_pandas_imports = lambda: None
     dfs = rows.to_dataframe_iterable()
+    _pandas_helpers.verify_pandas_imports = imports_verifier_orig
 
     for df in dfs:
         if df_cleaner is not None:

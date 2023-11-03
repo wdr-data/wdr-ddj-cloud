@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 import datetime as dt
+from io import BytesIO
 from typing import Callable, Generator, Iterable, Optional, TypeVar, Protocol
 from zoneinfo import ZoneInfo
+import pandas as pd
 
 import sentry_sdk
 
@@ -51,3 +53,16 @@ def apply_guarded(
             print("Skipping due to error:")
             print(e)
             sentry_sdk.capture_exception(e)
+
+
+def to_parquet_bio(df: pd.DataFrame, **kwargs) -> BytesIO:
+    data: BytesIO = BytesIO()
+
+    orig_close = data.close
+    data.close = lambda: None
+    try:
+        df.to_parquet(data, engine="fastparquet", **kwargs)
+    finally:
+        data.close = orig_close
+
+    return data

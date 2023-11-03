@@ -10,7 +10,7 @@ from ddj_cloud.utils.storage import (
     upload_file,
     download_file,
 )
-from .common import ReservoirRecord, Federation
+from .common import Federation, to_parquet_bio
 
 
 IGNORE_LIST = [
@@ -23,7 +23,8 @@ def run():
     df_db = None
     try:
         bio = download_file("talsperren/data.parquet.gzip")
-        df_db = pd.read_parquet(bio)
+        df_db = pd.read_parquet(bio, engine="fastparquet")
+
     except DownloadFailedException:
         pass
 
@@ -48,6 +49,9 @@ def run():
     # Parse into data frame
     df_new = pd.DataFrame(data)
 
+    # Cast ts_measured to datetime
+    df_new["ts_measured"] = pd.to_datetime(df_new["ts_measured"], utc=True)
+
     # Calculate fill ratio
     df_new["fill_ratio"] = df_new["content_mio_m3"] / df_new["capacity_mio_m3"]
 
@@ -69,8 +73,7 @@ def run():
     # Uploads
 
     # Parquet
-    bio = BytesIO()
-    df.to_parquet(bio, compression="gzip")
+    bio = to_parquet_bio(df, compression="gzip")
     bio.seek(0)
     upload_file(bio.read(), "talsperren/data.parquet.gzip")
 

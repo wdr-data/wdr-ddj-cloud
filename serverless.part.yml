@@ -208,7 +208,7 @@ resources:
 provider:
   name: aws
   region: eu-central-1
-  runtime: python3.11
+  runtime: python3.10
   stage: ${self:custom.stage}
   tags:
     PRODUCT: ${self:service}

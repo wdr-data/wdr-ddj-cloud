@@ -55,7 +55,7 @@
         "events": [
             {
                 "type": "schedule",
-                "enabled": true,
+                "enabled": false,
                 "data": {
                     "interval": "hourly",
                     "interval_custom": null
@@ -80,7 +80,7 @@
         "events": [
             {
                 "type": "schedule",
-                "enabled": true,
+                "enabled": false,
                 "data": {
                     "interval": "hourly",
                     "interval_custom": null
@@ -105,7 +105,7 @@
         "events": [
             {
                 "type": "schedule",
-                "enabled": true,
+                "enabled": false,
                 "data": {
                     "interval": "hourly",
                     "interval_custom": null

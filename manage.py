@@ -7,7 +7,7 @@ from typing import Optional, Tuple
 import shutil
 
 import click
-from copier import Worker
+from copier import Worker, DEFAULT_DATA
 import yaml
 
 
@@ -133,36 +133,35 @@ def cli():
 )
 def new_scraper(pretend: bool):
     # Set up copier worker
-    worker = Worker(
+    with Worker(
         src_path=str(TEMPLATE_DIR),
         dst_path=SCRAPERS_DIR,
         pretend=pretend,
-    )
+        skip_answered=True,
+        unsafe=True,  # Required by `jinja_extensions`
+    ) as worker:
+        # Run prompts
+        worker._ask()
+        answers = worker.answers
 
-    # Run prompts
-    answers = worker.answers
+        # Check if scraper exists already
+        scrapers_config = _load_scrapers_config()
+        if existing_scraper := (
+            _find_scraper_by_name(answers.combined["display_name"], scrapers_config)
+            or _find_scraper_by_name(answers.combined["module_name"], scrapers_config)
+        ):
+            _info(
+                "A scraper with this name already exists. Do you want to delete the existing scraper and continue?"
+            )
+            deleted_existing, scrapers_config = _delete_scraper(existing_scraper, scrapers_config)
+            if not deleted_existing:
+                sys.exit(0)
 
-    # Check if scraper exists already
-    scrapers_config = _load_scrapers_config()
-    if existing_scraper := (
-        _find_scraper_by_name(answers.combined["display_name"], scrapers_config)
-        or _find_scraper_by_name(answers.combined["module_name"], scrapers_config)
-    ):
-        _info(
-            "A scraper with this name already exists. Do you want to delete the existing scraper and continue?"
-        )
-        deleted_existing, scrapers_config = _delete_scraper(existing_scraper, scrapers_config)
-        if not deleted_existing:
-            sys.exit(0)
+        # HACK: Prevent reprompt
+        worker._ask = lambda: None
 
-    # Run templating and file copy
-    worker.run_copy()
-
-    context = {
-        **worker.answers.default,
-        **worker.answers.user,
-        **worker.answers.init,
-    }
+        # Run templating and file copy
+        worker.run_copy()
 
     if pretend:
         _warn("This was a pretend-run, no files have been created")
@@ -172,7 +171,11 @@ def new_scraper(pretend: bool):
 
     _info(f'Updating "{SCRAPERS_CONFIG_NAME}"... ')
 
-    new_entry = {**context}
+    new_entry = {**answers.combined}
+
+    # Clean up answers
+    for key in ["_src_path", *DEFAULT_DATA.keys()]:
+        del new_entry[key]
 
     # Convert user-provided interval to a more generalized format for future proofing
     event = {
@@ -180,7 +183,7 @@ def new_scraper(pretend: bool):
         "enabled": True,
         "data": {
             "interval": new_entry.pop("interval"),
-            "interval_custom": new_entry.pop("interval_custom"),
+            "interval_custom": new_entry.pop("interval_custom", None),  # Optional
         },
     }
 

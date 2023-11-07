@@ -1,26 +1,30 @@
 import datetime as dt
-from typing import Generator, Iterable
+from typing import Iterable
 
 import requests
 
-from ..common import ReservoirRecord, Federation, TZ_UTC, apply_guarded
+from ..common import ReservoirRecord, Federation, ReservoirMeta, TZ_UTC, apply_guarded
+
+
+class AggerReservoirMeta(ReservoirMeta):
+    url: str
 
 
 class AggerFederation(Federation):
     name = "Aggerverband"
 
-    reservoirs = {
+    reservoirs: dict[str, AggerReservoirMeta] = {
         "Aggertalsperre": {
             "url": "https://gis.aggerverband.de/public/pegel/aggertalsperre_cm.json",
-            "capacity": 17.06,
+            "capacity_mio_m3": 17.06,
         },
         "Genkeltalsperre": {
             "url": "https://gis.aggerverband.de/public/pegel/genkeltalsperre_cm.json",
-            "capacity": 8.20,
+            "capacity_mio_m3": 8.20,
         },
         "Wiehltalsperre": {
             "url": "https://gis.aggerverband.de/public/pegel/wiehltalsperre_cm.json",
-            "capacity": 31.85,
+            "capacity_mio_m3": 31.85,
         },
     }
 
@@ -37,11 +41,11 @@ class AggerFederation(Federation):
 
         return [
             ReservoirRecord(
-                self.name,
-                name,
-                dt.datetime.fromtimestamp(row[timestamp_idx] / 1000, TZ_UTC),
-                self.reservoirs[name]["capacity"],
-                row[value_idx],
+                federation_name=self.name,
+                name=name,
+                ts_measured=dt.datetime.fromtimestamp(row[timestamp_idx] / 1000, TZ_UTC),
+                capacity_mio_m3=self.reservoirs[name]["capacity_mio_m3"],
+                content_mio_m3=row[value_idx],
             )
             for row in data[0]["data"]
             if row[value_idx] >= 0  # Negative values seem to be errors

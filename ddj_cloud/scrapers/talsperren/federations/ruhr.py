@@ -14,31 +14,31 @@ class RuhrFederation(Federation):
 
     reservoirs = {
         "Biggetalsperre": {
-            "capacity": 171.70,
+            "capacity_mio_m3": 171.70,
         },
         "Ennepetalsperre": {
-            "capacity": 12.60,
+            "capacity_mio_m3": 12.60,
         },
         "Fürwiggetalsperre": {
-            "capacity": 1.67,
+            "capacity_mio_m3": 1.67,
         },
         "Hennetalsperre": {
-            "capacity": 38.40,
+            "capacity_mio_m3": 38.40,
         },
         "Listertalsperre": {
-            "capacity": 21.60,
+            "capacity_mio_m3": 21.60,
         },
         "Möhnetalsperre": {
-            "capacity": 134.50,
+            "capacity_mio_m3": 134.50,
         },
         "Sorpetalsperre": {
-            "capacity": 70.37,
+            "capacity_mio_m3": 70.37,
         },
         "Stausee Ahausen": {
-            "capacity": 0.84,
+            "capacity_mio_m3": 0.84,
         },
         "Versetalsperre": {
-            "capacity": 32.80,
+            "capacity_mio_m3": 32.80,
         },
     }
 
@@ -62,11 +62,11 @@ class RuhrFederation(Federation):
         ts = dt.datetime.strptime(match_ts[1], "%d.%m.%Y um %H:%M Uhr").replace(tzinfo=TZ_BERLIN)
 
         return ReservoirRecord(
-            self.name,
-            name,
-            ts,
-            self.reservoirs[name]["capacity"],
-            content_mio_m3,
+            federation_name=self.name,
+            name=name,
+            ts_measured=ts,
+            capacity_mio_m3=self.reservoirs[name]["capacity_mio_m3"],
+            content_mio_m3=content_mio_m3,
         )
 
     def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:

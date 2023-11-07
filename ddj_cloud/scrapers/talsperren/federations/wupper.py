@@ -3,68 +3,72 @@ from typing import Iterable
 
 import requests
 
-from ..common import TZ_UTC, ReservoirRecord, Federation, apply_guarded
+from ..common import TZ_UTC, ReservoirMeta, ReservoirRecord, Federation, apply_guarded
+
+
+class WupperReservoirMeta(ReservoirMeta):
+    ajax_id: str
 
 
 class WupperFederation(Federation):
     name = "Wupperverband"
 
-    reservoirs = {
+    reservoirs: dict[str, WupperReservoirMeta] = {
         "Bever-Talsperre": {
             "ajax_id": "SBE$-T",
-            "capacity": 23.75,
+            "capacity_mio_m3": 23.75,
         },
         "Brucher-Talsperre": {
             "ajax_id": "SBR$-T",
-            "capacity": 3.37,
+            "capacity_mio_m3": 3.37,
         },
         "Eschbachtalsperre": {
             "ajax_id": "SET$-T",
-            "capacity": 1.05,
+            "capacity_mio_m3": 1.05,
         },
         "Große Dhünn-Talsperre": {
             "ajax_id": "SHA$-T",
-            "capacity": 81.00,
+            "capacity_mio_m3": 81.00,
         },
         "Vorsperre Große Dhünn": {
             "ajax_id": "SVO$-T",
-            "capacity": 7.37,
+            "capacity_mio_m3": 7.37,
         },
         "Herbringhauser Talsperre": {
             "ajax_id": "SHT$-T",
-            "capacity": 2.90,
+            "capacity_mio_m3": 2.90,
         },
         "Kerspe-Talsperre": {
             "ajax_id": "SKT$-T",
-            "capacity": 14.90,
+            "capacity_mio_m3": 14.90,
         },
         "Lingese-Talsperre": {
             "ajax_id": "SLI$-T",
-            "capacity": 2.60,
+            "capacity_mio_m3": 2.60,
         },
         "Neyetalsperre": {
             "ajax_id": "SNE$-T",
-            "capacity": 5.98,
+            "capacity_mio_m3": 5.98,
         },
         "Panzer-Talsperre": {
             "ajax_id": "SPAZ-T",
-            "capacity": 0.19,
+            "capacity_mio_m3": 0.19,
         },
         "Ronsdorfer Talsperre": {
             "ajax_id": "SRO$-T",
-            "capacity": 0.12,
+            "capacity_mio_m3": 0.12,
         },
         "Schevelinger-Talsperre": {
             "ajax_id": "SSE$-T",
-            "capacity": 0.31,
+            "capacity_mio_m3": 0.31,
         },
         "Wupper-Talsperre": {
             "ajax_id": "SWU$-T",
-            "capacity": 25.60,
+            "capacity_mio_m3": 25.60,
         },
         "Stausee Beyenburg": {
             "ajax_id": "SBY$-T",
-            "capacity": 0.47,
+            "capacity_mio_m3": 0.47,
         },
     }
 
@@ -104,11 +108,11 @@ class WupperFederation(Federation):
 
         return [
             ReservoirRecord(
-                self.name,
-                self.renames.get(name, name),
-                dt.datetime.fromtimestamp(row[timestamp_idx], TZ_UTC),
-                self.reservoirs[name]["capacity"],
-                row[value_idx],
+                federation_name=self.name,
+                name=self.renames.get(name, name),
+                ts_measured=dt.datetime.fromtimestamp(row[timestamp_idx], TZ_UTC),
+                capacity_mio_m3=self.reservoirs[name]["capacity_mio_m3"],
+                content_mio_m3=row[value_idx],
             )
             for row in content_data["data"]
             if row[value_idx] is not None

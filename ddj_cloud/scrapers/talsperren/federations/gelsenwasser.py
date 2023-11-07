@@ -6,16 +6,20 @@ import dateparser
 import requests
 import sentry_sdk
 
-from ..common import ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+from ..common import ReservoirMeta, ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+
+
+class GelsenwasserReservoirMeta(ReservoirMeta):
+    url: str
 
 
 class GelsenwasserFederation(Federation):
     name = "Gelsenwasser"
 
-    reservoirs = {
+    reservoirs: dict[str, GelsenwasserReservoirMeta] = {
         "Talsperren Haltern und Hullern": {
             "url": "https://www.gelsenwasser.de/themen/unsere-talsperren",
-            "capacity": 31.50,
+            "capacity_mio_m3": 31.50,
         },
     }
 
@@ -52,7 +56,7 @@ class GelsenwasserFederation(Federation):
         # This one is under construction, so try to get the current capacity from the text
         # Example (in heading): Spei­cher­volumen von 31,5 Mio. Ku­bik­metern
         # May contain &shy;
-        capacity = self.reservoirs[name]["capacity"]
+        capacity = self.reservoirs[name]["capacity_mio_m3"]
         capacity_match = re.search(r"Speichervolumen von ([\d,]+) Mio. Kubikmetern", body_text)
         if capacity_match:
             capacity = float(capacity_match.group(1).replace(",", "."))
@@ -69,11 +73,11 @@ class GelsenwasserFederation(Federation):
         content_mio_m3 = float(content_match.group(1).replace(",", "."))
 
         yield ReservoirRecord(
-            self.name,
-            name,
-            ts,
-            capacity,
-            content_mio_m3,
+            federation_name=self.name,
+            name=name,
+            ts_measured=ts,
+            capacity_mio_m3=capacity,
+            content_mio_m3=content_mio_m3,
         )
 
     def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:

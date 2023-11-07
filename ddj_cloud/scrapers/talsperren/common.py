@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import datetime as dt
 from io import BytesIO
-from typing import Callable, Generator, Iterable, Optional, TypeVar, Protocol
+from typing import Callable, Generator, Iterable, Optional, TypeVar, Protocol, TypedDict
 from zoneinfo import ZoneInfo
 import pandas as pd
 
@@ -18,11 +18,16 @@ class ReservoirRecord:
     ts_measured: dt.datetime
     capacity_mio_m3: float
     content_mio_m3: float
-    fill_ratio: Optional[float] = None
+
+
+class ReservoirMeta(TypedDict):
+    capacity_mio_m3: float
 
 
 class Federation(Protocol):
     name: str
+
+    reservoirs: dict[str, ReservoirMeta]
 
     def __init__(self) -> None:
         ...

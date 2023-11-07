@@ -4,44 +4,48 @@ from typing import Iterable, Optional
 import bs4
 import requests
 
-from ..common import ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+from ..common import ReservoirMeta, ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+
+
+class EifelRurReservoirMeta(ReservoirMeta):
+    id: int
 
 
 class EifelRurFederation(Federation):
     name = "Wasserverband Eifel-Rur"
 
-    reservoirs = {
+    reservoirs: dict[str, EifelRurReservoirMeta] = {
         "Oleftalsperre": {
             "id": 261,
-            "capacity": 19.30,
+            "capacity_mio_m3": 19.30,
         },
         "Rurtalsperre Gesamt": {
             "id": 291,
-            "capacity": 203.20,
+            "capacity_mio_m3": 203.20,
         },
         "Rurtalsperre Obersee": {
             "id": 265,
-            "capacity": 17.91,
+            "capacity_mio_m3": 17.91,
         },
         "Rurtalsperre Hauptsee": {
             "id": 271,
-            "capacity": 185.30,
+            "capacity_mio_m3": 185.30,
         },
         "Urfttalsperre": {
             "id": 280,
-            "capacity": 45.51,
+            "capacity_mio_m3": 45.51,
         },
         "Wehebachtalsperre": {
             "id": 286,
-            "capacity": 25.10,
+            "capacity_mio_m3": 25.10,
         },
         "Stauanlage Heimbach": {
             "id": 354,
-            "capacity": 1.21,
+            "capacity_mio_m3": 1.21,
         },
         # "Stauanlage Obermaubach": {
         #     "id": ,
-        #     "capacity": 1.65,
+        #     "capacity_mio_m3": 1.65,
         # },
     }
 
@@ -80,11 +84,11 @@ class EifelRurFederation(Federation):
 
         return [
             ReservoirRecord(
-                self.name,
-                name,
-                dt.datetime.fromisoformat(row["timestamp"]).replace(tzinfo=TZ_BERLIN),
-                self.reservoirs[name]["capacity"],
-                float(row["value"]),
+                federation_name=self.name,
+                name=name,
+                ts_measured=dt.datetime.fromisoformat(row["timestamp"]).replace(tzinfo=TZ_BERLIN),
+                capacity_mio_m3=self.reservoirs[name]["capacity_mio_m3"],
+                content_mio_m3=float(row["value"]),
             )
             for row in rows[1:]
             if float(row["value"]) >= 0  # Negative values seem to be errors

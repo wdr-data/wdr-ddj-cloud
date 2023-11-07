@@ -5,16 +5,20 @@ import bs4
 import dateparser
 import requests
 
-from ..common import ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+from ..common import ReservoirMeta, ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+
+
+class WahnbachReservoirMeta(ReservoirMeta):
+    url: str
 
 
 class WahnbachReservoirFederation(Federation):
     name = "Wahnbachtalsperrenverband"
 
-    reservoirs = {
+    reservoirs: dict[str, WahnbachReservoirMeta] = {
         "Wahnbachtalsperre": {
             "url": "https://www.wahnbach.de/die-wahnbachtalsperre/zahlen-und-fakten/pegelstand-stausee.html",
-            "capacity": 40.92,
+            "capacity_mio_m3": 40.92,
         },
     }
 
@@ -74,12 +78,11 @@ class WahnbachReservoirFederation(Federation):
             # percentage = float(percentage_match.group(1).replace(",", "."))
 
             yield ReservoirRecord(
-                self.name,
-                name,
-                ts,
-                self.reservoirs[name]["capacity"],
-                content_mio_m3,
-                # fill_ratio=percentage / 100.0,
+                federation_name=self.name,
+                name=name,
+                ts_measured=ts,
+                capacity_mio_m3=self.reservoirs[name]["capacity_mio_m3"],
+                content_mio_m3=content_mio_m3,
             )
 
     def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:

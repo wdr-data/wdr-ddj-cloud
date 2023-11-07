@@ -15,30 +15,48 @@ class RuhrFederation(Federation):
     reservoirs = {
         "Biggetalsperre": {
             "capacity_mio_m3": 171.70,
+            "lon": 7.887853,
+            "lat": 51.111176,
         },
         "Ennepetalsperre": {
             "capacity_mio_m3": 12.60,
+            "lon": 7.409321,
+            "lat": 51.241241,
         },
         "Fürwiggetalsperre": {
             "capacity_mio_m3": 1.67,
+            "lon": 7.687793,
+            "lat": 51.149712,
         },
         "Hennetalsperre": {
             "capacity_mio_m3": 38.40,
+            "lon": 8.273851,
+            "lat": 51.335423,
         },
         "Listertalsperre": {
             "capacity_mio_m3": 21.60,
+            "lon": 7.837567,
+            "lat": 51.094307,
         },
         "Möhnetalsperre": {
             "capacity_mio_m3": 134.50,
+            "lon": 8.059335,
+            "lat": 51.489704,
         },
         "Sorpetalsperre": {
             "capacity_mio_m3": 70.37,
+            "lon": 7.968285,
+            "lat": 51.350979,
         },
         "Stausee Ahausen": {
             "capacity_mio_m3": 0.84,
+            "lon": 7.954430,
+            "lat": 51.138287,
         },
         "Versetalsperre": {
             "capacity_mio_m3": 32.80,
+            "lon": 7.685332,
+            "lat": 51.193043,
         },
     }
 

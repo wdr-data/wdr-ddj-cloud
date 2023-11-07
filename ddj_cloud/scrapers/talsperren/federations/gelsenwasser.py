@@ -20,6 +20,9 @@ class GelsenwasserFederation(Federation):
         "Talsperren Haltern und Hullern": {
             "url": "https://www.gelsenwasser.de/themen/unsere-talsperren",
             "capacity_mio_m3": 31.50,
+            # Hullern
+            "lat": 51.7463,
+            "lon": 7.2631,
         },
     }
 

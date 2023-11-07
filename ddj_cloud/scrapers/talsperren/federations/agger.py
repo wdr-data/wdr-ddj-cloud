@@ -17,14 +17,20 @@ class AggerFederation(Federation):
         "Aggertalsperre": {
             "url": "https://gis.aggerverband.de/public/pegel/aggertalsperre_cm.json",
             "capacity_mio_m3": 17.06,
+            "lat": 51.0359,
+            "lon": 7.6330,
         },
         "Genkeltalsperre": {
             "url": "https://gis.aggerverband.de/public/pegel/genkeltalsperre_cm.json",
             "capacity_mio_m3": 8.20,
+            "lat": 51.0618,
+            "lon": 7.6262,
         },
         "Wiehltalsperre": {
             "url": "https://gis.aggerverband.de/public/pegel/wiehltalsperre_cm.json",
             "capacity_mio_m3": 31.85,
+            "lat": 50.9473,
+            "lon": 7.6706,
         },
     }
 

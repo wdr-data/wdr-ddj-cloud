@@ -22,6 +22,8 @@ class ReservoirRecord:
 
 class ReservoirMeta(TypedDict):
     capacity_mio_m3: float
+    lat: float
+    lon: float
 
 
 class Federation(Protocol):

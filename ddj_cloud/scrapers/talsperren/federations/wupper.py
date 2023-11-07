@@ -17,58 +17,86 @@ class WupperFederation(Federation):
         "Bever-Talsperre": {
             "ajax_id": "SBE$-T",
             "capacity_mio_m3": 23.75,
+            "lat": 51.1415,
+            "lon": 7.3704,
         },
         "Brucher-Talsperre": {
             "ajax_id": "SBR$-T",
             "capacity_mio_m3": 3.37,
+            "lat": 51.0814,
+            "lon": 7.5576,
         },
         "Eschbachtalsperre": {
             "ajax_id": "SET$-T",
             "capacity_mio_m3": 1.05,
+            "lat": 51.1585,
+            "lon": 7.2364,
         },
         "Große Dhünn-Talsperre": {
             "ajax_id": "SHA$-T",
             "capacity_mio_m3": 81.00,
+            "lat": 51.0714,
+            "lon": 7.2122,
         },
         "Vorsperre Große Dhünn": {
             "ajax_id": "SVO$-T",
             "capacity_mio_m3": 7.37,
+            "lat": 51.0729,
+            "lon": 7.2394,
         },
         "Herbringhauser Talsperre": {
             "ajax_id": "SHT$-T",
             "capacity_mio_m3": 2.90,
+            "lat": 51.2289,
+            "lon": 7.2742,
         },
         "Kerspe-Talsperre": {
             "ajax_id": "SKT$-T",
             "capacity_mio_m3": 14.90,
+            "lat": 51.1232,
+            "lon": 7.4945,
         },
         "Lingese-Talsperre": {
             "ajax_id": "SLI$-T",
             "capacity_mio_m3": 2.60,
+            "lat": 51.0984,
+            "lon": 7.5316,
         },
         "Neyetalsperre": {
             "ajax_id": "SNE$-T",
             "capacity_mio_m3": 5.98,
+            "lat": 51.1370,
+            "lon": 7.3930,
         },
         "Panzer-Talsperre": {
             "ajax_id": "SPAZ-T",
             "capacity_mio_m3": 0.19,
+            "lat": 51.1804,
+            "lon": 7.2754,
         },
         "Ronsdorfer Talsperre": {
             "ajax_id": "SRO$-T",
             "capacity_mio_m3": 0.12,
+            "lat": 51.2192,
+            "lon": 7.1835,
         },
         "Schevelinger-Talsperre": {
             "ajax_id": "SSE$-T",
             "capacity_mio_m3": 0.31,
+            "lat": 51.1341,
+            "lon": 7.4326,
         },
         "Wupper-Talsperre": {
             "ajax_id": "SWU$-T",
             "capacity_mio_m3": 25.60,
+            "lat": 51.1992,
+            "lon": 7.3032,
         },
         "Stausee Beyenburg": {
             "ajax_id": "SBY$-T",
             "capacity_mio_m3": 0.47,
+            "lat": 51.2483,
+            "lon": 7.2981,
         },
     }
 

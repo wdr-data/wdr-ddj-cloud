@@ -18,34 +18,50 @@ class EifelRurFederation(Federation):
         "Oleftalsperre": {
             "id": 261,
             "capacity_mio_m3": 19.30,
+            "lat": 50.4952,
+            "lon": 6.4216,
         },
         "Rurtalsperre Gesamt": {
             "id": 291,
             "capacity_mio_m3": 203.20,
+            "lat": 50.637222,
+            "lon": 6.441944,
         },
         "Rurtalsperre Obersee": {
             "id": 265,
             "capacity_mio_m3": 17.91,
+            "lat": 50.6056,
+            "lon": 6.3925,
         },
         "Rurtalsperre Hauptsee": {
             "id": 271,
             "capacity_mio_m3": 185.30,
+            "lat": 50.637222,
+            "lon": 6.441944,
         },
         "Urfttalsperre": {
             "id": 280,
             "capacity_mio_m3": 45.51,
+            "lat": 50.6029,
+            "lon": 6.4195,
         },
         "Wehebachtalsperre": {
             "id": 286,
             "capacity_mio_m3": 25.10,
+            "lat": 50.7550,
+            "lon": 6.3401,
         },
         "Stauanlage Heimbach": {
             "id": 354,
             "capacity_mio_m3": 1.21,
+            "lat": 50.6285,
+            "lon": 6.4792,
         },
         # "Stauanlage Obermaubach": {
         #     "id": ,
         #     "capacity_mio_m3": 1.65,
+        #     "lat": 50.7143,
+        #     "lon": 6.4483,
         # },
     }
 

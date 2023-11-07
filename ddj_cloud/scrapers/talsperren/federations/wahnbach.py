@@ -19,6 +19,8 @@ class WahnbachReservoirFederation(Federation):
         "Wahnbachtalsperre": {
             "url": "https://www.wahnbach.de/die-wahnbachtalsperre/zahlen-und-fakten/pegelstand-stausee.html",
             "capacity_mio_m3": 40.92,
+            "lat": 50.8049,
+            "lon": 7.2838,
         },
     }
 

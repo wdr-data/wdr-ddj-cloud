@@ -10,7 +10,7 @@ from ddj_cloud.utils.storage import (
     upload_file,
     download_file,
 )
-from .common import Federation, to_parquet_bio
+from .common import Federation, Exporter, ReservoirMeta, to_parquet_bio
 
 
 IGNORE_LIST = [
@@ -18,12 +18,26 @@ IGNORE_LIST = [
 ]
 
 
-def run():
+def _cleanup_old_data(df: pd.DataFrame) -> pd.DataFrame:
+    ### CLEANUP ###
+    # Remove extra column from past runs
+    df.drop(columns=["fill_ratio"], errors="ignore", inplace=True)
+
+    # Rename reservoirs
+    from .federations.wupper import WupperFederation
+
+    df["name"] = df["name"].replace(WupperFederation.renames)
+
+    return df
+
+
+def _get_base_dataset():
     # Download existing data
     df_db = None
     try:
         bio = download_file("talsperren/data.parquet.gzip")
         df_db = pd.read_parquet(bio, engine="fastparquet")
+        df_db = _cleanup_old_data(df_db)
 
     except DownloadFailedException:
         pass
@@ -52,9 +66,6 @@ def run():
     # Cast ts_measured to datetime
     df_new["ts_measured"] = pd.to_datetime(df_new["ts_measured"], utc=True)
 
-    # Calculate fill ratio
-    df_new["fill_ratio"] = df_new["content_mio_m3"] / df_new["capacity_mio_m3"]
-
     # Add timestamp
     df_new["ts_scraped"] = dt.datetime.now(dt.timezone.utc)
 
@@ -73,9 +84,57 @@ def run():
     # Uploads
 
     # Parquet
-    bio = to_parquet_bio(df, compression="gzip")
+    bio = to_parquet_bio(df, compression="gzip", index=False)
     bio.seek(0)
     upload_file(bio.read(), "talsperren/data.parquet.gzip")
 
     # CSV
     upload_dataframe(df, "talsperren/data.csv")
+
+    # Add additional columns used for exporting
+
+    # Calculate fill ratio
+    df["fill_ratio"] = df["content_mio_m3"] / df["capacity_mio_m3"]
+
+    # Add metadata from federation classes
+    metas = {
+        (federation.name, reservoir_name): meta
+        for federation in federations
+        for reservoir_name, meta in federation.reservoirs.items()
+    }
+
+    for column in ReservoirMeta.__annotations__:
+        if column in df.columns:
+            continue
+
+        df[column] = df.apply(
+            lambda row: metas[(row["federation_name"], row["name"])][column],
+            axis=1,
+        )
+
+    return df
+
+
+def run():
+    df_base = _get_base_dataset()
+
+    ## For testing
+    #
+    # bio = to_parquet_bio(df_base, compression="gzip", index=False)
+    # bio.seek(0)
+    # upload_file(bio.read(), "talsperren/base.parquet.gzip")
+    #
+    # df_base = pd.read_parquet("local_storage/talsperren/base.parquet.gzip", engine="fastparquet")
+
+    # Exporters
+    exporter_classes = Exporter.__subclasses__()
+    exporters = [cls() for cls in exporter_classes]  # type: ignore
+
+    for exporter in exporters:
+        try:
+            df_export = exporter.run(df_base.copy())
+            upload_dataframe(df_export, f"talsperren/{exporter.filename}.csv")
+        except Exception as e:
+            print("Skipping exporter due to error:")
+            print(e)
+            sentry_sdk.capture_exception(e)

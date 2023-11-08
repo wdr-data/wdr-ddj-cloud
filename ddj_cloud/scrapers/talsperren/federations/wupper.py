@@ -14,13 +14,13 @@ class WupperFederation(Federation):
     name = "Wupperverband"
 
     reservoirs: dict[str, WupperReservoirMeta] = {
-        "Bever-Talsperre": {
+        "Bevertalsperre": {
             "ajax_id": "SBE$-T",
             "capacity_mio_m3": 23.75,
             "lat": 51.1415,
             "lon": 7.3704,
         },
-        "Brucher-Talsperre": {
+        "Bruchertalsperre": {
             "ajax_id": "SBR$-T",
             "capacity_mio_m3": 3.37,
             "lat": 51.0814,
@@ -32,7 +32,7 @@ class WupperFederation(Federation):
             "lat": 51.1585,
             "lon": 7.2364,
         },
-        "Große Dhünn-Talsperre": {
+        "Große Dhünntalsperre": {
             "ajax_id": "SHA$-T",
             "capacity_mio_m3": 81.00,
             "lat": 51.0714,
@@ -50,13 +50,13 @@ class WupperFederation(Federation):
             "lat": 51.2289,
             "lon": 7.2742,
         },
-        "Kerspe-Talsperre": {
+        "Kerspetalsperre": {
             "ajax_id": "SKT$-T",
             "capacity_mio_m3": 14.90,
             "lat": 51.1232,
             "lon": 7.4945,
         },
-        "Lingese-Talsperre": {
+        "Lingesetalsperre": {
             "ajax_id": "SLI$-T",
             "capacity_mio_m3": 2.60,
             "lat": 51.0984,
@@ -68,7 +68,7 @@ class WupperFederation(Federation):
             "lat": 51.1370,
             "lon": 7.3930,
         },
-        "Panzer-Talsperre": {
+        "Panzertalsperre": {
             "ajax_id": "SPAZ-T",
             "capacity_mio_m3": 0.19,
             "lat": 51.1804,
@@ -80,13 +80,13 @@ class WupperFederation(Federation):
             "lat": 51.2192,
             "lon": 7.1835,
         },
-        "Schevelinger-Talsperre": {
+        "Schevelinger Talsperre": {
             "ajax_id": "SSE$-T",
             "capacity_mio_m3": 0.31,
             "lat": 51.1341,
             "lon": 7.4326,
         },
-        "Wupper-Talsperre": {
+        "Wuppertalsperre": {
             "ajax_id": "SWU$-T",
             "capacity_mio_m3": 25.60,
             "lat": 51.1992,
@@ -106,8 +106,8 @@ class WupperFederation(Federation):
         "Große Dhünn-Talsperre": "Große Dhünntalsperre",
         "Kerspe-Talsperre": "Kerspetalsperre",
         "Lingese-Talsperre": "Lingesetalsperre",
-        "Neyetalsperre": "Neye-Talsperre",
-        "Panzer-Talsperre": "Panzer-Talsperre",
+        "Neye-Talsperre": "Neyetalsperre",
+        "Panzer-Talsperre": "Panzertalsperre",
         "Schevelinger-Talsperre": "Schevelinger Talsperre",
         "Wupper-Talsperre": "Wuppertalsperre",
     }

@@ -26,6 +26,15 @@ def local_today() -> dt.date:
     return local_now().date()
 
 
+def local_today_midnight() -> dt.datetime:
+    """Generate current date at midnight (Berlin time zone).
+
+    Returns:
+        dt.datetime: Today's date at midnight.
+    """
+    return local_now().replace(hour=0, minute=0, second=0, microsecond=0)
+
+
 def local_yesterday() -> dt.date:
     """Generate yesterday's date (Berlin time zone).
 

@@ -73,3 +73,13 @@ def to_parquet_bio(df: pd.DataFrame, **kwargs) -> BytesIO:
         data.close = orig_close
 
     return data
+
+
+class Exporter(Protocol):
+    filename: str
+
+    def __init__(self) -> None:
+        ...
+
+    def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
+        ...

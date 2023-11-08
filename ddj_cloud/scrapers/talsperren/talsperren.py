@@ -94,7 +94,7 @@ def _get_base_dataset():
     # Add additional columns used for exporting
 
     # Calculate fill ratio
-    df["fill_ratio"] = df["content_mio_m3"] / df["capacity_mio_m3"]
+    df["fill_percent"] = df["content_mio_m3"] / df["capacity_mio_m3"] * 100
 
     # Add metadata from federation classes
     metas = {

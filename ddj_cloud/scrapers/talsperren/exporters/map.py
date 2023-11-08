@@ -10,7 +10,7 @@ from ddj_cloud.utils.date_and_time import local_today_midnight
 class MapExporter(Exporter):
     filename = "map"
 
-    def _add_daily_fill_ratio_to_map(
+    def _add_daily_fill_percent_to_map(
         self, df_base: pd.DataFrame, df_map: pd.DataFrame
     ) -> pd.DataFrame:
         # Resample df to daily
@@ -27,7 +27,7 @@ class MapExporter(Exporter):
             .resample("D")
             .aggregate(  # type: ignore
                 {
-                    "fill_ratio": "median",
+                    "fill_percent": "median",
                 }
             )
         )
@@ -50,12 +50,12 @@ class MapExporter(Exporter):
             ts = today_midnight - dt.timedelta(days=days_offset)
             ts = pd.Timestamp(ts)
             df_day = df_daily.loc[(slice(None), ts), :].reset_index(level=1, drop=True)
-            df_day.rename(columns={"fill_ratio": f"fill_ratio_day_{days_offset}"}, inplace=True)
+            df_day.rename(columns={"fill_percent": f"fill_percent_day_{days_offset}"}, inplace=True)
             df_map = df_map.merge(df_day, how="left", on="id")
 
         return df_map
 
-    def _add_monthly_fill_ratio_to_map(
+    def _add_monthly_fill_percent_to_map(
         self, df_base: pd.DataFrame, df_map: pd.DataFrame
     ) -> pd.DataFrame:
         # Resample df to monthly
@@ -73,7 +73,7 @@ class MapExporter(Exporter):
             .resample("M", closed="right", label="left")
             .aggregate(  # type: ignore
                 {
-                    "fill_ratio": "median",
+                    "fill_percent": "median",
                 }
             )
         )
@@ -97,7 +97,7 @@ class MapExporter(Exporter):
             ts = pd.Timestamp(ts)
             df_month = df_monthly.loc[(slice(None), ts), :].reset_index(level=1, drop=True)
             df_month.rename(
-                columns={"fill_ratio": f"fill_ratio_month_{months_offset}"}, inplace=True
+                columns={"fill_percent": f"fill_percent_month_{months_offset}"}, inplace=True
             )
             df_map = df_map.merge(df_month, how="left", on="id")
 
@@ -114,10 +114,10 @@ class MapExporter(Exporter):
         df_map.reset_index(drop=True, inplace=True)
 
         # Add daily fill ratio
-        df_map = self._add_daily_fill_ratio_to_map(df_base, df_map)
+        df_map = self._add_daily_fill_percent_to_map(df_base, df_map)
 
         # Add monthly fill ratio
-        df_map = self._add_monthly_fill_ratio_to_map(df_base, df_map)
+        df_map = self._add_monthly_fill_percent_to_map(df_base, df_map)
 
         # round all floats to 5 decimals
         df_map = df_map.round(5)

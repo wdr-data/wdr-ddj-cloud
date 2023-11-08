@@ -28,7 +28,7 @@ class WahnbachReservoirFederation(Federation):
         super().__init__()
 
     def _get_html(self, url: str) -> str:
-        return requests.get(url).text
+        return requests.get(url, timeout=10).text
 
     def _get_reservoir_records(
         self,

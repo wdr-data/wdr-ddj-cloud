@@ -17,7 +17,7 @@ class MapExporter(Exporter):
         df_res = df_base.copy()
         # First, set the 'ts_measured' column as the DataFrame index
         df_res.set_index("ts_measured", inplace=True)
-        df_res.index = df_res.index.tz_convert("Europe/Berlin")
+        df_res.index = df_res.index.tz_convert("Europe/Berlin")  # type: ignore
 
         # Group by 'federation_name' and 'name', then resample to daily frequency using median
         df_daily = (
@@ -25,7 +25,7 @@ class MapExporter(Exporter):
                 ["id"],
             )
             .resample("D")
-            .aggregate(
+            .aggregate(  # type: ignore
                 {
                     "fill_ratio": "median",
                 }
@@ -63,7 +63,7 @@ class MapExporter(Exporter):
 
         # First, set the 'ts_measured' column as the DataFrame index
         df_res.set_index("ts_measured", inplace=True)
-        df_res.index = df_res.index.tz_convert("Europe/Berlin")
+        df_res.index = df_res.index.tz_convert("Europe/Berlin")  # type: ignore
 
         # Group by 'id', then resample to monthly frequency using median
         df_monthly: pd.DataFrame = (
@@ -71,7 +71,7 @@ class MapExporter(Exporter):
                 ["id"],
             )
             .resample("M", closed="right", label="left")
-            .aggregate(
+            .aggregate(  # type: ignore
                 {
                     "fill_ratio": "median",
                 }

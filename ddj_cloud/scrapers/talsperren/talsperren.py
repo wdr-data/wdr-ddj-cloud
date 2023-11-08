@@ -126,6 +126,9 @@ def run():
     #
     # df_base = pd.read_parquet("local_storage/talsperren/base.parquet.gzip", engine="fastparquet")
 
+    # Filter out reservoirs in ignore list
+    df_base = df_base[~df_base["name"].isin(IGNORE_LIST)]
+
     # Exporters
     exporter_classes = Exporter.__subclasses__()
     exporters = [cls() for cls in exporter_classes]  # type: ignore

@@ -20,14 +20,7 @@ IGNORE_LIST = [
 
 def _cleanup_old_data(df: pd.DataFrame) -> pd.DataFrame:
     ### CLEANUP ###
-    # Remove extra column from past runs
-    df.drop(columns=["fill_ratio"], errors="ignore", inplace=True)
-
-    # Rename reservoirs
-    from .federations.wupper import WupperFederation
-
-    df["name"] = df["name"].replace(WupperFederation.renames)
-
+    ...
     return df
 
 

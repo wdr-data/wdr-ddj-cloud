@@ -112,11 +112,11 @@ def run():
     df_base = _get_base_dataset()
 
     ## For testing
-    #
-    # bio = to_parquet_bio(df_base, compression="gzip", index=False)
-    # bio.seek(0)
-    # upload_file(bio.read(), "talsperren/base.parquet.gzip")
-    #
+
+    bio = to_parquet_bio(df_base, compression="gzip", index=False)
+    bio.seek(0)
+    upload_file(bio.read(), "talsperren/base.parquet.gzip")
+
     # df_base = pd.read_parquet("local_storage/talsperren/base.parquet.gzip", engine="fastparquet")
 
     # Filter out reservoirs in ignore list
@@ -129,7 +129,11 @@ def run():
     for exporter in exporters:
         try:
             df_export = exporter.run(df_base.copy())
-            upload_dataframe(df_export, f"talsperren/{exporter.filename}.csv")
+            upload_dataframe(
+                df_export,
+                f"talsperren/{exporter.filename}.csv",
+                datawrapper_datetimes=True,
+            )
         except Exception as e:
             print("Skipping exporter due to error:")
             print(e)

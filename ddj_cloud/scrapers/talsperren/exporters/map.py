@@ -45,7 +45,7 @@ class MapExporter(Exporter):
 
         # Add a new column to `df_map` for each of the last 7 days
         today_midnight = local_today_midnight()
-        for days_offset in range(1, 8):
+        for days_offset in range(0, 8):
             # Use Python to calculate the timestamp for correct timezone support, then convert to pandas
             ts = today_midnight - dt.timedelta(days=days_offset)
             ts = pd.Timestamp(ts)
@@ -92,7 +92,7 @@ class MapExporter(Exporter):
         # Add a new column to `df_map` for each of the last 6 months
         today_midnight = local_today_midnight()
         current_month = today_midnight.replace(day=1)
-        for months_offset in range(1, 6):
+        for months_offset in range(0, 13):
             ts = current_month - relativedelta(months=months_offset, days=1)
             ts = pd.Timestamp(ts)
             df_month = df_monthly.loc[(slice(None), ts), :].reset_index(level=1, drop=True)

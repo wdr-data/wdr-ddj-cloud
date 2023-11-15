@@ -20,7 +20,7 @@ class MapExporter(Exporter):
         df_res.index = df_res.index.tz_convert("Europe/Berlin")  # type: ignore
 
         # Group by 'federation_name' and 'name', then resample to daily frequency using median
-        df_daily = (
+        df_daily: pd.DataFrame = (
             df_res.groupby(
                 ["id"],
             )
@@ -49,9 +49,14 @@ class MapExporter(Exporter):
             # Use Python to calculate the timestamp for correct timezone support, then convert to pandas
             ts = today_midnight - dt.timedelta(days=days_offset)
             ts = pd.Timestamp(ts)
-            df_day = df_daily.loc[(slice(None), ts), :].reset_index(level=1, drop=True)
-            df_day.rename(columns={"fill_percent": f"fill_percent_day_{days_offset}"}, inplace=True)
-            df_map = df_map.merge(df_day, how="left", on="id")
+            try:
+                df_day = df_daily.loc[(slice(None), ts), :].reset_index(level=1, drop=True)
+                df_day.rename(
+                    columns={"fill_percent": f"fill_percent_day_{days_offset}"}, inplace=True
+                )
+                df_map = df_map.merge(df_day, how="left", on="id")
+            except KeyError:  # no data for this day
+                df_map[f"fill_percent_day_{days_offset}"] = pd.NA
 
         return df_map
 

@@ -1,4 +1,4 @@
-from io import BytesIO
+from traceback import print_exc
 
 import pandas as pd
 import datetime as dt
@@ -50,7 +50,7 @@ def _get_base_dataset():
             data.extend(federation.get_data(start=start))
         except Exception as e:
             print("Skipping federation due to error:")
-            print(e)
+            print_exc()
             sentry_sdk.capture_exception(e)
 
     # Parse into data frame
@@ -136,5 +136,5 @@ def run():
             )
         except Exception as e:
             print("Skipping exporter due to error:")
-            print(e)
+            print_exc()
             sentry_sdk.capture_exception(e)

@@ -68,8 +68,11 @@ def _get_base_dataset():
     else:
         df = df_new
 
-    # Deduplicate
-    df = df.drop_duplicates(subset=["federation_name", "name", "ts_measured"], keep="first")
+    # Deduplicate, but keep new data if there are duplicates
+    df = df.drop_duplicates(
+        subset=["federation_name", "name", "ts_measured"],
+        keep="last",
+    )
 
     # Sort
     df = df.sort_values(["federation_name", "name", "ts_measured"])

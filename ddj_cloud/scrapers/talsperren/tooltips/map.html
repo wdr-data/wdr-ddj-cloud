@@ -1,0 +1,112 @@
+<big>{{ FORMAT(fill_percent, "0.0%") }}</big> ({{ FORMAT(content_mio_m3, "0.00") }} von {{ FORMAT(capacity_mio_m3, "0.00") }} Mio. m³)
+<hr />
+<table>
+  <tr>
+    <td><b>Verband:</b></td>
+    <td>{{ federation_name }}</td>
+  </tr>
+  <tr>
+    <td><b>Messzeitpunkt:</b></td>
+    <td>{{ FORMAT(ts_measured, "DD.MM.YYYY HH:mm") }}</td>
+  </tr>
+</table>
+
+<big>Letzte 7 Tage</big>
+<div
+  style="
+    position: relative;
+    height: 40px;
+    margin-top: 5px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-evenly;
+  "
+>
+  <div style="position: relative; height: 100%; width: 17px; margin-right: 3px">
+    <div style="position: absolute; font-size: 8px; right: 0; top: calc(0% - 4px)">100%</div>
+    <div style="position: absolute; font-size: 8px; right: 0; top: calc(50% - 4px)">50%</div>
+    <div style="position: absolute; font-size: 8px; right: 0; top: calc(100% - 4px)">0%</div>
+  </div>
+  <div style="position: absolute; z-index: -1; height: 1px; left: 22px; right: 0; background-color: black; top: 0%"></div>
+  <div style="position: absolute; z-index: -1; height: 1px; left: 22px; right: 0; background-color: black; top: 50%"></div>
+  <div style="position: absolute; z-index: -1; height: 2px; left: 22px; right: 0; background-color: black; top: 100%"></div>
+  <div style="height:{{fill_percent_day_7}}%; width:15px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_day_6}}%; width:15px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_day_5}}%; width:15px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_day_4}}%; width:15px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_day_3}}%; width:15px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_day_2}}%; width:15px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_day_1}}%; width:15px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_day_0}}%; width:15px; background-color: #0e518d"></div>
+</div>
+
+<big>Letzte 12 Wochen</big>
+<div
+  style="
+    position: relative;
+    height: 40px;
+    margin-top: 5px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-evenly;
+  "
+>
+  <div style="position: relative; height: 100%; width: 17px; margin-right: 3px">
+    <div style="position: absolute; font-size: 8px; right: 0; top: calc(0% - 4px)">100%</div>
+    <div style="position: absolute; font-size: 8px; right: 0; top: calc(50% - 4px)">50%</div>
+    <div style="position: absolute; font-size: 8px; right: 0; top: calc(100% - 4px)">0%</div>
+  </div>
+  <div style="position: absolute; z-index: -1; height: 1px; left: 22px; right: 0; background-color: black; top: 0%"></div>
+  <div style="position: absolute; z-index: -1; height: 1px; left: 22px; right: 0; background-color: black; top: 50%"></div>
+  <div style="position: absolute; z-index: -1; height: 2px; left: 22px; right: 0; background-color: black; top: 100%"></div>
+  <div style="height:{{fill_percent_week_12}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_11}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_10}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_9}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_8}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_7}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_6}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_5}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_4}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_3}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_2}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_1}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_week_0}}%; width:8px; background-color: #0e518d"></div>
+</div>
+
+<big>Letzte 12 Monate</big>
+<div
+  style="
+    position: relative;
+    height: 40px;
+    margin-top: 5px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-evenly;
+  "
+>
+  <div style="position: relative; height: 100%; width: 17px; margin-right: 3px">
+    <div style="position: absolute; font-size: 8px; right: 0; top: calc(0% - 4px)">100%</div>
+    <div style="position: absolute; font-size: 8px; right: 0; top: calc(50% - 4px)">50%</div>
+    <div style="position: absolute; font-size: 8px; right: 0; top: calc(100% - 4px)">0%</div>
+  </div>
+  <div style="position: absolute; z-index: -1; height: 1px; left: 22px; right: 0; background-color: black; top: 0%"></div>
+  <div style="position: absolute; z-index: -1; height: 1px; left: 22px; right: 0; background-color: black; top: 50%"></div>
+  <div style="position: absolute; z-index: -1; height: 2px; left: 22px; right: 0; background-color: black; top: 100%"></div>
+  <div style="height:{{fill_percent_month_12}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_11}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_10}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_9}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_8}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_7}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_6}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_5}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_4}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_3}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_2}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_1}}%; width:8px; background-color: #0e518d"></div>
+  <div style="height:{{fill_percent_month_0}}%; width:8px; background-color: #0e518d"></div>
+</div>

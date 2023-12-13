@@ -47,16 +47,68 @@ class MapExporter(Exporter):
         today_midnight = local_today_midnight()
         for days_offset in range(0, 8):
             # Use Python to calculate the timestamp for correct timezone support, then convert to pandas
-            ts = today_midnight - dt.timedelta(days=days_offset)
+            ts = today_midnight - relativedelta(days=days_offset)
             ts = pd.Timestamp(ts)
             try:
                 df_day = df_daily.loc[(slice(None), ts), :].reset_index(level=1, drop=True)
                 df_day.rename(
-                    columns={"fill_percent": f"fill_percent_day_{days_offset}"}, inplace=True
+                    columns={"fill_percent": f"fill_percent_day_{days_offset}"},
+                    inplace=True,
                 )
                 df_map = df_map.merge(df_day, how="left", on="id")
             except KeyError:  # no data for this day
                 df_map[f"fill_percent_day_{days_offset}"] = pd.NA
+
+        return df_map
+
+    def _add_weekly_fill_percent_to_map(
+        self, df_base: pd.DataFrame, df_map: pd.DataFrame
+    ) -> pd.DataFrame:
+        # Resample df to weekly
+        df_res = df_base.copy()
+
+        # First, set the 'ts_measured' column as the DataFrame index
+        df_res.set_index("ts_measured", inplace=True)
+        df_res.index = df_res.index.tz_convert("Europe/Berlin")  # type: ignore
+
+        # Group by 'id', then resample to weekly frequency using median
+        df_weekly: pd.DataFrame = (
+            df_res.groupby(
+                ["id"],
+            )
+            .resample("W", closed="right", label="left")
+            .aggregate(  # type: ignore
+                {
+                    "fill_percent": "median",
+                }
+            )
+        )
+
+        # Create a new MultiIndex with all permutations of 'id' and 'ts_measured'
+        idx = df_weekly.index
+        multi_idx = pd.MultiIndex.from_product(
+            [idx.get_level_values(level=0).unique(), idx.get_level_values(level=1).unique()],
+            names=["id", "ts_measured"],
+        )
+
+        # Reindex DataFrame and forward fill missing values from those of the same station
+        df_weekly = df_weekly.reindex(multi_idx)
+        df_weekly = df_weekly.groupby(level=0).ffill()
+
+        # Add a new column to `df_map` for each of the last 6 weeks
+        today_midnight = local_today_midnight()
+        current_week = today_midnight - relativedelta(days=today_midnight.weekday() + 1)
+        print(current_week)
+        print(df_weekly)
+        for weeks_offset in range(0, 13):
+            ts = current_week - relativedelta(weeks=weeks_offset)
+            ts = pd.Timestamp(ts)
+            df_week = df_weekly.loc[(slice(None), ts), :].reset_index(level=1, drop=True)
+            df_week.rename(
+                columns={"fill_percent": f"fill_percent_week_{weeks_offset}"},
+                inplace=True,
+            )
+            df_map = df_map.merge(df_week, how="left", on="id")
 
         return df_map
 
@@ -102,7 +154,8 @@ class MapExporter(Exporter):
             ts = pd.Timestamp(ts)
             df_month = df_monthly.loc[(slice(None), ts), :].reset_index(level=1, drop=True)
             df_month.rename(
-                columns={"fill_percent": f"fill_percent_month_{months_offset}"}, inplace=True
+                columns={"fill_percent": f"fill_percent_month_{months_offset}"},
+                inplace=True,
             )
             df_map = df_map.merge(df_month, how="left", on="id")
 
@@ -120,6 +173,9 @@ class MapExporter(Exporter):
 
         # Add daily fill ratio
         df_map = self._add_daily_fill_percent_to_map(df_base, df_map)
+
+        # Add weekly fill ratio
+        df_map = self._add_weekly_fill_percent_to_map(df_base, df_map)
 
         # Add monthly fill ratio
         df_map = self._add_monthly_fill_percent_to_map(df_base, df_map)

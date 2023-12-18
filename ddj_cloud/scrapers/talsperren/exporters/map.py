@@ -161,6 +161,16 @@ class MapExporter(Exporter):
 
         return df_map
 
+    def _add_marker_size(self, df_map: pd.DataFrame) -> pd.DataFrame:
+        source_column = df_map["capacity_mio_m3"]
+        df_map.insert(
+            1,
+            "marker_size",
+            (source_column - source_column.min()) / (source_column.max() - source_column.min()) * 95
+            + 5,
+        )
+        return df_map
+
     def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
         df_base.insert(0, "id", df_base["federation_name"] + "_" + df_base["name"])
 
@@ -179,6 +189,9 @@ class MapExporter(Exporter):
 
         # Add monthly fill ratio
         df_map = self._add_monthly_fill_percent_to_map(df_base, df_map)
+
+        # Add marker size
+        df_map = self._add_marker_size(df_map)
 
         # round all floats to 5 decimals
         df_map = df_map.round(5)

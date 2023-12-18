@@ -6,8 +6,8 @@ plugins:
   - serverless-python-requirements
 
 custom:
-  stage: '${env:STAGE}'
-  bucketName: '${self:service}-${env:STAGE}'
+  stage: "${env:STAGE}"
+  bucketName: "${self:service}-${env:STAGE}"
   pythonRequirements:
     # We render requirements.txt manually due to weirdness
     usePipenv: false
@@ -18,13 +18,13 @@ custom:
 
     slimPatterns:
       # Defaults
-      - '**/*.py[c|o]'
-      - '**/__pycache__*'
+      - "**/*.py[c|o]"
+      - "**/__pycache__*"
       # Remove tests
-      - '**/tests/**'
+      - "**/tests/**"
       # googleapiclient/discovery_cache/documents contains about 60MB of JSON
       # We only want to take what we need here
-      - 'googleapiclient/discovery_cache/documents/!(bigquery.v2.json)'
+      - "googleapiclient/discovery_cache/documents/!(bigquery.v2.json)"
 
     # These are available on the default Python Lambda image
     noDeploy:
@@ -34,45 +34,48 @@ custom:
     # Configure custom cache location for CI
     useStaticCache: true
     useDownloadCache: true
-    cacheLocation: './.serverless-python-cache'
+    cacheLocation: "./.serverless-python-cache"
     staticCacheMaxVersions: 1
+
+    # Needed for lxml to work?
+    pipCmdExtraArgs: ["--platform manylinux2014_x86_64", "--only-binary=:all:"]
 
   customDomainBaseNews: scrapers.data.wdr.news
   customDomainBaseWdrDe: scrapers.data.wdr.de
   acmCertificateId: 09a7667f-ce0e-4ca7-8ee3-31ba79f75f80
 
-  customDomainNameNews: '${self:provider.stage}.${self:custom.customDomainBaseNews}'
-  customDomainNameWdrDe: '${self:provider.stage}.${self:custom.customDomainBaseWdrDe}'
+  customDomainNameNews: "${self:provider.stage}.${self:custom.customDomainBaseNews}"
+  customDomainNameWdrDe: "${self:provider.stage}.${self:custom.customDomainBaseWdrDe}"
 
 package:
   # Ignore everything but the ddj_cloud module
   patterns:
-    - '!**'
-    - 'ddj_cloud/**'
+    - "!**"
+    - "ddj_cloud/**"
 
 resources:
   Resources:
     # S3 Bucket to hold scraping results
     DataBucket:
-      Type: 'AWS::S3::Bucket'
+      Type: "AWS::S3::Bucket"
       Properties:
-        BucketName: '${self:custom.bucketName}'
-        AccessControl: 'PublicRead'
+        BucketName: "${self:custom.bucketName}"
+        AccessControl: "PublicRead"
         PublicAccessBlockConfiguration:
           {
-            'BlockPublicAcls': false,
-            'BlockPublicPolicy': false,
-            'IgnorePublicAcls': false,
-            'RestrictPublicBuckets': false,
+            "BlockPublicAcls": false,
+            "BlockPublicPolicy": false,
+            "IgnorePublicAcls": false,
+            "RestrictPublicBuckets": false,
           }
         # CORS config is needed for OPTIONS to work
         CorsConfiguration:
           CorsRules:
             - {
-                'AllowedHeaders': ['*'],
-                'AllowedMethods': ['GET', 'HEAD'],
-                'AllowedOrigins': ['*'],
-                'ExposedHeaders': [],
+                "AllowedHeaders": ["*"],
+                "AllowedMethods": ["GET", "HEAD"],
+                "AllowedOrigins": ["*"],
+                "ExposedHeaders": [],
               }
 
     # CachePolicy for CloudFront
@@ -80,96 +83,96 @@ resources:
       Type: AWS::CloudFront::CachePolicy
       Properties:
         CachePolicyConfig:
-          Name: 'CachePolicyCustom-${self:service}-${self:custom.stage}'
-          Comment: 'Custom CachePolicy for ${self:service}-${env:STAGE}'
+          Name: "CachePolicyCustom-${self:service}-${self:custom.stage}"
+          Comment: "Custom CachePolicy for ${self:service}-${env:STAGE}"
           DefaultTTL: 600
           MaxTTL: 86400
           MinTTL: 0
           ParametersInCacheKeyAndForwardedToOrigin:
-            EnableAcceptEncodingBrotli: 'true'
-            EnableAcceptEncodingGzip: 'true'
+            EnableAcceptEncodingBrotli: "true"
+            EnableAcceptEncodingGzip: "true"
             CookiesConfig:
-              CookieBehavior: 'none'
+              CookieBehavior: "none"
             HeadersConfig:
-              HeaderBehavior: 'whitelist'
+              HeaderBehavior: "whitelist"
               # Don't include Origin or Request-Headers in cache key cause we don't care
               Headers:
                 - Access-Control-Request-Method
             QueryStringsConfig:
-              QueryStringBehavior: 'none'
+              QueryStringBehavior: "none"
 
     # OriginRequestPolicy for CloudFront
     CustomOriginRequestPolicy:
       Type: AWS::CloudFront::OriginRequestPolicy
       Properties:
         OriginRequestPolicyConfig:
-          Name: 'OriginRequestPolicyCustom-${self:service}-${self:custom.stage}'
-          Comment: 'Custom OriginRequestPolicy for ${self:service}-${env:STAGE}'
+          Name: "OriginRequestPolicyCustom-${self:service}-${self:custom.stage}"
+          Comment: "Custom OriginRequestPolicy for ${self:service}-${env:STAGE}"
           CookiesConfig:
-            CookieBehavior: 'none'
+            CookieBehavior: "none"
           # Don't forward any user headers to S3
           HeadersConfig:
-            HeaderBehavior: 'none'
+            HeaderBehavior: "none"
           QueryStringsConfig:
-            QueryStringBehavior: 'none'
+            QueryStringBehavior: "none"
 
     # ResponseHeadersPolicy for CloudFront
     CustomResponseHeadersPolicy:
       Type: AWS::CloudFront::ResponseHeadersPolicy
       Properties:
         ResponseHeadersPolicyConfig:
-          Name: 'ResponseHeadersPolicyCustom-${self:service}-${self:custom.stage}'
-          Comment: 'Custom ResponseHeadersPolicy for ${self:service}-${env:STAGE}'
+          Name: "ResponseHeadersPolicyCustom-${self:service}-${self:custom.stage}"
+          Comment: "Custom ResponseHeadersPolicy for ${self:service}-${env:STAGE}"
           CorsConfig:
-            AccessControlAllowCredentials: 'false'
+            AccessControlAllowCredentials: "false"
             AccessControlAllowHeaders:
               Items:
-                - '*'
+                - "*"
             AccessControlAllowMethods:
               Items:
-                - 'GET'
-                - 'HEAD'
-                - 'OPTIONS'
+                - "GET"
+                - "HEAD"
+                - "OPTIONS"
             AccessControlAllowOrigins:
               Items:
-                - '*'
+                - "*"
             AccessControlExposeHeaders:
               Items:
-                - '*'
+                - "*"
             AccessControlMaxAgeSec: 600
-            OriginOverride: 'true'
+            OriginOverride: "true"
           CustomHeadersConfig:
             Items:
-              - Header: 'Cache-Control'
-                Override: 'false'
-                Value: 'no-cache'
+              - Header: "Cache-Control"
+                Override: "false"
+                Value: "no-cache"
 
     CloudFrontDistributionDataBucketOriginAccessIdentity:
-      Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+      Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
       Properties:
         CloudFrontOriginAccessIdentityConfig:
-          Comment: 'Origin Access Identity for accessing protected S3 resources'
+          Comment: "Origin Access Identity for accessing protected S3 resources"
 
     # CloudFront Distribution for DataBucket
     CloudFrontDistributionDataBucket:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
-          Comment: 'CloudFront Distribution for S3 Bucket ${self:custom.bucketName}'
-          Enabled: 'true'
-          HttpVersion: 'http2'
-          IPV6Enabled: 'true'
-          PriceClass: 'PriceClass_All' # Distribute worldwide
+          Comment: "CloudFront Distribution for S3 Bucket ${self:custom.bucketName}"
+          Enabled: "true"
+          HttpVersion: "http2"
+          IPV6Enabled: "true"
+          PriceClass: "PriceClass_All" # Distribute worldwide
 
           # ACM Certificate and DNS must be set up manually
           Aliases:
-            - '${self:custom.customDomainNameNews}'
-            - '${self:custom.customDomainNameWdrDe}'
+            - "${self:custom.customDomainNameNews}"
+            - "${self:custom.customDomainNameWdrDe}"
           ViewerCertificate:
             AcmCertificateArn:
               Fn::Sub: arn:aws:acm:us-east-1:${AWS::AccountId}:certificate/${self:custom.acmCertificateId}
-            MinimumProtocolVersion: 'TLSv1.2_2021'
-            SslSupportMethod: 'sni-only'
+            MinimumProtocolVersion: "TLSv1.2_2021"
+            SslSupportMethod: "sni-only"
 
           DefaultCacheBehavior:
             AllowedMethods:
@@ -180,9 +183,9 @@ resources:
               - GET
               - HEAD
               - OPTIONS
-            TargetOriginId: 's3-origin-${self:service}-data-${self:provider.stage}'
-            ViewerProtocolPolicy: 'redirect-to-https'
-            Compress: 'true'
+            TargetOriginId: "s3-origin-${self:service}-data-${self:provider.stage}"
+            ViewerProtocolPolicy: "redirect-to-https"
+            Compress: "true"
             OriginRequestPolicyId:
               Ref: CustomOriginRequestPolicy
             CachePolicyId:
@@ -190,8 +193,8 @@ resources:
             ResponseHeadersPolicyId:
               Ref: CustomResponseHeadersPolicy
           Origins:
-            - DomainName: '${self:custom.bucketName}.s3.${self:provider.region}.amazonaws.com'
-              Id: 's3-origin-${self:service}-data-${self:provider.stage}'
+            - DomainName: "${self:custom.bucketName}.s3.${self:provider.region}.amazonaws.com"
+              Id: "s3-origin-${self:service}-data-${self:provider.stage}"
               # Always send CORS headers to S3 to make sure OPTIONS works
               OriginCustomHeaders:
                 - HeaderName: Origin
@@ -201,20 +204,20 @@ resources:
               S3OriginConfig:
                 OriginAccessIdentity:
                   Fn::Join:
-                    - ''
-                    - - 'origin-access-identity/cloudfront/'
+                    - ""
+                    - - "origin-access-identity/cloudfront/"
                       - Ref: CloudFrontDistributionDataBucketOriginAccessIdentity
 
 provider:
   name: aws
   region: eu-central-1
-  runtime: python3.10
+  runtime: python3.11
   stage: ${self:custom.stage}
   tags:
     PRODUCT: ${self:service}
   stackTags:
     PRODUCT: ${self:service}
-  stackName: '${self:service}-${self:custom.stage}-cf-stack'
+  stackName: "${self:service}-${self:custom.stage}-cf-stack"
   environment:
     STAGE: ${self:custom.stage}
     BUCKET_NAME: ${self:custom.bucketName}
@@ -228,26 +231,26 @@ provider:
         - Effect: Allow
           Action:
             - s3:*
-          Resource: 'arn:aws:s3:::${self:custom.bucketName}/*'
+          Resource: "arn:aws:s3:::${self:custom.bucketName}/*"
 
         # Cloudfront
         - Effect: Allow
           Action:
-            - 'cloudfront:ListDistributions'
-          Resource: '*'
+            - "cloudfront:ListDistributions"
+          Resource: "*"
 
         - Effect: Allow
           Action:
-            - 'cloudfront:GetDistribution'
-            - 'cloudfront:GetDistributionConfig'
-            - 'cloudfront:ListInvalidations'
-            - 'cloudfront:GetInvalidation'
-            - 'cloudfront:CreateInvalidation'
+            - "cloudfront:GetDistribution"
+            - "cloudfront:GetDistributionConfig"
+            - "cloudfront:ListInvalidations"
+            - "cloudfront:GetInvalidation"
+            - "cloudfront:CreateInvalidation"
           Resource:
             Fn::Join:
-              - ''
-              - - 'arn:aws:cloudfront::'
+              - ""
+              - - "arn:aws:cloudfront::"
                 - Ref: AWS::AccountId
-                - ':distribution/'
+                - ":distribution/"
                 - Ref: CloudFrontDistributionDataBucket
 # Functions are generated at deploy time by manage.py

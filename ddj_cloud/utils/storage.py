@@ -299,6 +299,7 @@ def upload_dataframe(
     compare_fn: Callable[[bytes, bytes], bool] = simple_compare,
     acl: Optional[str] = "public-read",
     create_cloudfront_invalidation: bool = False,
+    datawrapper_datetimes: bool = False,
 ):
     """Upload a dataframe to storage.
 
@@ -313,6 +314,21 @@ def upload_dataframe(
         acl (str, optional): ACL to use when uploading. Defaults to ``"public-read"``.
         create_cloudfront_invalidation (bool, optional): Whether to create a CloudFront invalidation. Defaults to False.
     """
+
+    # Convert datetime for datawrapper (no timezone support madge)
+    if datawrapper_datetimes:
+        for col in df.columns:
+            # There's some different types of datetime columns,
+            # like datetime64[ns, Europe/Berlin] and datetime64[ns, UTC]
+            if not str(df[col].dtype).startswith("datetime64"):
+                continue
+
+            # Convert to Berlin timezone
+            df[col] = df[col].dt.tz_convert("Europe/Berlin")
+
+            # Convert to string
+            df[col] = df[col].dt.strftime("%Y-%m-%d %H:%M:%S")
+
     # Convert to csv and encode to get bytes
     write = df.to_csv(index=False).encode("utf-8")
 

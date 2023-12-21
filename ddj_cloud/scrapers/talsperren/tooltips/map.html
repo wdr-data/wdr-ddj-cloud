@@ -1,3 +1,13 @@
+<big>
+  <div style="margin-bottom: 10px">
+    <div style="background: #f2f2f2; width: 180px; height: 22px; display: flex; align-items: center">
+      <div style="display:flex; background: {{ fill_percent >= 90 ? "darkblue" : fill_percent >= 75 ? "#4489cf" : fill_percent >= 50 ? "lightblue" : fill_percent >= 25 ? "yellow" : "#eb3620" }}; align-items:center; height:100%; width: {{fill_percent}}%">
+        <span style='color: {{ fill_percent >= 90 ? "white" : fill_percent >= 75 ? "white" : fill_percent >= 50 ? "black" : fill_percent >= 25 ? "black" : "black" }}; font-weight: bold; margin: 0px 5px; margin-left: {{ fill_percent >= 25 ? "5px" : "30px" }}'>{{ FORMAT(fill_percent, '0.0') }}%</span>
+      </div>
+    </div>
+  </div>
+</big>
+
 <big>{{ FORMAT(fill_percent, "0.0%") }}</big> ({{ FORMAT(content_mio_m3, "0.00") }} von {{ FORMAT(capacity_mio_m3, "0.00") }} Mio. m³)
 <hr />
 <table>

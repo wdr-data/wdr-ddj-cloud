@@ -116,9 +116,6 @@ class WupperFederation(Federation):
         "Stauanlage Dahlhausen",
     ]
 
-    def __init__(self) -> None:
-        super().__init__()
-
     def _build_url(self, ajax_id: str) -> str:
         return f"https://hochwasserportal.wupperverband.de/?ajax=MapData&id={ajax_id}"
 

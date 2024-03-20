@@ -26,9 +26,6 @@ class GelsenwasserFederation(Federation):
         },
     }
 
-    def __init__(self) -> None:
-        super().__init__()
-
     def _get_html(self, url: str) -> str:
         return requests.get(url).text
 

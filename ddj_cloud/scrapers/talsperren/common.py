@@ -11,6 +11,11 @@ TZ_UTC = ZoneInfo("UTC")
 TZ_BERLIN = ZoneInfo("Europe/Berlin")
 
 
+FEDERATION_RENAMES = {
+    "Wahnbachtalsperrenverband": "Wahnbachtalsperren-Verband",
+}
+
+
 @dataclass
 class ReservoirRecord:
     federation_name: str
@@ -31,16 +36,14 @@ class Federation(Protocol):
 
     reservoirs: dict[str, ReservoirMeta]
 
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
     def get_data(
         self,
         *,
         start: Optional[dt.datetime] = None,
         end: Optional[dt.datetime] = None,
-    ) -> Iterable[ReservoirRecord]:
-        ...
+    ) -> Iterable[ReservoirRecord]: ...
 
 
 T1 = TypeVar("T1")
@@ -78,8 +81,6 @@ def to_parquet_bio(df: pd.DataFrame, **kwargs) -> BytesIO:
 class Exporter(Protocol):
     filename: str
 
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
-    def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
-        ...
+    def run(self, df_base: pd.DataFrame) -> pd.DataFrame: ...

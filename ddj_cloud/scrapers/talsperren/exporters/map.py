@@ -3,7 +3,7 @@ import datetime as dt
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from ddj_cloud.scrapers.talsperren.common import Exporter
+from ddj_cloud.scrapers.talsperren.common import Exporter, FEDERATION_RENAMES
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
 
@@ -98,8 +98,7 @@ class MapExporter(Exporter):
         # Add a new column to `df_map` for each of the last 6 weeks
         today_midnight = local_today_midnight()
         current_week = today_midnight - relativedelta(days=today_midnight.weekday() + 1)
-        print(current_week)
-        print(df_weekly)
+
         for weeks_offset in range(0, 13):
             ts = current_week - relativedelta(weeks=weeks_offset)
             ts = pd.Timestamp(ts)
@@ -195,5 +194,10 @@ class MapExporter(Exporter):
 
         # round all floats to 5 decimals
         df_map = df_map.round(5)
+
+        # Rename federation names
+        df_map["federation_name"] = df_map["federation_name"].apply(
+            lambda x: FEDERATION_RENAMES.get(x, x)
+        )
 
         return df_map

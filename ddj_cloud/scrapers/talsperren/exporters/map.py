@@ -98,8 +98,7 @@ class MapExporter(Exporter):
         # Add a new column to `df_map` for each of the last 6 weeks
         today_midnight = local_today_midnight()
         current_week = today_midnight - relativedelta(days=today_midnight.weekday() + 1)
-        print(current_week)
-        print(df_weekly)
+
         for weeks_offset in range(0, 13):
             ts = current_week - relativedelta(weeks=weeks_offset)
             ts = pd.Timestamp(ts)

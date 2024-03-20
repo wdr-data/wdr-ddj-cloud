@@ -1,7 +1,7 @@
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from ddj_cloud.scrapers.talsperren.common import Exporter
+from ddj_cloud.scrapers.talsperren.common import Exporter, FEDERATION_RENAMES
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
 
@@ -104,6 +104,9 @@ class DailyExporter(Exporter):
 
         # Convert datetime to iso date string
         df_daily_fed["date"] = df_daily_fed["date"].dt.strftime("%Y-%m-%d")
+
+        # Rename federations
+        df_daily_fed.rename(columns=FEDERATION_RENAMES, inplace=True)
 
         return df_daily_fed
 

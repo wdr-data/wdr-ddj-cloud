@@ -1,7 +1,7 @@
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from ddj_cloud.scrapers.talsperren.common import Exporter
+from ddj_cloud.scrapers.talsperren.common import Exporter, FEDERATION_RENAMES
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
 
@@ -107,6 +107,9 @@ class WeeklyExporter(Exporter):
 
         # Convert date to ISO Week format
         df_weekly_fed["date"] = df_weekly_fed["date"].dt.strftime("%G-W%V")
+
+        # Rename federations
+        df_weekly_fed.rename(columns=FEDERATION_RENAMES, inplace=True)
 
         return df_weekly_fed
 

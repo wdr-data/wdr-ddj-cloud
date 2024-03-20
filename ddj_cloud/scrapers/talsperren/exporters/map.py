@@ -3,7 +3,7 @@ import datetime as dt
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from ddj_cloud.scrapers.talsperren.common import Exporter
+from ddj_cloud.scrapers.talsperren.common import Exporter, FEDERATION_RENAMES
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
 
@@ -194,5 +194,10 @@ class MapExporter(Exporter):
 
         # round all floats to 5 decimals
         df_map = df_map.round(5)
+
+        # Rename federation names
+        df_map["federation_name"] = df_map["federation_name"].apply(
+            lambda x: FEDERATION_RENAMES.get(x, x)
+        )
 
         return df_map

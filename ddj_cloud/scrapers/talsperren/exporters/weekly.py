@@ -95,6 +95,10 @@ class WeeklyExporter(Exporter):
 
         df_weekly_fed.reset_index(inplace=True)
 
+        # TODO: Remove later
+        # Drop everything from before we have data for all federations
+        df_weekly_fed = df_weekly_fed.loc[df_weekly_fed["ts_measured"] > "2023-11-03"]
+
         # Drop all data before one year ago cleanly
         df_weekly_fed = df_weekly_fed.loc[
             df_weekly_fed["ts_measured"] > local_today_midnight() - relativedelta(years=1)

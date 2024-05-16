@@ -16,13 +16,13 @@ class WupperFederation(Federation):
     reservoirs: dict[str, WupperReservoirMeta] = {
         "Bevertalsperre": {
             "ajax_id": "SBE$-T",
-            "capacity_mio_m3": 23.75,
+            "capacity_mio_m3": 23.76,
             "lat": 51.1415,
             "lon": 7.3704,
         },
         "Bruchertalsperre": {
             "ajax_id": "SBR$-T",
-            "capacity_mio_m3": 3.37,
+            "capacity_mio_m3": 3.38,
             "lat": 51.0814,
             "lon": 7.5576,
         },
@@ -34,13 +34,13 @@ class WupperFederation(Federation):
         },
         "Große Dhünntalsperre": {
             "ajax_id": "SHA$-T",
-            "capacity_mio_m3": 81.00,
+            "capacity_mio_m3": 72.08,
             "lat": 51.0714,
             "lon": 7.2122,
         },
         "Vorsperre Große Dhünn": {
             "ajax_id": "SVO$-T",
-            "capacity_mio_m3": 7.37,
+            "capacity_mio_m3": 7.45,
             "lat": 51.0729,
             "lon": 7.2394,
         },
@@ -52,13 +52,13 @@ class WupperFederation(Federation):
         },
         "Kerspetalsperre": {
             "ajax_id": "SKT$-T",
-            "capacity_mio_m3": 14.90,
+            "capacity_mio_m3": 14.88,
             "lat": 51.1232,
             "lon": 7.4945,
         },
         "Lingesetalsperre": {
             "ajax_id": "SLI$-T",
-            "capacity_mio_m3": 2.60,
+            "capacity_mio_m3": 2.68,
             "lat": 51.0984,
             "lon": 7.5316,
         },
@@ -82,13 +82,13 @@ class WupperFederation(Federation):
         },
         "Schevelinger Talsperre": {
             "ajax_id": "SSE$-T",
-            "capacity_mio_m3": 0.31,
+            "capacity_mio_m3": 0.344,
             "lat": 51.1341,
             "lon": 7.4326,
         },
         "Wuppertalsperre": {
             "ajax_id": "SWU$-T",
-            "capacity_mio_m3": 25.60,
+            "capacity_mio_m3": 25.09,
             "lat": 51.1992,
             "lon": 7.3032,
         },

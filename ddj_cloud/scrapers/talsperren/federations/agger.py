@@ -22,7 +22,7 @@ class AggerFederation(Federation):
         },
         "Genkeltalsperre": {
             "url": "https://gis.aggerverband.de/public/pegel/genkeltalsperre_cm.json",
-            "capacity_mio_m3": 8.20,
+            "capacity_mio_m3": 8.19,
             "lat": 51.0618,
             "lon": 7.6262,
         },

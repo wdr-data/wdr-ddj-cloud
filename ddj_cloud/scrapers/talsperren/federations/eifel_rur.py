@@ -31,13 +31,13 @@ class EifelRurFederation(Federation):
         },
         "Rurtalsperre Obersee": {
             "id": 13,
-            "capacity_mio_m3": 17.91,
+            "capacity_mio_m3": 17.77,
             "lat": 50.6056,
             "lon": 6.3925,
         },
         "Rurtalsperre Hauptsee": {
             "id": 12,
-            "capacity_mio_m3": 185.30,
+            "capacity_mio_m3": 184.83,
             "lat": 50.637222,
             "lon": 6.441944,
         },
@@ -49,7 +49,7 @@ class EifelRurFederation(Federation):
         },
         "Wehebachtalsperre": {
             "id": 17,
-            "capacity_mio_m3": 25.10,
+            "capacity_mio_m3": 25.06,
             "lat": 50.7550,
             "lon": 6.3401,
         },

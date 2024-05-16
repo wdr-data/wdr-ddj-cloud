@@ -22,7 +22,7 @@ class AggerFederation(Federation):
         },
         "Genkeltalsperre": {
             "url": "https://gis.aggerverband.de/public/pegel/genkeltalsperre_cm.json",
-            "capacity_mio_m3": 8.20,
+            "capacity_mio_m3": 8.19,
             "lat": 51.0618,
             "lon": 7.6262,
         },
@@ -54,7 +54,8 @@ class AggerFederation(Federation):
                 content_mio_m3=row[value_idx],
             )
             for row in data[0]["data"]
-            if row[value_idx] >= 0  # Negative values seem to be errors
+            # Negative/null values seem to be errors
+            if row[value_idx] is not None and row[value_idx] >= 0
         ]
 
     def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:

@@ -84,8 +84,8 @@ def _get_base_dataset():
     bio.seek(0)
     upload_file(bio.read(), "talsperren/data.parquet.gzip")
 
-    # CSV
-    upload_dataframe(df, "talsperren/data.csv")
+    # CSV - expensive!
+    # upload_dataframe(df, "talsperren/data.csv")
 
     # Add additional columns used for exporting
 

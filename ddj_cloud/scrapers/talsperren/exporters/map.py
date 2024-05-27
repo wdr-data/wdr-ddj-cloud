@@ -1,9 +1,16 @@
-import datetime as dt
+from collections.abc import Sequence
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
+from slugify import slugify
 
 from ddj_cloud.scrapers.talsperren.common import Exporter, FEDERATION_RENAMES
+from ddj_cloud.scrapers.talsperren.federations.agger import AggerFederation
+from ddj_cloud.scrapers.talsperren.federations.eifel_rur import EifelRurFederation
+from ddj_cloud.scrapers.talsperren.federations.gelsenwasser import GelsenwasserFederation
+from ddj_cloud.scrapers.talsperren.federations.ruhr import RuhrFederation
+from ddj_cloud.scrapers.talsperren.federations.wahnbach import WahnbachReservoirFederation
+from ddj_cloud.scrapers.talsperren.federations.wupper import WupperFederation
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
 
@@ -201,3 +208,32 @@ class MapExporter(Exporter):
         )
 
         return df_map
+
+
+def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
+    class FilteredMapExporter(MapExporter):
+        filename = f"filtered_map_{slugify('_'.join(federation_names))}"
+
+        def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
+            df_map = super().run(df_base)
+
+            translated_names = [
+                FEDERATION_RENAMES.get(fed_name, fed_name) for fed_name in federation_names
+            ]
+
+            df_filtered = df_map.loc[df_map["federation_name"].isin(translated_names)]
+
+            return df_filtered.reset_index(drop=True)
+
+    return FilteredMapExporter()  # type: ignore
+
+
+def filtered_map_exporters() -> list[MapExporter]:
+    filters = [
+        [AggerFederation.name],
+        [EifelRurFederation.name],
+        [RuhrFederation.name],
+        [WupperFederation.name],
+        [WahnbachReservoirFederation.name, GelsenwasserFederation.name],
+    ]
+    return [_make_filtered_map_exporter(filter) for filter in filters]

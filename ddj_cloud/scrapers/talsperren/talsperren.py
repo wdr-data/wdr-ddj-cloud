@@ -4,6 +4,7 @@ import pandas as pd
 import datetime as dt
 import sentry_sdk
 
+from ddj_cloud.scrapers.talsperren.exporters.map import filtered_map_exporters
 from ddj_cloud.utils.storage import (
     DownloadFailedException,
     upload_dataframe,
@@ -127,7 +128,8 @@ def run():
 
     # Exporters
     exporter_classes = Exporter.__subclasses__()
-    exporters = [cls() for cls in exporter_classes]  # type: ignore
+    exporters = [cls() for cls in exporter_classes]
+    exporters.extend(filtered_map_exporters())
 
     for exporter in exporters:
         try:

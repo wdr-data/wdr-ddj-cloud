@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from dataclasses import dataclass
 import datetime as dt
 from io import BytesIO
@@ -83,4 +84,6 @@ class Exporter(Protocol):
 
     def __init__(self) -> None: ...
 
-    def run(self, df_base: pd.DataFrame) -> pd.DataFrame: ...
+    @abstractmethod
+    def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
+        raise NotImplementedError

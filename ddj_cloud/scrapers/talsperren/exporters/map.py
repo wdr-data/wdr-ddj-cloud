@@ -4,7 +4,11 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from slugify import slugify
 
-from ddj_cloud.scrapers.talsperren.common import Exporter, FEDERATION_RENAMES
+from ddj_cloud.scrapers.talsperren.common import (
+    Exporter,
+    FEDERATION_RENAMES,
+    RESERVOIR_RENAMES_BREAKS,
+)
 from ddj_cloud.scrapers.talsperren.federations.agger import AggerFederation
 from ddj_cloud.scrapers.talsperren.federations.eifel_rur import EifelRurFederation
 from ddj_cloud.scrapers.talsperren.federations.gelsenwasser import GelsenwasserFederation
@@ -222,6 +226,11 @@ def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
             ]
 
             df_filtered = df_map.loc[df_map["federation_name"].isin(translated_names)]
+
+            df_filtered["name"].replace(
+                RESERVOIR_RENAMES_BREAKS,
+                inplace=True,
+            )
 
             return df_filtered.reset_index(drop=True)
 

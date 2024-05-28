@@ -247,6 +247,8 @@ def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
                 [
                     ("Große Dhünntalsperre", "Vorsperre Große Dhünn"),
                     ("Rurtalsperre Hauptsee", "Rurtalsperre Obersee"),
+                    ("Rurtalsperre Obersee", "Urftalsperre"),
+                    ("Biggetalsperre", "Listertalsperre"),
                 ],
             )
 

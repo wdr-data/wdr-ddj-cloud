@@ -214,6 +214,21 @@ class MapExporter(Exporter):
         return df_map
 
 
+def _sort_with_special_cases(df: pd.DataFrame, pairs: list[tuple[str, str]]):
+    df.insert(0, "__sort", df["capacity_mio_m3"] * 1_000_000.0)
+
+    for hauptsperre, vorsperre in pairs:
+        if any(name not in df["name"].unique() for name in [hauptsperre, vorsperre]):
+            continue
+
+        df.loc[df["name"] == vorsperre, "__sort"] = (
+            df.loc[df["name"] == hauptsperre, "__sort"].values[0] - 1.0
+        )
+
+    df.sort_values(by="__sort", ascending=False, inplace=True)
+    df.drop(columns=["__sort"], inplace=True)
+
+
 def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
     class FilteredMapExporter(MapExporter):
         filename = f"filtered_map_{slugify('_'.join(federation_names))}"
@@ -225,7 +240,15 @@ def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
                 FEDERATION_RENAMES.get(fed_name, fed_name) for fed_name in federation_names
             ]
 
-            df_filtered = df_map.loc[df_map["federation_name"].isin(translated_names)]
+            df_filtered = df_map.loc[df_map["federation_name"].isin(translated_names)].copy()
+
+            _sort_with_special_cases(
+                df_filtered,
+                [
+                    ("Große Dhünntalsperre", "Vorsperre Große Dhünn"),
+                    ("Rurtalsperre Hauptsee", "Rurtalsperre Obersee"),
+                ],
+            )
 
             df_filtered["name"].replace(
                 RESERVOIR_RENAMES_BREAKS,

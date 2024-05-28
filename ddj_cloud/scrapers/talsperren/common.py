@@ -30,43 +30,19 @@ FEDERATION_ORDER_SIZE = [
     "Gelsenwasser",
 ]
 
+RESERVOIR_RENAMES = {
+    "Stauanlage Heimbach": "Stausee Heimbach",
+    "Stauanlage Obermaubach": "Stausee Obermaubach",
+}
 
 RESERVOIR_RENAMES_BREAKS = {
-    "Aggertalsperre": "Agger-<br>talsperre",
-    "Genkeltalsperre": "Genkel-<br>talsperre",
-    "Wiehltalsperre": "Wiehl-<br>talsperre",
-    "Talsperren Haltern und Hullern": "Talsperren<br>Haltern und<br>Hullern",
-    "Biggetalsperre": "Bigge-<br>talsperre",
-    "Ennepetalsperre": "Ennepe-<br>talsperre",
-    "Fürwiggetalsperre": "Fürwigge-<br>talsperre",
-    "Hennetalsperre": "Henne-<br>talsperre",
-    "Listertalsperre": "Lister-<br>talsperre",
-    "Möhnetalsperre": "Möhne-<br>talsperre",
-    "Sorpetalsperre": "Sorpe-<br>talsperre",
-    "Stausee Ahausen": "Stausee<br>Ahausen",
-    "Versetalsperre": "Verse-<br>talsperre",
-    "Wahnbachtalsperre": "Wahnbach-<br>talsperre",
-    "Oleftalsperre": "Olef-<br>talsperre",
+    "Oleftalsperre": "Oleftalsperre",
     "Rurtalsperre Hauptsee": "Rurtalsperre<br>Hauptsee",
     "Rurtalsperre Obersee": "Rurtalsperre<br>Obersee",
-    "Stauanlage Heimbach": "Stauanlage<br>Heimbach",
-    "Stauanlage Obermaubach": "Stauanlage<br>Obermaubach",
-    "Urfttalsperre": "Urft-<br>talsperre",
+    "Stauanlage Heimbach": "Stausee<br>Heimbach",
+    "Stauanlage Obermaubach": "Stausee<br>Obermaubach",
+    "Urfttalsperre": "Urfttalsperre",
     "Wehebachtalsperre": "Wehebach-<br>talsperre",
-    "Bevertalsperre": "Bever-<br>talsperre",
-    "Bruchertalsperre": "Brucher-<br>talsperre",
-    "Eschbachtalsperre": "Eschbach-<br>talsperre",
-    "Große Dhünntalsperre": "Große<br>Dhünn-<br>talsperre",
-    "Herbringhauser Talsperre": "Herbringhauser<br>Talsperre",
-    "Kerspetalsperre": "Kerspe-<br>talsperre",
-    "Lingesetalsperre": "Lingese-<br>talsperre",
-    "Neyetalsperre": "Neye-<br>talsperre",
-    "Panzertalsperre": "Panzer-<br>talsperre",
-    "Ronsdorfer Talsperre": "Ronsdorfer<br>Talsperre",
-    "Schevelinger Talsperre": "Schevelinger<br>Talsperre",
-    "Stausee Beyenburg": "Stausee<br>Beyenburg",
-    "Vorsperre Große Dhünn": "Vorsperre<br>Große Dhünn",
-    "Wuppertalsperre": "Wupper-<br>talsperre",
 }
 
 

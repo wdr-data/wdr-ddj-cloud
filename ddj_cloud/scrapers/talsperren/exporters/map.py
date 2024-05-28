@@ -7,6 +7,7 @@ from slugify import slugify
 from ddj_cloud.scrapers.talsperren.common import (
     Exporter,
     FEDERATION_RENAMES,
+    RESERVOIR_RENAMES,
     RESERVOIR_RENAMES_BREAKS,
 )
 from ddj_cloud.scrapers.talsperren.federations.agger import AggerFederation
@@ -181,7 +182,7 @@ class MapExporter(Exporter):
         )
         return df_map
 
-    def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
+    def run(self, df_base: pd.DataFrame, do_reservoir_rename: bool = True) -> pd.DataFrame:
         df_base.insert(0, "id", df_base["federation_name"] + "_" + df_base["name"])
 
         # Gernerate map with latest data
@@ -207,9 +208,16 @@ class MapExporter(Exporter):
         df_map = df_map.round(5)
 
         # Rename federation names
-        df_map["federation_name"] = df_map["federation_name"].apply(
-            lambda x: FEDERATION_RENAMES.get(x, x)
+        df_map["federation_name"].replace(
+            FEDERATION_RENAMES,
+            inplace=True,
         )
+
+        if do_reservoir_rename:
+            df_map["name"].replace(
+                RESERVOIR_RENAMES,
+                inplace=True,
+            )
 
         return df_map
 
@@ -234,7 +242,7 @@ def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
         filename = f"filtered_map_{slugify('_'.join(federation_names))}"
 
         def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
-            df_map = super().run(df_base)
+            df_map = super().run(df_base, do_reservoir_rename=False)
 
             translated_names = [
                 FEDERATION_RENAMES.get(fed_name, fed_name) for fed_name in federation_names

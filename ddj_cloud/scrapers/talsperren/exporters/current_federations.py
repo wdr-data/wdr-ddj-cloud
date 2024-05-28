@@ -1,7 +1,7 @@
 import pandas as pd
 
 from ddj_cloud.scrapers.talsperren.common import (
-    FEDERATION_RENAMES,
+    FEDERATION_RENAMES_BREAKS,
     Exporter,
 )
 
@@ -41,7 +41,7 @@ class CurrentFederationsExporter(Exporter):
 
         # Rename federation names
         df_map["federation_name"].replace(
-            FEDERATION_RENAMES,
+            FEDERATION_RENAMES_BREAKS,
             inplace=True,
         )
 

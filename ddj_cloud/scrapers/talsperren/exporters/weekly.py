@@ -1,7 +1,11 @@
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from ddj_cloud.scrapers.talsperren.common import Exporter, FEDERATION_RENAMES
+from ddj_cloud.scrapers.talsperren.common import (
+    Exporter,
+    FEDERATION_RENAMES_BREAKS,
+    FEDERATION_ORDER_SIZE,
+)
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
 
@@ -90,7 +94,7 @@ class WeeklyExporter(Exporter):
             df_weekly_gesamt["content_mio_m3"] / df_weekly_gesamt["capacity_mio_m3"] * 100
         )
         df_weekly_gesamt.drop(columns=["content_mio_m3", "capacity_mio_m3"], inplace=True)
-        df_weekly_gesamt.columns = ["Gesamt"]
+        df_weekly_gesamt.columns = ["Alle Talsperren"]
         df_weekly_fed = df_weekly_fed.join(df_weekly_gesamt, how="outer")
 
         df_weekly_fed.reset_index(inplace=True)
@@ -112,8 +116,11 @@ class WeeklyExporter(Exporter):
         # Convert date to ISO Week format
         df_weekly_fed["date"] = df_weekly_fed["date"].dt.strftime("%G-W%V")
 
+        # Reorder columns by federation size
+        df_weekly_fed = df_weekly_fed[["date", "Alle Talsperren", *FEDERATION_ORDER_SIZE]]
+
         # Rename federations
-        df_weekly_fed.rename(columns=FEDERATION_RENAMES, inplace=True)
+        df_weekly_fed.rename(columns=FEDERATION_RENAMES_BREAKS, inplace=True)
 
         return df_weekly_fed
 

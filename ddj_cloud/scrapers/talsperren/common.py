@@ -16,6 +16,20 @@ FEDERATION_RENAMES = {
     "Wahnbachtalsperrenverband": "Wahnbachtalsperren-Verband",
 }
 
+FEDERATION_RENAMES_BREAKS = {
+    "Wahnbachtalsperrenverband": "Wahnbachtal-<br>sperren-Verband",
+    "Wasserverband Eifel-Rur": "Wasserverband<br>Eifel-Rur",
+}
+
+FEDERATION_ORDER_SIZE = [
+    "Ruhrverband",
+    "Wupperverband",
+    "Wasserverband Eifel-Rur",
+    "Aggerverband",
+    "Wahnbachtalsperrenverband",
+    "Gelsenwasser",
+]
+
 
 @dataclass
 class ReservoirRecord:

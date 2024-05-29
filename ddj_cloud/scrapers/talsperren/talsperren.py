@@ -12,7 +12,7 @@ from ddj_cloud.utils.storage import (
     download_file,
 )
 from .common import Federation, Exporter, ReservoirMeta, to_parquet_bio
-
+from . import locator_maps
 
 IGNORE_LIST = [
     "Rurtalsperre Gesamt",
@@ -143,3 +143,5 @@ def run():
             print("Skipping exporter due to error:")
             print_exc()
             sentry_sdk.capture_exception(e)
+
+    locator_maps.run(df_base)

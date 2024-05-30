@@ -1,9 +1,15 @@
 import os
+import re
 
 from datawrapper import Datawrapper
 import pandas as pd
 import sentry_sdk
 
+from ddj_cloud.scrapers.talsperren.common import FEDERATION_RENAMES, RESERVOIR_RENAMES
+from ddj_cloud.utils.formatting import format_datetime, format_number
+
+
+REVERSE_RESERVOIR_RENAMES = {v: k for k, v in RESERVOIR_RENAMES.items()}
 
 DATAWRAPPER_TOKEN = os.environ.get("TALSPERREN_DATAWRAPPER_TOKEN")
 
@@ -15,7 +21,7 @@ RENAMES = {
 }
 
 
-color_map = {
+color_map_fill = {
     0: "rgb(158, 103, 0)",
     25: "rgb(252, 199, 87)",
     50: "rgb(119, 219, 249)",
@@ -24,13 +30,65 @@ color_map = {
     100: "rgb(227, 6, 20)",
 }
 
+color_map_text = {
+    0: "white",
+    25: "black",
+    50: "black",
+    75: "black",
+    90: "white",
+    100: "white",
+}
 
-def _get_color(fill_percent: float) -> str:
+
+def _get_color(fill_percent: float, color_map: dict) -> str:
     for threshold, color in reversed(list(color_map.items())):
         if fill_percent >= threshold:
             return color
 
     return color_map[0]
+
+
+def _make_tooltip(current: dict) -> str:
+
+    bar_text = format_number(current["fill_percent"], places=1) + "     %"
+    bar_color = _get_color(current["fill_percent"], color_map_fill)
+    bar_text_color = _get_color(current["fill_percent"], color_map_text)
+    bar_text_margin = "28px" if current["fill_percent"] < 25 else "3px"
+
+    name = RESERVOIR_RENAMES.get(current["name"], current["name"])
+    fill_percent = max(min(current["fill_percent"], 100), 0)
+    content_mio_m3 = format_number(current["content_mio_m3"], places=2)
+    capacity_mio_m3 = format_number(current["capacity_mio_m3"], places=2)
+    federation_name = FEDERATION_RENAMES.get(current["federation_name"], current["federation_name"])
+    ts_measured = format_datetime(current["ts_measured"])
+
+    tooltip_html = f"""
+<u style="display: block; text-decoration: none; min-width: 156px; max-width: 156px; overflow:hidden;">
+    <b style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 10px;">{ name }</b>
+    <u style="display: flex; text-decoration: none; align-items: center; background: #f2f2f2; width: 100%; height: 22px; ">
+        <u style="display: flex; text-decoration: none; background: { bar_color }; align-items: center; height: 100%; width: { fill_percent }%">
+            <span style="color: { bar_text_color }; font-weight: bold; font-size: 12px; margin: 0px 5px; margin-left: { bar_text_margin };"> { bar_text }</span>
+        </u>
+    </u>
+    <u style="display: block; text-decoration: none; margin-top: 2px; margin-bottom: 10px;">{ content_mio_m3 } von { capacity_mio_m3 } Mio. m³</u>
+    <u style="display: grid; text-decoration: none; gap: 6px;">
+        <u style="display: block; text-decoration: none;">
+            <b>Verband:</b><br/>
+            <span style="overflow-wrap: anywhere;">{ federation_name }</span>
+        </u>
+        <u style="display: block; text-decoration: none;">
+            <b>Messzeit:</b><br/>
+            <td>{ ts_measured }</td>
+        </u>
+    </u>
+</u>
+""".replace(
+        "    ", ""
+    ).replace(
+        "\n", ""
+    )
+
+    return tooltip_html
 
 
 def run(df_base: pd.DataFrame) -> None:
@@ -52,9 +110,9 @@ def run(df_base: pd.DataFrame) -> None:
     # print("Datawrapper account info:", dw.account_info())
 
     charts = [
-        ("jG5QE", "ZXiUo"),
+        ("aqXpg", "ZXiUo"),
         ("cZfsi", "BL07F"),
-        ("WSgd6", "IsUxG"),
+        ("WSgd6", "aHate"),
         ("QZfQN", "kcuUG"),
     ]
     for chart_id_base, chart_id_live in charts:
@@ -84,6 +142,7 @@ def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_
 
     markers = chart_data_base["markers"]
 
+    print("Updating fill colors")
     for marker in markers:
         if marker["type"] != "area":
             # print(f"Skipping {marker['title']} because it is not an area")
@@ -108,10 +167,33 @@ def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_
 
         current_for_name = current[name]
         fill_percent = current_for_name["fill_percent"]
-        fill_color = _get_color(fill_percent)
+        fill_color = _get_color(fill_percent, color_map_fill)
 
         marker["properties"]["fill"] = fill_color
         # marker["properties"]["stroke"] = fill_color
+
+    print("Updating tooltip markers")
+    for marker in chart_data_base["markers"]:
+        if not marker["type"] == "point":
+            continue
+
+        match = re.match(r'Tooltipmarker: "(.*)"', marker["title"])
+
+        if match is None:
+            continue
+
+        name = match.group(1)
+        name = REVERSE_RESERVOIR_RENAMES.get(name, name)
+        print(f"NAME_GEWFL: {name}")
+
+        if name not in current:
+            print(f'Skipping "{name}" because it is not in the current data')
+            continue
+
+        marker["title"] = ""
+        marker["visible"] = True
+        marker["markerColor"] = "#ffffff00"
+        marker["tooltip"]["text"] = _make_tooltip(current[name])
 
     # Copy the markers from the base chart
     dw.add_json(

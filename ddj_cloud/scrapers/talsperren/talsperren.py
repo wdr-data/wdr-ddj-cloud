@@ -12,7 +12,7 @@ from ddj_cloud.utils.storage import (
     download_file,
 )
 from .common import Federation, Exporter, ReservoirMeta, to_parquet_bio
-
+from . import locator_maps
 
 IGNORE_LIST = [
     "Rurtalsperre Gesamt",
@@ -120,6 +120,7 @@ def run():
     bio = to_parquet_bio(df_base, compression="gzip", index=False)
     bio.seek(0)
     upload_file(bio.read(), "talsperren/base.parquet.gzip")
+    upload_dataframe(df_base, "talsperren/base.csv")
 
     # df_base = pd.read_parquet("local_storage/talsperren/base.parquet.gzip", engine="fastparquet")
 
@@ -143,3 +144,10 @@ def run():
             print("Skipping exporter due to error:")
             print_exc()
             sentry_sdk.capture_exception(e)
+
+    # Run this to create tooltip markers for the locator maps
+    # Will/should be created in the base maps!
+    # from . import locator_maps_create_tooltip_markers
+    # locator_maps_create_tooltip_markers.run(df_base)
+
+    locator_maps.run(df_base)

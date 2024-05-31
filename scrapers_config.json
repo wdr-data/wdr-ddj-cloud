@@ -137,6 +137,8 @@
                 }
             }
         ],
-        "extra_env": []
+        "extra_env": [
+            "TALSPERREN_DATAWRAPPER_TOKEN"
+        ]
     }
 ]

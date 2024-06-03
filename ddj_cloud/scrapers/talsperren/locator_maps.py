@@ -75,10 +75,10 @@ def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
 
     tooltip_html = f"""
 <u style="display: block; text-decoration: none; min-width: {width}; max-width: {width}; margin: { margin_outer }; overflow:hidden; font-size: { font_size_text }; line-height: 1.25;">
-    <b style="display: block; font-size: { font_size_header }; font-weight: bold; margin-bottom: { margin_wide };">{ name }</b>
+    <b style="display: block; font-size: { font_size_header }; margin-bottom: { margin_wide };">{ name }</b>
     <u style="display: flex; text-decoration: none; align-items: center; background: #f2f2f2; width: 100%; height: { height_bar }; ">
         <u style="display: flex; text-decoration: none; background: { bar_color }; align-items: center; height: 100%; width: { fill_percent }%">
-            <span style="color: { bar_text_color }; font-weight: bold; font-size: { font_size_bar }; margin: 0px { margin_narrow }; margin-left: { bar_text_margin };"> { bar_text }</span>
+            <b style="color: { bar_text_color }; font-size: { font_size_bar }; margin: 0px { margin_narrow }; margin-left: { bar_text_margin };"> { bar_text }</b>
         </u>
     </u>
     <u style="display: block; text-decoration: none; margin-top: 2px; margin-bottom: { margin_wide };">{ content_mio_m3 } von { capacity_mio_m3 } Mio. m³</u>

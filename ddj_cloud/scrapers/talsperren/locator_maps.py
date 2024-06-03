@@ -1,5 +1,6 @@
 import os
 import re
+from typing import Literal
 
 from datawrapper import Datawrapper
 import pandas as pd
@@ -48,7 +49,7 @@ def _get_color(fill_percent: float, color_map: dict) -> str:
     return color_map[0]
 
 
-def _make_tooltip(current: dict) -> str:
+def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
 
     bar_text = format_number(current["fill_percent"], places=1) + "     %"
     bar_color = _get_color(current["fill_percent"], color_map_fill)
@@ -62,16 +63,25 @@ def _make_tooltip(current: dict) -> str:
     federation_name = FEDERATION_RENAMES.get(current["federation_name"], current["federation_name"])
     ts_measured = format_datetime(current["ts_measured"])
 
+    width = "156px"  # if variant == "desktop" else "100px"  # Doesn't seem to shrink anyways
+    font_size_header = "13px" if variant == "desktop" else "10px"
+    font_size_bar = "12px" if variant == "desktop" else "9px"
+    font_size_text = "11px" if variant == "desktop" else "8px"
+    height_bar = "22px" if variant == "desktop" else "16px"
+    margin_wide = "10px" if variant == "desktop" else "5px"
+    margin_narrow = "5px" if variant == "desktop" else "2px"
+    margin_outer = "0px" if variant == "desktop" else "-6px"
+
     tooltip_html = f"""
-<u style="display: block; text-decoration: none; min-width: 156px; max-width: 156px; overflow:hidden;">
-    <b style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 10px;">{ name }</b>
-    <u style="display: flex; text-decoration: none; align-items: center; background: #f2f2f2; width: 100%; height: 22px; ">
+<u style="display: block; text-decoration: none; min-width: {width}; max-width: {width}; margin: { margin_outer }; overflow:hidden; font-size: { font_size_text }; line-height: 1.25;">
+    <b style="display: block; font-size: { font_size_header }; font-weight: bold; margin-bottom: { margin_wide };">{ name }</b>
+    <u style="display: flex; text-decoration: none; align-items: center; background: #f2f2f2; width: 100%; height: { height_bar }; ">
         <u style="display: flex; text-decoration: none; background: { bar_color }; align-items: center; height: 100%; width: { fill_percent }%">
-            <span style="color: { bar_text_color }; font-weight: bold; font-size: 12px; margin: 0px 5px; margin-left: { bar_text_margin };"> { bar_text }</span>
+            <span style="color: { bar_text_color }; font-weight: bold; font-size: { font_size_bar }; margin: 0px { margin_narrow }; margin-left: { bar_text_margin };"> { bar_text }</span>
         </u>
     </u>
-    <u style="display: block; text-decoration: none; margin-top: 2px; margin-bottom: 10px;">{ content_mio_m3 } von { capacity_mio_m3 } Mio. m³</u>
-    <u style="display: grid; text-decoration: none; gap: 6px;">
+    <u style="display: block; text-decoration: none; margin-top: 2px; margin-bottom: { margin_wide };">{ content_mio_m3 } von { capacity_mio_m3 } Mio. m³</u>
+    <u style="display: grid; text-decoration: none; gap: { margin_narrow };">
         <u style="display: block; text-decoration: none;">
             <b>Verband:</b><br/>
             <span style="overflow-wrap: anywhere;">{ federation_name }</span>
@@ -177,7 +187,7 @@ def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_
         if not marker["type"] == "point":
             continue
 
-        match = re.match(r'Tooltipmarker: "(.*)"', marker["title"])
+        match = re.match(r'Tooltipmarker: "(.*?)".*', marker["title"])
 
         if match is None:
             continue
@@ -190,10 +200,20 @@ def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_
             print(f'Skipping "{name}" because it is not in the current data')
             continue
 
+        variant = (
+            "desktop"
+            if marker["visibility"]["desktop"]
+            else "mobile" if marker["visibility"]["mobile"] else None
+        )
+
+        if variant is None:
+            print(f"Skipping {name} because it is visible on neither desktop nor mobile")
+            continue
+
         marker["title"] = ""
         marker["visible"] = True
         marker["markerColor"] = "#ffffff00"
-        marker["tooltip"]["text"] = _make_tooltip(current[name])
+        marker["tooltip"]["text"] = _make_tooltip(current[name], variant)
 
     # Copy the markers from the base chart
     dw.add_json(

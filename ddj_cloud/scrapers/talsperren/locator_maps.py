@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from typing import Literal
@@ -216,12 +217,16 @@ def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_
         marker["tooltip"]["text"] = _make_tooltip(current[name], variant)
 
     # Copy the markers from the base chart
+    new_chart_data_live = {
+        **chart_data_live,
+        "markers": chart_data_base["markers"],
+    }
+
+    print("Size:", len(json.dumps(new_chart_data_live).encode("utf-8")), "/ 2097152")
+
     dw.add_json(
         chart_id_live,
-        {
-            **chart_data_live,
-            "markers": chart_data_base["markers"],
-        },
+        new_chart_data_live,
     )
 
     # Publish the chart

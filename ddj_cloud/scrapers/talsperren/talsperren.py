@@ -1,9 +1,11 @@
 from traceback import print_exc
+from os import getenv
 
 import pandas as pd
 import datetime as dt
 import sentry_sdk
 
+from ddj_cloud.scrapers.talsperren.exporters.map import filtered_map_exporters
 from ddj_cloud.utils.storage import (
     DownloadFailedException,
     upload_dataframe,
@@ -11,7 +13,7 @@ from ddj_cloud.utils.storage import (
     download_file,
 )
 from .common import Federation, Exporter, ReservoirMeta, to_parquet_bio
-
+from . import locator_maps
 
 IGNORE_LIST = [
     "Rurtalsperre Gesamt",
@@ -119,6 +121,7 @@ def run():
     bio = to_parquet_bio(df_base, compression="gzip", index=False)
     bio.seek(0)
     upload_file(bio.read(), "talsperren/base.parquet.gzip")
+    upload_dataframe(df_base, "talsperren/base.csv")
 
     # df_base = pd.read_parquet("local_storage/talsperren/base.parquet.gzip", engine="fastparquet")
 
@@ -127,7 +130,8 @@ def run():
 
     # Exporters
     exporter_classes = Exporter.__subclasses__()
-    exporters = [cls() for cls in exporter_classes]  # type: ignore
+    exporters = [cls() for cls in exporter_classes]
+    exporters.extend(filtered_map_exporters())
 
     for exporter in exporters:
         try:
@@ -141,3 +145,13 @@ def run():
             print("Skipping exporter due to error:")
             print_exc()
             sentry_sdk.capture_exception(e)
+
+    # Run this to create tooltip markers for the locator maps
+    # Will/should be created in the base maps!
+    # from . import locator_maps_create_tooltip_markers
+    # locator_maps_create_tooltip_markers.run(df_base)
+
+    # For now, only run this on production because we have not set up
+    # staging maps setup yet
+    if getenv("STAGE") == "prod":
+        locator_maps.run(df_base)

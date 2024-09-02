@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from dataclasses import dataclass
 import datetime as dt
 from io import BytesIO
@@ -13,6 +14,35 @@ TZ_BERLIN = ZoneInfo("Europe/Berlin")
 
 FEDERATION_RENAMES = {
     "Wahnbachtalsperrenverband": "Wahnbachtalsperren-Verband",
+}
+
+FEDERATION_RENAMES_BREAKS = {
+    "Wahnbachtalsperrenverband": "Wahnbachtal-<br>sperren-Verband",
+    "Wasserverband Eifel-Rur": "Wasserverband<br>Eifel-Rur",
+}
+
+FEDERATION_ORDER_SIZE = [
+    "Ruhrverband",
+    "Wupperverband",
+    "Wasserverband Eifel-Rur",
+    "Aggerverband",
+    "Wahnbachtalsperrenverband",
+    "Gelsenwasser",
+]
+
+RESERVOIR_RENAMES = {
+    "Stauanlage Heimbach": "Stausee Heimbach",
+    "Stauanlage Obermaubach": "Stausee Obermaubach",
+}
+
+RESERVOIR_RENAMES_BREAKS = {
+    "Oleftalsperre": "Oleftalsperre",
+    "Rurtalsperre Hauptsee": "Rurtalsperre<br>Hauptsee",
+    "Rurtalsperre Obersee": "Rurtalsperre<br>Obersee",
+    "Stauanlage Heimbach": "Stausee<br>Heimbach",
+    "Stauanlage Obermaubach": "Stausee<br>Obermaubach",
+    "Urfttalsperre": "Urfttalsperre",
+    "Wehebachtalsperre": "Wehebach-<br>talsperre",
 }
 
 
@@ -83,4 +113,6 @@ class Exporter(Protocol):
 
     def __init__(self) -> None: ...
 
-    def run(self, df_base: pd.DataFrame) -> pd.DataFrame: ...
+    @abstractmethod
+    def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
+        raise NotImplementedError

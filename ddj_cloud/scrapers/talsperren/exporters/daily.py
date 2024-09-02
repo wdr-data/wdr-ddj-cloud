@@ -1,7 +1,11 @@
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from ddj_cloud.scrapers.talsperren.common import Exporter, FEDERATION_RENAMES
+from ddj_cloud.scrapers.talsperren.common import (
+    Exporter,
+    FEDERATION_RENAMES_BREAKS,
+    FEDERATION_ORDER_SIZE,
+)
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
 
@@ -80,18 +84,18 @@ class DailyExporter(Exporter):
         df_daily_fed.columns = df_daily_fed.columns.droplevel(0)
 
         # Add "Gesamt" column
-        df_weekly_gesamt = df_daily.groupby(["ts_measured"]).aggregate(
+        df_daily_gesamt = df_daily.groupby(["ts_measured"]).aggregate(
             {
                 "content_mio_m3": sum_nan,
                 "capacity_mio_m3": sum_nan,
             }
         )
-        df_weekly_gesamt["fill_percent"] = (
-            df_weekly_gesamt["content_mio_m3"] / df_weekly_gesamt["capacity_mio_m3"] * 100
+        df_daily_gesamt["fill_percent"] = (
+            df_daily_gesamt["content_mio_m3"] / df_daily_gesamt["capacity_mio_m3"] * 100
         )
-        df_weekly_gesamt.drop(columns=["content_mio_m3", "capacity_mio_m3"], inplace=True)
-        df_weekly_gesamt.columns = ["Gesamt"]
-        df_daily_fed = df_daily_fed.join(df_weekly_gesamt, how="outer")
+        df_daily_gesamt.drop(columns=["content_mio_m3", "capacity_mio_m3"], inplace=True)
+        df_daily_gesamt.columns = ["Alle Talsperren"]
+        df_daily_fed = df_daily_fed.join(df_daily_gesamt, how="outer")
 
         df_daily_fed.reset_index(inplace=True)
 
@@ -105,8 +109,11 @@ class DailyExporter(Exporter):
         # Convert datetime to iso date string
         df_daily_fed["date"] = df_daily_fed["date"].dt.strftime("%Y-%m-%d")
 
+        # Reorder columns by federation size
+        df_daily_fed = df_daily_fed[["date", "Alle Talsperren", *FEDERATION_ORDER_SIZE]]
+
         # Rename federations
-        df_daily_fed.rename(columns=FEDERATION_RENAMES, inplace=True)
+        df_daily_fed.rename(columns=FEDERATION_RENAMES_BREAKS, inplace=True)
 
         return df_daily_fed
 

@@ -1,9 +1,21 @@
-import datetime as dt
+from collections.abc import Sequence
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
+from slugify import slugify
 
-from ddj_cloud.scrapers.talsperren.common import Exporter, FEDERATION_RENAMES
+from ddj_cloud.scrapers.talsperren.common import (
+    Exporter,
+    FEDERATION_RENAMES,
+    RESERVOIR_RENAMES,
+    RESERVOIR_RENAMES_BREAKS,
+)
+from ddj_cloud.scrapers.talsperren.federations.agger import AggerFederation
+from ddj_cloud.scrapers.talsperren.federations.eifel_rur import EifelRurFederation
+from ddj_cloud.scrapers.talsperren.federations.gelsenwasser import GelsenwasserFederation
+from ddj_cloud.scrapers.talsperren.federations.ruhr import RuhrFederation
+from ddj_cloud.scrapers.talsperren.federations.wahnbach import WahnbachReservoirFederation
+from ddj_cloud.scrapers.talsperren.federations.wupper import WupperFederation
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
 
@@ -170,7 +182,7 @@ class MapExporter(Exporter):
         )
         return df_map
 
-    def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
+    def run(self, df_base: pd.DataFrame, do_reservoir_rename: bool = True) -> pd.DataFrame:
         df_base.insert(0, "id", df_base["federation_name"] + "_" + df_base["name"])
 
         # Gernerate map with latest data
@@ -196,8 +208,74 @@ class MapExporter(Exporter):
         df_map = df_map.round(5)
 
         # Rename federation names
-        df_map["federation_name"] = df_map["federation_name"].apply(
-            lambda x: FEDERATION_RENAMES.get(x, x)
+        df_map["federation_name"].replace(
+            FEDERATION_RENAMES,
+            inplace=True,
         )
 
+        if do_reservoir_rename:
+            df_map["name"].replace(
+                RESERVOIR_RENAMES,
+                inplace=True,
+            )
+
         return df_map
+
+
+def _sort_with_special_cases(df: pd.DataFrame, pairs: list[tuple[str, str]]):
+    df.insert(0, "__sort", df["capacity_mio_m3"] * 1_000_000.0)
+
+    for hauptsperre, vorsperre in pairs:
+        if any(name not in df["name"].unique() for name in [hauptsperre, vorsperre]):
+            continue
+
+        df.loc[df["name"] == vorsperre, "__sort"] = (
+            df.loc[df["name"] == hauptsperre, "__sort"].values[0] - 1.0
+        )
+
+    df.sort_values(by="__sort", ascending=False, inplace=True)
+    df.drop(columns=["__sort"], inplace=True)
+
+
+def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
+    class FilteredMapExporter(MapExporter):
+        filename = f"filtered_map_{slugify('_'.join(federation_names))}"
+
+        def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
+            df_map = super().run(df_base, do_reservoir_rename=False)
+
+            translated_names = [
+                FEDERATION_RENAMES.get(fed_name, fed_name) for fed_name in federation_names
+            ]
+
+            df_filtered = df_map.loc[df_map["federation_name"].isin(translated_names)].copy()
+
+            _sort_with_special_cases(
+                df_filtered,
+                [
+                    ("Große Dhünntalsperre", "Vorsperre Große Dhünn"),
+                    ("Rurtalsperre Hauptsee", "Rurtalsperre Obersee"),
+                    ("Rurtalsperre Obersee", "Urftalsperre"),
+                    ("Biggetalsperre", "Listertalsperre"),
+                ],
+            )
+
+            df_filtered["name"].replace(
+                RESERVOIR_RENAMES_BREAKS,
+                inplace=True,
+            )
+
+            return df_filtered.reset_index(drop=True)
+
+    return FilteredMapExporter()  # type: ignore
+
+
+def filtered_map_exporters() -> list[MapExporter]:
+    filters = [
+        [AggerFederation.name],
+        [EifelRurFederation.name],
+        [RuhrFederation.name],
+        [WupperFederation.name],
+        [WahnbachReservoirFederation.name, GelsenwasserFederation.name],
+    ]
+    return [_make_filtered_map_exporter(filter) for filter in filters]

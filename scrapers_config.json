@@ -124,7 +124,7 @@
         "description": "Sammelt die Füllstände verschiedener Talsperren in NRW.",
         "contact_name": "Jannes Höke",
         "contact_email": "mail@jhoeke.de",
-        "memory_size": "512",
+        "memory_size": "1024",
         "ephemeral_storage": "512",
         "preset": "pandas",
         "events": [
@@ -137,6 +137,8 @@
                 }
             }
         ],
-        "extra_env": []
+        "extra_env": [
+            "TALSPERREN_DATAWRAPPER_TOKEN"
+        ]
     }
 ]

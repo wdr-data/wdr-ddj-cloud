@@ -117,7 +117,7 @@ class WupperFederation(Federation):
     ]
 
     def _build_url(self, ajax_id: str) -> str:
-        return f"https://hochwasserportal.wupperverband.de/?ajax=MapData&id={ajax_id}"
+        return f"https://hwpsn.wupperverband.de/?ajax=MapData&id={ajax_id}&stationGroupId=null"
 
     def _get_reservoir_records(self, name: str) -> list[ReservoirRecord]:
         url = self._build_url(self.reservoirs[name]["ajax_id"])

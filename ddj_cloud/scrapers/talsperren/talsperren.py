@@ -1,4 +1,5 @@
 from traceback import print_exc
+from os import getenv
 
 import pandas as pd
 import datetime as dt
@@ -150,4 +151,7 @@ def run():
     # from . import locator_maps_create_tooltip_markers
     # locator_maps_create_tooltip_markers.run(df_base)
 
-    locator_maps.run(df_base)
+    # For now, only run this on production because we have not set up
+    # staging maps setup yet
+    if getenv("STAGE") == "prod":
+        locator_maps.run(df_base)

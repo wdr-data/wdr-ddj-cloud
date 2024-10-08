@@ -3,13 +3,12 @@ import os
 import re
 from typing import Literal
 
-from datawrapper import Datawrapper
 import pandas as pd
 import sentry_sdk
+from datawrapper import Datawrapper
 
 from ddj_cloud.scrapers.talsperren.common import FEDERATION_RENAMES, RESERVOIR_RENAMES
 from ddj_cloud.utils.formatting import format_datetime, format_number
-
 
 REVERSE_RESERVOIR_RENAMES = {v: k for k, v in RESERVOIR_RENAMES.items()}
 
@@ -51,11 +50,10 @@ def _get_color(fill_percent: float, color_map: dict) -> str:
 
 
 def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
-
     bar_text = format_number(current["fill_percent"], places=1) + "     %"
     bar_color = _get_color(current["fill_percent"], color_map_fill)
     bar_text_color = _get_color(current["fill_percent"], color_map_text)
-    bar_text_margin = "28px" if current["fill_percent"] < 25 else "3px"
+    bar_text_margin = "28px" if current["fill_percent"] < 25 else "3px"  # noqa: PLR2004
 
     name = RESERVOIR_RENAMES.get(current["name"], current["name"])
     fill_percent = max(min(current["fill_percent"], 100), 0)
@@ -93,11 +91,7 @@ def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
         </u>
     </u>
 </u>
-""".replace(
-        "    ", ""
-    ).replace(
-        "\n", ""
-    )
+""".replace("    ", "").replace("\n", "")
 
     return tooltip_html
 
@@ -138,7 +132,7 @@ def run(df_base: pd.DataFrame) -> None:
             sentry_sdk.capture_exception(e)
 
 
-def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_live: str) -> None:
+def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_live: str) -> None:  # noqa: PLR0915
     chart_base = dw.get_chart(chart_id_base)
     chart_live = dw.get_chart(chart_id_live)
 
@@ -185,7 +179,7 @@ def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_
 
     print("Updating tooltip markers")
     for marker in chart_data_base["markers"]:
-        if not marker["type"] == "point":
+        if marker["type"] != "point":
             continue
 
         match = re.match(r'Tooltipmarker: "(.*?)".*', marker["title"])
@@ -204,7 +198,9 @@ def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_
         variant = (
             "desktop"
             if marker["visibility"]["desktop"]
-            else "mobile" if marker["visibility"]["mobile"] else None
+            else "mobile"
+            if marker["visibility"]["mobile"]
+            else None
         )
 
         if variant is None:

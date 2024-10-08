@@ -5,10 +5,10 @@ from dateutil.relativedelta import relativedelta
 from slugify import slugify
 
 from ddj_cloud.scrapers.talsperren.common import (
-    Exporter,
     FEDERATION_RENAMES,
     RESERVOIR_RENAMES,
     RESERVOIR_RENAMES_BREAKS,
+    Exporter,
 )
 from ddj_cloud.scrapers.talsperren.federations.agger import AggerFederation
 from ddj_cloud.scrapers.talsperren.federations.eifel_rur import EifelRurFederation
@@ -37,7 +37,7 @@ class MapExporter(Exporter):
                 ["id"],
             )
             .resample("D")
-            .aggregate(  # type: ignore
+            .aggregate(
                 {
                     "fill_percent": "median",
                 }
@@ -58,7 +58,8 @@ class MapExporter(Exporter):
         # Add a new column to `df_map` for each of the last 7 days
         today_midnight = local_today_midnight()
         for days_offset in range(0, 8):
-            # Use Python to calculate the timestamp for correct timezone support, then convert to pandas
+            # Use Python to calculate the timestamp for correct timezone support,
+            # then convert to pandas
             ts = today_midnight - relativedelta(days=days_offset)
             ts = pd.Timestamp(ts)
             try:
@@ -89,7 +90,7 @@ class MapExporter(Exporter):
                 ["id"],
             )
             .resample("W", closed="right", label="left")
-            .aggregate(  # type: ignore
+            .aggregate(
                 {
                     "fill_percent": "median",
                 }
@@ -139,7 +140,7 @@ class MapExporter(Exporter):
                 ["id"],
             )
             .resample("M", closed="right", label="left")
-            .aggregate(  # type: ignore
+            .aggregate(
                 {
                     "fill_percent": "median",
                 }
@@ -241,8 +242,8 @@ def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
     class FilteredMapExporter(MapExporter):
         filename = f"filtered_map_{slugify('_'.join(federation_names))}"
 
-        def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
-            df_map = super().run(df_base, do_reservoir_rename=False)
+        def run(self, df_base: pd.DataFrame, do_reservoir_rename: bool = False) -> pd.DataFrame:
+            df_map = super().run(df_base, do_reservoir_rename=do_reservoir_rename)
 
             translated_names = [
                 FEDERATION_RENAMES.get(fed_name, fed_name) for fed_name in federation_names

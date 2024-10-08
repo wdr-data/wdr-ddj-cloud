@@ -1,7 +1,6 @@
 """Provides helper functions for dates."""
 
 import datetime as dt
-from typing import List, Optional
 from zoneinfo import ZoneInfo
 
 BERLIN = ZoneInfo("Europe/Berlin")
@@ -44,7 +43,7 @@ def local_yesterday() -> dt.date:
     return local_today() - dt.timedelta(days=1)
 
 
-def date_range(start: dt.date, end: dt.date) -> List[dt.date]:
+def date_range(start: dt.date, end: dt.date) -> list[dt.date]:
     """Generate a list of dates within a range. Start and end are both
     inclusive.
 
@@ -61,12 +60,12 @@ def date_range(start: dt.date, end: dt.date) -> List[dt.date]:
 
 
 def date_param(
-    date: Optional[dt.date],
+    date: dt.date | None,
     *,
-    default: Optional[dt.date] = None,
-    earliest: Optional[dt.date] = None,
-    latest: Optional[dt.date] = None,
-) -> Optional[dt.date]:
+    default: dt.date | None = None,
+    earliest: dt.date | None = None,
+    latest: dt.date | None = None,
+) -> dt.date | None:
     """For when you have an optional date parameter in your function but you want to limit the
     range of dates allowed. Also allows you to set a default.
 
@@ -91,7 +90,7 @@ def date_param(
     return date
 
 
-def to_timedelta(seconds: Optional[int]) -> Optional[dt.timedelta]:
+def to_timedelta(seconds: int | None) -> dt.timedelta | None:
     """Generate a timedelta from an int containing a number of seconds.
 
     Args:
@@ -107,7 +106,7 @@ def to_timedelta(seconds: Optional[int]) -> Optional[dt.timedelta]:
         return None
 
 
-def iso_as_local(date_time: Optional[str], tz: ZoneInfo = BERLIN) -> Optional[dt.datetime]:
+def iso_as_local(date_time: str | None, tz: ZoneInfo = BERLIN) -> dt.datetime | None:
     """Add timezone info to timezone naive isoformat date/time string.
 
     Args:

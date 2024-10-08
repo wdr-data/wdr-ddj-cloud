@@ -1,9 +1,9 @@
 import os
 from uuid import uuid4 as uuid
 
-from datawrapper import Datawrapper
 import pandas as pd
 import sentry_sdk
+from datawrapper import Datawrapper
 
 from .locator_maps import RENAMES
 
@@ -11,7 +11,6 @@ DATAWRAPPER_TOKEN = os.environ.get("TALSPERREN_DATAWRAPPER_TOKEN")
 
 
 def _make_marker(current: dict) -> dict:
-
     return {
         "title": f'Tooltipmarker: "{current["name"]}"',
         "id": str(uuid()),

@@ -1,12 +1,18 @@
-from typing import Generator, Iterable
 import re
+from collections.abc import Generator, Iterable
 
 import bs4
 import dateparser
 import requests
 import sentry_sdk
 
-from ..common import ReservoirMeta, ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+from ddj_cloud.scrapers.talsperren.common import (
+    TZ_BERLIN,
+    Federation,
+    ReservoirMeta,
+    ReservoirRecord,
+    apply_guarded,
+)
 
 
 class GelsenwasserReservoirMeta(ReservoirMeta):
@@ -16,7 +22,7 @@ class GelsenwasserReservoirMeta(ReservoirMeta):
 class GelsenwasserFederation(Federation):
     name = "Gelsenwasser"
 
-    reservoirs: dict[str, GelsenwasserReservoirMeta] = {
+    reservoirs: dict[str, GelsenwasserReservoirMeta] = {  # type: ignore
         "Talsperren Haltern und Hullern": {
             "url": "https://www.gelsenwasser.de/themen/unsere-talsperren",
             "capacity_mio_m3": 31.50,
@@ -80,6 +86,9 @@ class GelsenwasserFederation(Federation):
             content_mio_m3=content_mio_m3,
         )
 
-    def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:
+    def get_data(
+        self,
+        **kwargs,  # noqa: ARG002
+    ) -> Iterable[ReservoirRecord]:
         for records in apply_guarded(self._get_reservoir_records, self.reservoirs.keys()):
             yield from records

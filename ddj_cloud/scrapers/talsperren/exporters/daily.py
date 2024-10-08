@@ -2,9 +2,9 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 
 from ddj_cloud.scrapers.talsperren.common import (
-    Exporter,
-    FEDERATION_RENAMES_BREAKS,
     FEDERATION_ORDER_SIZE,
+    FEDERATION_RENAMES_BREAKS,
+    Exporter,
 )
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
@@ -30,7 +30,7 @@ class DailyExporter(Exporter):
                 ["id"],
             )
             .resample("D")
-            .aggregate(  # type: ignore
+            .aggregate(
                 {
                     "content_mio_m3": "median",
                     "capacity_mio_m3": "median",

@@ -1,14 +1,14 @@
 import os
-from os.path import commonprefix as common_prefix
+from collections.abc import Callable
 from io import BytesIO
+from os.path import commonprefix as common_prefix
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any
 from uuid import uuid4
 
 import pandas as pd
-
-from boto3 import client
 import sentry_sdk
+from boto3 import client
 
 from ddj_cloud.utils.date_and_time import local_today
 
@@ -47,7 +47,7 @@ def describe_events(*, clear: bool = True) -> list[str]:
         list[str]: List of events
     """
 
-    def _describe(fs_event):
+    def _describe(fs_event):  # noqa: PLR0911
         if fs_event["type"] == "download":
             if fs_event["success"]:
                 return f'Downloaded file "{fs_event["filename"]}" from storage'
@@ -84,7 +84,7 @@ def simple_compare(old: Any, new: Any) -> bool:
 
 
 def make_df_compare_fn(
-    *, ignore_columns: Union[str, list[str], None] = None
+    *, ignore_columns: str | list[str] | None = None
 ) -> Callable[[bytes, bytes], bool]:
     """Create a function that can be used as the ``compare_fn`` argument to ``upload_dataframe``
     to compare two pandas DataFrames by their contents while ignoring specified columns.
@@ -122,11 +122,13 @@ def _download_file(filename: str) -> BytesIO:
             with open(LOCAL_STORAGE_ROOT / filename, "rb") as fp:
                 bio = BytesIO(fp.read())
         else:
+            assert s3 is not None
             bio = BytesIO()
             s3.download_fileobj(BUCKET_NAME, filename, bio)
 
-    except:
-        raise DownloadFailedException(f"Failed to download file {filename}")
+    except Exception as err:
+        msg = f"Failed to download file {filename}"
+        raise DownloadFailedException(msg) from err
 
     bio.seek(0)
     return bio
@@ -158,8 +160,8 @@ def __upload_file(
     content: bytes,
     filename: str,
     *,
-    acl: Optional[str] = None,
-    content_type: Optional[str] = None,
+    acl: str | None = None,
+    content_type: str | None = None,
 ):
     bio = BytesIO(content)
 
@@ -183,6 +185,7 @@ def __upload_file(
         if content_type is not None:
             extra_args["ContentType"] = content_type
 
+        assert s3 is not None
         s3.upload_fileobj(
             bio,
             BUCKET_NAME,
@@ -195,8 +198,8 @@ def _upload_file(
     content: bytes,
     filename: str,
     *,
-    acl: Optional[str] = None,
-    content_type: Optional[str] = None,
+    acl: str | None = None,
+    content_type: str | None = None,
     archive: bool = True,
 ) -> list[str]:
     """Internal file upload function that performs optional achiving and storage event tracking"""
@@ -223,14 +226,14 @@ def _upload_file(
     return filenames
 
 
-def upload_file(
+def upload_file(  # noqa: PLR0913
     content: bytes,
     filename: str,
     *,
-    content_type: Optional[str] = None,
-    change_notification: Optional[str] = None,
+    content_type: str | None = None,
+    change_notification: str | None = None,
     compare_fn: Callable[[bytes, bytes], bool] = simple_compare,
-    acl: Optional[str] = "public-read",
+    acl: str | None = "public-read",
     create_cloudfront_invalidation: bool = False,
 ):
     """Upload a file to storage.
@@ -291,13 +294,13 @@ def upload_file(
         sentry_sdk.capture_message(change_notification)
 
 
-def upload_dataframe(
+def upload_dataframe(  # noqa: PLR0913
     df: pd.DataFrame,
     filename: str,
     *,
-    change_notification: Optional[str] = None,
+    change_notification: str | None = None,
     compare_fn: Callable[[bytes, bytes], bool] = simple_compare,
-    acl: Optional[str] = "public-read",
+    acl: str | None = "public-read",
     create_cloudfront_invalidation: bool = False,
     datawrapper_datetimes: bool = False,
 ):
@@ -352,7 +355,7 @@ def _queue_cloudfront_invalidation(filename: str) -> Any:
     CLOUDFRONT_INVALIDATIONS_TO_CREATE.append(filename)
 
 
-def run_cloudfront_invalidations(*, caller_reference: Optional[str] = None):
+def run_cloudfront_invalidations(*, caller_reference: str | None = None):
     """Run CloudFront invalidations"""
 
     caller_reference = caller_reference or str(uuid4())
@@ -363,7 +366,8 @@ def run_cloudfront_invalidations(*, caller_reference: Optional[str] = None):
     invalidation_path = common_prefix(CLOUDFRONT_INVALIDATIONS_TO_CREATE) + "*"
 
     if "/" not in invalidation_path:
-        raise Exception("CloudFront invalidation path is too broad:", invalidation_path)
+        msg = f"CloudFront invalidation path is too broad: {invalidation_path}"
+        raise Exception(msg)
 
     if not USE_LOCAL_STORAGE and cloudfront:
         STORAGE_EVENTS.append({"type": "invalidation", "path": invalidation_path})

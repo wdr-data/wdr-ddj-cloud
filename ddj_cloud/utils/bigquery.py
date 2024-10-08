@@ -1,6 +1,7 @@
 """Utility functions ."""
+
 import re
-from typing import Callable, Generator
+from collections.abc import Callable, Generator
 
 import pandas as pd
 from google.cloud import bigquery
@@ -57,7 +58,7 @@ def iter_results(
     client: bigquery.Client,
     query: str,
     job_config: QueryJobConfig,
-    df_cleaner: Callable[[pd.DataFrame], pd.DataFrame] = None,
+    df_cleaner: Callable[[pd.DataFrame], pd.DataFrame] | None = None,
 ) -> Generator[pd.Series, None, None]:
     """
     Page through the results of a query and yield each row as a pandas Series
@@ -75,6 +76,7 @@ def iter_results(
     query_job.result()
 
     # Get reference to destination table
+    assert query_job.destination is not None
     destination = client.get_table(query_job.destination)
 
     rows = client.list_rows(destination, page_size=10000)
@@ -89,8 +91,9 @@ def iter_results(
     _pandas_helpers.verify_pandas_imports = imports_verifier_orig
 
     for df in dfs:
+        df_cleaned = df
         if df_cleaner is not None:
-            df = df_cleaner(df)
+            df_cleaned = df_cleaner(df)
 
-        for index, row in df.iterrows():
+        for _, row in df_cleaned.iterrows():
             yield row

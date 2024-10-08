@@ -11,11 +11,11 @@ sentry_sdk.init(
     integrations=[AwsLambdaIntegration()],
 )
 
-from ddj_cloud.utils.date_and_time import local_now
-from ddj_cloud.utils import storage
+from ddj_cloud.utils import storage  # noqa: E402
+from ddj_cloud.utils.date_and_time import local_now  # noqa: E402
 
 
-def scrape(event, context):
+def scrape(event, context):  # noqa: ARG001
     module_name = event["module_name"]
 
     with sentry_sdk.configure_scope() as scope:
@@ -41,7 +41,7 @@ def scrape(event, context):
         try:
             storage.run_cloudfront_invalidations()
         except Exception as e:
-            print(f"Cloudfront invalidation failed with:")
+            print("Cloudfront invalidation failed with:")
             print(e)
             sentry_sdk.capture_exception(e)
 

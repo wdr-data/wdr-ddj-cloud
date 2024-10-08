@@ -1,10 +1,16 @@
-from typing import Iterable
-import bs4
 import datetime as dt
-import requests
 import re
+from collections.abc import Iterable
 
-from ..common import ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+import bs4
+import requests
+
+from ddj_cloud.scrapers.talsperren.common import (
+    TZ_BERLIN,
+    Federation,
+    ReservoirRecord,
+    apply_guarded,
+)
 
 
 class RuhrFederation(Federation):
@@ -84,13 +90,16 @@ class RuhrFederation(Federation):
             content_mio_m3=content_mio_m3,
         )
 
-    def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:
+    def get_data(
+        self,
+        **kwargs,  # noqa: ARG002
+    ) -> Iterable[ReservoirRecord]:
         html = self._get_html()
         soup = bs4.BeautifulSoup(html, "lxml")
 
         coords_div: bs4.Tag = soup.find("div", {"id": "dam-coordinates"})  # type: ignore
         assert coords_div, "div with id `dam-coordinates` not found"
 
-        coord_divs: bs4.ResultSet[bs4.Tag] = coords_div.find_all("div", recursive=False)  # type: ignore
+        coord_divs: bs4.ResultSet[bs4.Tag] = coords_div.find_all("div", recursive=False)
 
         return apply_guarded(self._parse_coord_div, coord_divs)

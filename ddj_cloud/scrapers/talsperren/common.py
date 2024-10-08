@@ -1,11 +1,12 @@
-from abc import abstractmethod
-from dataclasses import dataclass
 import datetime as dt
+from abc import abstractmethod
+from collections.abc import Callable, Generator, Iterable
+from dataclasses import dataclass
 from io import BytesIO
-from typing import Callable, Generator, Iterable, Optional, TypeVar, Protocol, TypedDict
+from typing import Protocol, TypedDict, TypeVar
 from zoneinfo import ZoneInfo
-import pandas as pd
 
+import pandas as pd
 import sentry_sdk
 
 TZ_UTC = ZoneInfo("UTC")
@@ -46,6 +47,18 @@ RESERVOIR_RENAMES_BREAKS = {
 }
 
 
+GELSENWASSER_DETAILED = [
+    "Talsperre Haltern Nordbecken",
+    "Talsperre Haltern Südbecken",
+    "Talsperre Hullern",
+]
+
+
+GELSENWASSER_GESAMT = [
+    "Talsperren Haltern und Hullern",
+]
+
+
 @dataclass
 class ReservoirRecord:
     federation_name: str
@@ -71,8 +84,8 @@ class Federation(Protocol):
     def get_data(
         self,
         *,
-        start: Optional[dt.datetime] = None,
-        end: Optional[dt.datetime] = None,
+        start: dt.datetime | None = None,
+        end: dt.datetime | None = None,
     ) -> Iterable[ReservoirRecord]: ...
 
 
@@ -81,7 +94,7 @@ T2 = TypeVar("T2")
 
 
 def apply_guarded(
-    func: Callable[[T2], Optional[T1]],
+    func: Callable[[T2], T1 | None],
     data: Iterable[T2],
 ) -> Generator[T1, None, None]:
     for item in data:

@@ -1,9 +1,15 @@
 import datetime as dt
-from typing import Iterable
+from collections.abc import Iterable
 
 import requests
 
-from ..common import TZ_UTC, ReservoirMeta, ReservoirRecord, Federation, apply_guarded
+from ddj_cloud.scrapers.talsperren.common import (
+    TZ_UTC,
+    Federation,
+    ReservoirMeta,
+    ReservoirRecord,
+    apply_guarded,
+)
 
 
 class WupperReservoirMeta(ReservoirMeta):
@@ -13,7 +19,7 @@ class WupperReservoirMeta(ReservoirMeta):
 class WupperFederation(Federation):
     name = "Wupperverband"
 
-    reservoirs: dict[str, WupperReservoirMeta] = {
+    reservoirs: dict[str, WupperReservoirMeta] = {  # type: ignore
         "Bevertalsperre": {
             "ajax_id": "SBE$-T",
             "capacity_mio_m3": 23.76,
@@ -143,6 +149,9 @@ class WupperFederation(Federation):
             if row[value_idx] is not None
         ]
 
-    def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:
+    def get_data(
+        self,
+        **kwargs,  # noqa: ARG002
+    ) -> Iterable[ReservoirRecord]:
         for records in apply_guarded(self._get_reservoir_records, self.reservoirs.keys()):
             yield from records

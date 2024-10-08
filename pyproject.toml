@@ -1,3 +1,43 @@
-[tool.black]
+
+[tool.ruff]
+target-version = "py311"
+src = ["ddj_cloud", "scraper_template"]
+indent-width = 4
 line-length = 100
-target-version = ['py39']
+exclude = []
+
+[tool.ruff.lint]
+extend-select = [
+    "ARG", # unused-arguments
+    "B",   # bugbear
+    "E",   # pycodestyle
+    "EM",  # errmsg
+    "F",   # flake8
+    "I",   # import order
+    "PYI", # pyi
+    "SIM", # simplify
+    # "T20",  # print
+    "TCH",  # type-checking
+    "TID",  # tidy-imports
+    "UP",   # pyupgrade
+    "FURB", # refurb
+    "W",    # pycodestyle
+    # "D",   # pydocstyle
+    "PL", # Pylint
+]
+ignore = [
+    "E501", # line too long
+]
+
+
+[tool.pyright]
+pythonVersion = "3.11"
+include = ["ddj_cloud", "scraper_template"]
+exclude = []
+typeCheckingMode = "standard"
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportUnusedImport = "none"
+# reportUnknownMemberType = "warning"
+# reportUnknownVariableType = "warning"
+# reportUnknownArgumentType = "warning"
+# reportUnknownFunctionType = "warning"

@@ -1,9 +1,16 @@
 import datetime as dt
-from typing import Iterable, Literal, NotRequired, Optional
+from collections.abc import Iterable
+from typing import Literal, NotRequired
 
 import requests
 
-from ..common import ReservoirMeta, ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+from ddj_cloud.scrapers.talsperren.common import (
+    TZ_BERLIN,
+    Federation,
+    ReservoirMeta,
+    ReservoirRecord,
+    apply_guarded,
+)
 
 
 class EifelRurReservoirMeta(ReservoirMeta):
@@ -14,7 +21,7 @@ class EifelRurReservoirMeta(ReservoirMeta):
 class EifelRurFederation(Federation):
     name = "Wasserverband Eifel-Rur"
 
-    reservoirs: dict[str, EifelRurReservoirMeta] = {
+    reservoirs: dict[str, EifelRurReservoirMeta] = {  # type: ignore
         "Oleftalsperre": {
             "id": 6,
             "capacity_mio_m3": 19.30,
@@ -107,9 +114,7 @@ class EifelRurFederation(Federation):
 
     def get_data(
         self,
-        *,
-        start: Optional[dt.datetime] = None,
-        end: Optional[dt.datetime] = None,
+        **kwargs,  # noqa: ARG002
     ) -> Iterable[ReservoirRecord]:
         for records in apply_guarded(
             lambda name: self._get_reservoir_records(name),

@@ -1,11 +1,17 @@
-from typing import Generator, Iterable
 import re
+from collections.abc import Generator, Iterable
 
 import bs4
 import dateparser
 import requests
 
-from ..common import ReservoirMeta, ReservoirRecord, Federation, TZ_BERLIN, apply_guarded
+from ddj_cloud.scrapers.talsperren.common import (
+    TZ_BERLIN,
+    Federation,
+    ReservoirMeta,
+    ReservoirRecord,
+    apply_guarded,
+)
 
 
 class WahnbachReservoirMeta(ReservoirMeta):
@@ -15,7 +21,7 @@ class WahnbachReservoirMeta(ReservoirMeta):
 class WahnbachReservoirFederation(Federation):
     name = "Wahnbachtalsperrenverband"
 
-    reservoirs: dict[str, WahnbachReservoirMeta] = {
+    reservoirs: dict[str, WahnbachReservoirMeta] = {  # type: ignore
         "Wahnbachtalsperre": {
             "url": "https://www.wahnbach.de/die-wahnbachtalsperre/zahlen-und-fakten/pegelstand-stausee.html",
             "capacity_mio_m3": 40.92,
@@ -39,7 +45,7 @@ class WahnbachReservoirFederation(Federation):
         assert body_div, "No body div found"
 
         # Find headings and parse them and the following nodes
-        headings: bs4.ResultSet[bs4.Tag] = body_div.find_all("h5")  # type: ignore
+        headings: bs4.ResultSet[bs4.Tag] = body_div.find_all("h5")
         assert len(headings) > 1, "No headings found"
 
         for heading in headings:
@@ -84,7 +90,10 @@ class WahnbachReservoirFederation(Federation):
                 content_mio_m3=content_mio_m3,
             )
 
-    def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:
+    def get_data(
+        self,
+        **kwargs,  # noqa: ARG002
+    ) -> Iterable[ReservoirRecord]:
         for records in apply_guarded(self._get_reservoir_records, self.reservoirs.keys()):
             yield from records
 
@@ -94,15 +103,19 @@ Example HTML:
 
 <div class="ce-bodytext">
     <h5><br> Aktuelle Daten vom 22. Januar 2024:</h5>
-    <p>Staupegel: 122,88 mNN<br> Stauinhalt: 38,516 Mio.&nbsp;m<sup>3</sup><br> Füllungsgrad: 94,16 %</p>
+    <p>Staupegel: 122,88 mNN<br> Stauinhalt: 38,516 Mio.&nbsp;m<sup>3</sup><br>
+    Füllungsgrad: 94,16 %</p>
     <h5><br> Daten vom 15. Januar 2024:</h5>
-    <p>Staupegel: 123,12 mNN<br> Stauinhalt: 38,890 Mio.&nbsp;m<sup>3</sup><br> Füllungsgrad: 95,29 %</p>
+    <p>Staupegel: 123,12 mNN<br> Stauinhalt: 38,890 Mio.&nbsp;m<sup>3</sup><br>
+    Füllungsgrad: 95,29 %</p>
     <h5><br> Daten vom 08. Januar 2024:</h5>
-    <p>Staupegel: 123,21 mNN<br> Stauinhalt: 39,155 Mio.&nbsp;m<sup>3</sup><br> Füllungsgrad: 95,72 %</p>
+    <p>Staupegel: 123,21 mNN<br> Stauinhalt: 39,155 Mio.&nbsp;m<sup>3</sup><br>
+    Füllungsgrad: 95,72 %</p>
     <p>&nbsp;</p>
     <h5>Bisherige Tages-Spitzenabgaben:</h5>
     <p>(Eine normale Abgabemenge liegt bei zirka 130.000 m³/d.)</p>
-    <p>193 400 m³ am 03. August 1990<br> 189.450 m³ am 07. August 2020<br> 189.062 m³ am 06. August 2020</p>
+    <p>193 400 m³ am 03. August 1990<br> 189.450 m³ am 07. August 2020<br>
+    189.062 m³ am 06. August 2020</p>
     <p>&nbsp;</p>
 </div>
 
@@ -127,7 +140,8 @@ OLD:
     <h5>&nbsp;</h5>
     <h5>Bisherige Tages-Spitzenabgaben:</h5>
     <p>(Eine normale Abgabemenge liegt bei zirka 130.000 m³/d.)</p>
-    <p>193 400 m³ am 03. August 1990<br> 189.450 m³ am 07. August 2020<br> 189.062 m³ am 06. August 2020</p>
+    <p>193 400 m³ am 03. August 1990<br> 189.450 m³ am 07. August 2020<br>
+    189.062 m³ am 06. August 2020</p>
     <p>&nbsp;</p>
 </div>
 """

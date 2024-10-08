@@ -1,19 +1,20 @@
-from traceback import print_exc
+import datetime as dt
 from os import getenv
+from traceback import print_exc
 
 import pandas as pd
-import datetime as dt
 import sentry_sdk
 
 from ddj_cloud.scrapers.talsperren.exporters.map import filtered_map_exporters
 from ddj_cloud.utils.storage import (
     DownloadFailedException,
+    download_file,
     upload_dataframe,
     upload_file,
-    download_file,
 )
-from .common import Federation, Exporter, ReservoirMeta, to_parquet_bio
+
 from . import locator_maps
+from .common import Exporter, Federation, ReservoirMeta, to_parquet_bio
 
 IGNORE_LIST = [
     "Rurtalsperre Gesamt",
@@ -43,7 +44,7 @@ def _get_base_dataset():
 
     # Instantiate all federation classes
     federation_classes = Federation.__subclasses__()
-    federations = [cls() for cls in federation_classes]  # type: ignore
+    federations = [cls() for cls in federation_classes]
 
     # Get data from all federations
     data = []
@@ -62,13 +63,10 @@ def _get_base_dataset():
     df_new["ts_measured"] = pd.to_datetime(df_new["ts_measured"], utc=True)
 
     # Add timestamp
-    df_new["ts_scraped"] = dt.datetime.now(dt.timezone.utc)
+    df_new["ts_scraped"] = dt.datetime.now(dt.UTC)
 
     # Merge with existing data
-    if not is_first_run:
-        df = pd.concat([df_db, df_new])
-    else:
-        df = df_new
+    df = pd.concat([df_db, df_new]) if not is_first_run else df_new
 
     # Deduplicate, but keep new data if there are duplicates
     df = df.drop_duplicates(
@@ -106,7 +104,7 @@ def _get_base_dataset():
             continue
 
         df[column] = df.apply(
-            lambda row: metas[(row["federation_name"], row["name"])][column],
+            lambda row: metas[(row["federation_name"], row["name"])][column],  # noqa: B023
             axis=1,
         )
 

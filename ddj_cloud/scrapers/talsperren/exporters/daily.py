@@ -2,9 +2,10 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 
 from ddj_cloud.scrapers.talsperren.common import (
-    Exporter,
-    FEDERATION_RENAMES_BREAKS,
     FEDERATION_ORDER_SIZE,
+    FEDERATION_RENAMES_BREAKS,
+    GELSENWASSER_DETAILED,
+    Exporter,
 )
 from ddj_cloud.utils.date_and_time import local_today_midnight
 
@@ -14,6 +15,9 @@ class DailyExporter(Exporter):
 
     def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
         df_base.insert(0, "id", df_base["federation_name"] + "_" + df_base["name"])
+
+        # Only use "Haltern und Hullern Gesamt" for now, it should be more reliable and it has history
+        df_base = df_base[~df_base["name"].isin(GELSENWASSER_DETAILED)]
 
         # Drop all data before one month ago (plus some extra so we don't underfill any medians/means)
         df_base = df_base.loc[
@@ -30,7 +34,7 @@ class DailyExporter(Exporter):
                 ["id"],
             )
             .resample("D")
-            .aggregate(  # type: ignore
+            .aggregate(
                 {
                     "content_mio_m3": "median",
                     "capacity_mio_m3": "median",

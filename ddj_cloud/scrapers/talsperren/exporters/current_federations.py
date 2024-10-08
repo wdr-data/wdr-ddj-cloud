@@ -2,6 +2,7 @@ import pandas as pd
 
 from ddj_cloud.scrapers.talsperren.common import (
     FEDERATION_RENAMES_BREAKS,
+    GELSENWASSER_DETAILED,
     Exporter,
 )
 
@@ -14,7 +15,10 @@ class CurrentFederationsExporter(Exporter):
     def run(self, df_base: pd.DataFrame) -> pd.DataFrame:
         df_base.insert(0, "id", df_base["federation_name"] + "_" + df_base["name"])
 
-        # Gernerate map with latest data
+        # Only use "Haltern und Hullern Gesamt" for now, it should be more reliable
+        df_base = df_base[~df_base["name"].isin(GELSENWASSER_DETAILED)]
+
+        # Generate map with latest data
         df_map = df_base.copy()
         df_map.sort_values(by=["ts_measured"], inplace=True)
         df_map.drop_duplicates(subset="id", keep="last", inplace=True)

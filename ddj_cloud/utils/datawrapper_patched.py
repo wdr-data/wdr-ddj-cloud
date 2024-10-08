@@ -1,7 +1,7 @@
 import json
 
-from datawrapper import Datawrapper as DatawrapperOriginal
 import requests as r
+from datawrapper import Datawrapper as DatawrapperOriginal
 
 
 class Datawrapper(DatawrapperOriginal):

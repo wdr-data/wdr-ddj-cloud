@@ -1,9 +1,15 @@
 import datetime as dt
-from typing import Iterable
+from collections.abc import Iterable
 
 import requests
 
-from ..common import ReservoirRecord, Federation, ReservoirMeta, TZ_UTC, apply_guarded
+from ddj_cloud.scrapers.talsperren.common import (
+    TZ_UTC,
+    Federation,
+    ReservoirMeta,
+    ReservoirRecord,
+    apply_guarded,
+)
 
 
 class AggerReservoirMeta(ReservoirMeta):
@@ -13,7 +19,7 @@ class AggerReservoirMeta(ReservoirMeta):
 class AggerFederation(Federation):
     name = "Aggerverband"
 
-    reservoirs: dict[str, AggerReservoirMeta] = {
+    reservoirs: dict[str, AggerReservoirMeta] = {  # type: ignore
         "Aggertalsperre": {
             "url": "https://gis.aggerverband.de/public/pegel/aggertalsperre_cm.json",
             "capacity_mio_m3": 17.06,
@@ -58,6 +64,9 @@ class AggerFederation(Federation):
             if row[value_idx] is not None and row[value_idx] >= 0
         ]
 
-    def get_data(self, **kwargs) -> Iterable[ReservoirRecord]:
+    def get_data(
+        self,
+        **kwargs,  # noqa: ARG002
+    ) -> Iterable[ReservoirRecord]:
         for records in apply_guarded(self._get_reservoir_records, self.reservoirs.keys()):
             yield from records

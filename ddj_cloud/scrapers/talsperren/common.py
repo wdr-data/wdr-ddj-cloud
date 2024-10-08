@@ -47,6 +47,18 @@ RESERVOIR_RENAMES_BREAKS = {
 }
 
 
+GELSENWASSER_DETAILED = [
+    "Talsperre Haltern Nordbecken",
+    "Talsperre Haltern Südbecken",
+    "Talsperre Hullern",
+]
+
+
+GELSENWASSER_GESAMT = [
+    "Talsperren Haltern und Hullern",
+]
+
+
 @dataclass
 class ReservoirRecord:
     federation_name: str

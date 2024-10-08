@@ -120,6 +120,7 @@ def run(df_base: pd.DataFrame) -> None:
         ("cZfsi", "BL07F"),
         ("WSgd6", "aHate"),
         ("QZfQN", "kcuUG"),
+        ("ZyHl6", "nDeDt"),
     ]
     for chart_id_base, chart_id_live in charts:
         print()

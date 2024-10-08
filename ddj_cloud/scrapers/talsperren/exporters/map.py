@@ -6,6 +6,8 @@ from slugify import slugify
 
 from ddj_cloud.scrapers.talsperren.common import (
     FEDERATION_RENAMES,
+    GELSENWASSER_DETAILED,
+    GELSENWASSER_GESAMT,
     RESERVOIR_RENAMES,
     RESERVOIR_RENAMES_BREAKS,
     Exporter,
@@ -183,8 +185,18 @@ class MapExporter(Exporter):
         )
         return df_map
 
-    def run(self, df_base: pd.DataFrame, do_reservoir_rename: bool = True) -> pd.DataFrame:
+    def run(
+        self,
+        df_base: pd.DataFrame,
+        do_reservoir_rename: bool = True,
+        # Only use "Haltern und Hullern Gesamt" by default for now, it should be more reliable and it has history
+        # Overridden for filtered maps
+        ignored_reservoirs: list[str] | None = GELSENWASSER_DETAILED,
+    ) -> pd.DataFrame:
         df_base.insert(0, "id", df_base["federation_name"] + "_" + df_base["name"])
+
+        if ignored_reservoirs:
+            df_base = df_base[~df_base["name"].isin(ignored_reservoirs)]
 
         # Gernerate map with latest data
         df_map = df_base.copy()
@@ -242,8 +254,19 @@ def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
     class FilteredMapExporter(MapExporter):
         filename = f"filtered_map_{slugify('_'.join(federation_names))}"
 
-        def run(self, df_base: pd.DataFrame, do_reservoir_rename: bool = False) -> pd.DataFrame:
-            df_map = super().run(df_base, do_reservoir_rename=do_reservoir_rename)
+        def run(
+            self,
+            df_base: pd.DataFrame,
+            do_reservoir_rename: bool = False,
+            # For filtered maps, ignore "Haltern und Hullern Gesamt" because we don't use the
+            # history anyways and prefer detailed data for current fill level
+            ignored_reservoirs: list[str] | None = GELSENWASSER_GESAMT,
+        ) -> pd.DataFrame:
+            df_map = super().run(
+                df_base,
+                do_reservoir_rename=do_reservoir_rename,
+                ignored_reservoirs=ignored_reservoirs,
+            )
 
             translated_names = [
                 FEDERATION_RENAMES.get(fed_name, fed_name) for fed_name in federation_names

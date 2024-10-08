@@ -8,6 +8,7 @@ import sentry_sdk
 from datawrapper import Datawrapper
 
 from ddj_cloud.scrapers.talsperren.common import FEDERATION_RENAMES, RESERVOIR_RENAMES
+from ddj_cloud.utils.date_and_time import BERLIN
 from ddj_cloud.utils.formatting import format_datetime, format_number
 
 REVERSE_RESERVOIR_RENAMES = {v: k for k, v in RESERVOIR_RENAMES.items()}
@@ -60,7 +61,7 @@ def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
     content_mio_m3 = format_number(current["content_mio_m3"], places=2)
     capacity_mio_m3 = format_number(current["capacity_mio_m3"], places=2)
     federation_name = FEDERATION_RENAMES.get(current["federation_name"], current["federation_name"])
-    ts_measured = format_datetime(current["ts_measured"])
+    ts_measured = format_datetime(current["ts_measured"].astimezone(BERLIN))
 
     width = "156px"  # if variant == "desktop" else "100px"  # Doesn't seem to shrink anyways
     font_size_header = "13px" if variant == "desktop" else "10px"

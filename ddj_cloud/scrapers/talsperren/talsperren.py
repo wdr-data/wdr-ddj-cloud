@@ -58,7 +58,7 @@ def _filter_bad_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     return df.loc[
         (df["fill_percent"] > (FILL_RATIO_THRESHOLD_LOW * 100))
-        | (df["fill_percent"] < (FILL_RATIO_THRESHOLD_HIGH * 100))
+        & (df["fill_percent"] < (FILL_RATIO_THRESHOLD_HIGH * 100))
     ]
 
 

@@ -113,8 +113,13 @@ class DailyExporter(Exporter):
         # Convert datetime to iso date string
         df_daily_fed["date"] = df_daily_fed["date"].dt.strftime("%Y-%m-%d")
 
-        # Reorder columns by federation size
-        df_daily_fed = df_daily_fed[["date", "Alle Talsperren", *FEDERATION_ORDER_SIZE]]
+        # Reorder columns by federation size (only federations that have data, else we get an error)
+        filtered_federation_order_size = [
+            federation_name
+            for federation_name in FEDERATION_ORDER_SIZE
+            if federation_name in df_daily_fed.columns
+        ]
+        df_daily_fed = df_daily_fed[["date", "Alle Talsperren", *filtered_federation_order_size]]
 
         # Rename federations
         df_daily_fed.rename(columns=FEDERATION_RENAMES_BREAKS, inplace=True)

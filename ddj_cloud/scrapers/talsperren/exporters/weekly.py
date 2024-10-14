@@ -121,8 +121,13 @@ class WeeklyExporter(Exporter):
         # Convert date to ISO Week format
         df_weekly_fed["date"] = df_weekly_fed["date"].dt.strftime("%G-W%V")
 
-        # Reorder columns by federation size
-        df_weekly_fed = df_weekly_fed[["date", "Alle Talsperren", *FEDERATION_ORDER_SIZE]]
+        # Reorder columns by federation size (only federations that have data, else we get an error)
+        filtered_federation_order_size = [
+            federation_name
+            for federation_name in FEDERATION_ORDER_SIZE
+            if federation_name in df_weekly_fed.columns
+        ]
+        df_weekly_fed = df_weekly_fed[["date", "Alle Talsperren", *filtered_federation_order_size]]
 
         # Rename federations
         df_weekly_fed.rename(columns=FEDERATION_RENAMES_BREAKS, inplace=True)

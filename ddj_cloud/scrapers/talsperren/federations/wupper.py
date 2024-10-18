@@ -129,6 +129,11 @@ class WupperFederation(Federation):
         url = self._build_url(self.reservoirs[name]["ajax_id"])
         response = requests.get(url).json()
         content_data = response["Speicherinhalt"]
+
+        # If no data is available, content_data is an empty list
+        if len(content_data) == 0:
+            return []
+
         columns: list[str] = content_data["lines"]
         assert all(
             [column in columns for column in ["time", "Speicherinhalt"]]

@@ -60,8 +60,8 @@ def _to_quarter_rows(data: Results.Data, year: int):
     )
     for quarter in range(4):
         # Skip quarters where data is unavailable
-        if data.overall_ranking.quarters[quarter] == 0:
-            continue
+        # if data.overall_ranking.quarters[quarter] == 0:
+        #     continue
 
         base_data = {
             "year": year,

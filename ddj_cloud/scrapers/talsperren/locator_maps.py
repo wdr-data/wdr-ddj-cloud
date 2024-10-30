@@ -24,7 +24,7 @@ RENAMES = {
 
 
 color_map_fill = {
-    0: "rgb(158, 103, 0)",
+    0: "rgb(227, 6, 20)",
     25: "rgb(252, 199, 87)",
     50: "rgb(119, 219, 249)",
     75: "rgb(82, 157, 220)",
@@ -97,6 +97,34 @@ def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
     return tooltip_html
 
 
+def _simplify_polygon(shape: list[list[list[float]]], n=6):
+    # Truncate coordinates to n decimals
+    for i in range(len(shape)):
+        for j in range(len(shape[i])):
+            for k in range(len(shape[i][j])):
+                shape[i][j][k] = round(shape[i][j][k], n)
+
+
+def _simplify_feature(feature: dict):
+    geometry = feature["geometry"]
+
+    if geometry["type"] == "Polygon":
+        _simplify_polygon(geometry["coordinates"])
+    elif geometry["type"] == "MultiPolygon":
+        for multi_poly in geometry["coordinates"]:
+            _simplify_polygon(multi_poly)
+
+
+def _simplify_area(area_marker: dict):
+    feature = area_marker["feature"]
+
+    if feature["type"] == "Feature":
+        _simplify_feature(feature)
+    elif feature["type"] == "FeatureCollection":
+        for child_feature in feature["features"]:
+            _simplify_feature(child_feature)
+
+
 def run(df_base: pd.DataFrame) -> None:
     assert DATAWRAPPER_TOKEN is not None
 
@@ -154,6 +182,8 @@ def _process_chart(current: dict, dw: Datawrapper, chart_id_base: str, chart_id_
         if marker["type"] != "area":
             # print(f"Skipping {marker['title']} because it is not an area")
             continue
+
+        _simplify_area(marker)
 
         if "Vignette" in marker["title"]:
             # print(f"Skipping {marker['title']} because it is a vignette")

@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: /home/jhoeke/git/ddj/wdr-ddj-cloud/scraper_template
+contact_email: mail@jhoeke.de
+contact_name: Jannes Höke
+description: Scraping the SPNV-​​Qualitätsmonitor NRW website at https://infoportal.mobil.nrw/information-service/qualitaetsmonitor-nrw.html
+display_name: SPNV-​​Qualitätsmonitor NRW
+ephemeral_storage: '512'
+interval: daily
+memory_size: '1024'
+module_name: spnv_qualitaetsmonitor_nrw
+preset: minimal
+

@@ -35,24 +35,28 @@ class GelsenwasserFederation(Federation):
             # Mittig
             "lat": 51.7426053,
             "lon": 7.2485421,
+            "main_purpose": "Trinkwasserversorgung",
         },
         "Talsperre Haltern Nordbecken": {
             "url": "https://www.gelsenwasser.de/themen/unsere-talsperren",
             "capacity_mio_m3": 17.00,
             "lat": 51.7491653,
             "lon": 7.2207341,
+            "main_purpose": "Trinkwasserversorgung",
         },
         "Talsperre Haltern Südbecken": {
             "url": "https://www.gelsenwasser.de/themen/unsere-talsperren",
             "capacity_mio_m3": 3.50,
             "lat": 51.7378838,
             "lon": 7.210882,
+            "main_purpose": "Trinkwasserversorgung",
         },
         "Talsperre Hullern": {
             "url": "https://www.gelsenwasser.de/themen/unsere-talsperren",
             "capacity_mio_m3": 11.00,
             "lat": 51.7457183,
             "lon": 7.2882871,
+            "main_purpose": "Trinkwasserversorgung",
         },
     }
 

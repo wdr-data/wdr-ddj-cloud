@@ -23,46 +23,55 @@ class RuhrFederation(Federation):
             "capacity_mio_m3": 171.70,
             "lon": 7.887853,
             "lat": 51.111176,
+            "main_purpose": "Flussregulierung",
         },
         "Ennepetalsperre": {
             "capacity_mio_m3": 12.60,
             "lon": 7.409321,
             "lat": 51.241241,
+            "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
         "Fürwiggetalsperre": {
             "capacity_mio_m3": 1.67,
             "lon": 7.687793,
             "lat": 51.149712,
+            "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
         "Hennetalsperre": {
             "capacity_mio_m3": 38.40,
             "lon": 8.273851,
             "lat": 51.335423,
+            "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
         "Listertalsperre": {
             "capacity_mio_m3": 21.60,
             "lon": 7.837567,
             "lat": 51.094307,
+            "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
         "Möhnetalsperre": {
             "capacity_mio_m3": 134.50,
             "lon": 8.059335,
             "lat": 51.489704,
+            "main_purpose": "Flussregulierung",
         },
         "Sorpetalsperre": {
             "capacity_mio_m3": 70.37,
             "lon": 7.968285,
             "lat": 51.350979,
+            "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
         "Stausee Ahausen": {
             "capacity_mio_m3": 0.84,
             "lon": 7.954430,
             "lat": 51.138287,
+            "main_purpose": "Flussregulierung",
         },
         "Versetalsperre": {
             "capacity_mio_m3": 32.80,
             "lon": 7.685332,
             "lat": 51.193043,
+            "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
     }
 

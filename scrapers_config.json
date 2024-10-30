@@ -140,5 +140,26 @@
         "extra_env": [
             "TALSPERREN_DATAWRAPPER_TOKEN"
         ]
+    },
+    {
+        "display_name": "SPNV-​​Qualitätsmonitor NRW",
+        "module_name": "spnv_qualitaetsmonitor_nrw",
+        "description": "Scraping the SPNV-​​Qualitätsmonitor NRW website at https://infoportal.mobil.nrw/information-service/qualitaetsmonitor-nrw.html",
+        "contact_name": "Jannes Höke",
+        "contact_email": "mail@jhoeke.de",
+        "memory_size": "1024",
+        "ephemeral_storage": "512",
+        "preset": "minimal",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": false,
+                "data": {
+                    "interval": "daily",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": []
     }
 ]

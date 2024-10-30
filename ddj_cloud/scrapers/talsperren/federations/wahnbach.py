@@ -27,6 +27,7 @@ class WahnbachReservoirFederation(Federation):
             "capacity_mio_m3": 40.92,
             "lat": 50.8049,
             "lon": 7.2838,
+            "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
     }
 

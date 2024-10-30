@@ -27,6 +27,7 @@ class EifelRurFederation(Federation):
             "capacity_mio_m3": 19.30,
             "lat": 50.4952,
             "lon": 6.4216,
+            "main_purpose": "Trinkwasserversorgung",
         },
         # Doesn't seem to have data anymore
         "Rurtalsperre Gesamt": {
@@ -35,42 +36,49 @@ class EifelRurFederation(Federation):
             "capacity_mio_m3": 203.20,
             "lat": 50.637222,
             "lon": 6.441944,
+            "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
         "Rurtalsperre Obersee": {
             "id": 13,
             "capacity_mio_m3": 17.77,
             "lat": 50.6056,
             "lon": 6.3925,
+            "main_purpose": "Trinkwasserversorgung",
         },
         "Rurtalsperre Hauptsee": {
             "id": 12,
             "capacity_mio_m3": 184.83,
             "lat": 50.637222,
             "lon": 6.441944,
+            "main_purpose": "Flussregulierung",
         },
         "Urfttalsperre": {
             "id": 16,
             "capacity_mio_m3": 45.51,
             "lat": 50.6029,
             "lon": 6.4195,
+            "main_purpose": "Flussregulierung",
         },
         "Wehebachtalsperre": {
             "id": 17,
             "capacity_mio_m3": 25.06,
             "lat": 50.7550,
             "lon": 6.3401,
+            "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
         "Stauanlage Heimbach": {
             "id": 2,
             "capacity_mio_m3": 1.21,
             "lat": 50.6285,
             "lon": 6.4792,
+            "main_purpose": "Flussregulierung",
         },
         "Stauanlage Obermaubach": {
             "id": 5,
             "capacity_mio_m3": 1.65,
             "lat": 50.7143,
             "lon": 6.4483,
+            "main_purpose": "Flussregulierung",
         },
     }
 

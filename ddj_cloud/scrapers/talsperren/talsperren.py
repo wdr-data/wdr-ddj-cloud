@@ -23,7 +23,7 @@ IGNORE_LIST = [
 
 # Thresholds for fill percentage
 FILL_RATIO_THRESHOLD_LOW = 0.10  # 10%
-FILL_RATIO_THRESHOLD_HIGH = 1.05  # 105%
+FILL_RATIO_THRESHOLD_HIGH = 1.10  # 110%
 
 
 def _cleanup_old_data(df: pd.DataFrame) -> pd.DataFrame:

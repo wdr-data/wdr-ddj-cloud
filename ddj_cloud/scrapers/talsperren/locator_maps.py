@@ -72,6 +72,8 @@ def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
     margin_narrow = "5px" if variant == "desktop" else "2px"
     margin_outer = "0px" if variant == "desktop" else "-6px"
 
+    main_purpose = current["main_purpose"]
+
     tooltip_html = f"""
 <u style="display: block; text-decoration: none; min-width: {width}; max-width: {width}; margin: { margin_outer }; overflow:hidden; font-size: { font_size_text }; line-height: 1.25;">
     <b style="display: block; font-size: { font_size_header }; margin-bottom: { margin_wide };">{ name }</b>
@@ -83,11 +85,15 @@ def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
     <u style="display: block; text-decoration: none; margin-top: 2px; margin-bottom: { margin_wide };">{ content_mio_m3 } von { capacity_mio_m3 } Mio. m³</u>
     <u style="display: grid; text-decoration: none; gap: { margin_narrow };">
         <u style="display: block; text-decoration: none;">
-            <b>Verband:</b><br/>
+            <b>Verband:</b>
             <span style="overflow-wrap: anywhere;">{ federation_name }</span>
         </u>
         <u style="display: block; text-decoration: none;">
-            <b>Messzeit:</b><br/>
+            <b>Hauptaufgabe:</b>
+            { main_purpose }
+        </u>
+        <u style="display: block; text-decoration: none;">
+            <b>Messzeit:</b>
             <td>{ ts_measured }</td>
         </u>
     </u>

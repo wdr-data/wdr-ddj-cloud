@@ -85,15 +85,15 @@ def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
     <u style="display: block; text-decoration: none; margin-top: 2px; margin-bottom: { margin_wide };">{ content_mio_m3 } von { capacity_mio_m3 } Mio. m³</u>
     <u style="display: grid; text-decoration: none; gap: { margin_narrow };">
         <u style="display: block; text-decoration: none;">
-            <b>Verband:</b>
+            <b>Verband: </b>
             <span style="overflow-wrap: anywhere;">{ federation_name }</span>
         </u>
         <u style="display: block; text-decoration: none;">
-            <b>Hauptaufgabe:</b>
+            <b>Hauptaufgabe: </b>
             { main_purpose }
         </u>
         <u style="display: block; text-decoration: none;">
-            <b>Messzeit:</b>
+            <b>Messzeit: </b>
             <td>{ ts_measured }</td>
         </u>
     </u>

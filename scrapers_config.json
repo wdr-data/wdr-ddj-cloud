@@ -168,7 +168,7 @@
         "description": "Mirrors data from https://github.com/robert-koch-institut/Intensivkapazitaeten_und_COVID-19-Intensivbettenbelegung_in_Deutschland and applies some transformations for display in Datawrapper",
         "contact_name": "Jannes Höke",
         "contact_email": "mail@jhoeke.de",
-        "memory_size": "1024",
+        "memory_size": "2048",
         "ephemeral_storage": "512",
         "preset": "pandas",
         "events": [

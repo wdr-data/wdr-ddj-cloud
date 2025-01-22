@@ -17,9 +17,13 @@ def load_data(url: str) -> pd.DataFrame:
     r = requests.get(url)
     r.raise_for_status()
 
-    cached_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(cached_file, "w") as f:
-        f.write(r.text)
+    try:
+        cached_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(cached_file, "w") as f:
+            f.write(r.text)
+    except Exception:
+        # Can't write here on Lambda
+        pass
 
     return pd.read_csv(StringIO(r.text), low_memory=False)
 

@@ -11,9 +11,9 @@ from ddj_cloud.scrapers.divi_intensivregister import (
 def run():
     for scraper in [
         deutschland_altersgruppen,
+        deutschland_kapazitaeten,
         bundeslaender_kapazitaeten,
         landkreise_kapazitaeten,
-        deutschland_kapazitaeten,
     ]:
         try:
             scraper.run()

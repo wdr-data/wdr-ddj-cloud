@@ -29,6 +29,20 @@ def filter_by_latest_date(df: pd.DataFrame) -> pd.DataFrame:
     return df[df["datum"] == latest_date]
 
 
+def make_latest_date_single(
+    df: pd.DataFrame, drop_columns: list[str], rename_columns: dict[str, str]
+) -> pd.DataFrame:
+    df = filter_by_latest_date(df).copy()
+    df.reset_index(drop=True, inplace=True)
+    df.drop(columns=drop_columns, inplace=True)
+    df = df.melt(var_name="column", value_name="value")
+    df.insert(
+        1, "label", df["column"].apply(lambda col_name: rename_columns.get(col_name, col_name))
+    )
+
+    return df
+
+
 def filter_by_id_column(
     df: pd.DataFrame, column_name: str
 ) -> Generator[tuple[int, pd.DataFrame], None, None]:

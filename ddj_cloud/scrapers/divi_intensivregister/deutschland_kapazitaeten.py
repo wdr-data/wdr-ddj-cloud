@@ -3,7 +3,11 @@ from functools import partial, reduce
 
 import pandas as pd
 
-from ddj_cloud.scrapers.divi_intensivregister.common import filter_by_latest_date, load_data
+from ddj_cloud.scrapers.divi_intensivregister.common import (
+    filter_by_latest_date,
+    load_data,
+    make_latest_date_single,
+)
 from ddj_cloud.utils.storage import upload_dataframe
 
 url = "https://github.com/robert-koch-institut/Intensivkapazitaeten_und_COVID-19-Intensivbettenbelegung_in_Deutschland/raw/refs/heads/main/Intensivregister_Deutschland_Kapazitaeten.csv"
@@ -76,6 +80,18 @@ def run():
         filter_by_latest_date(df_expanded_behandlungsgruppe),
         "divi_intensivregister/deutschland_kapazitaeten/latest_by_behandlungsgruppe.csv",
     )
+    upload_dataframe(
+        make_latest_date_single(
+            df_expanded_behandlungsgruppe,
+            [
+                "datum",
+                "bundesland_id",
+                "bundesland_name",
+            ],
+            {},
+        ),
+        "divi_intensivregister/deutschland_kapazitaeten/latest_by_behandlungsgruppe_single.csv",
+    )
 
     df_expanded_behandlungsgruppe_level_2 = expand_df(
         df.drop(columns=["behandlungsgruppe"]),
@@ -89,4 +105,16 @@ def run():
     upload_dataframe(
         filter_by_latest_date(df_expanded_behandlungsgruppe_level_2),
         "divi_intensivregister/deutschland_kapazitaeten/latest_by_behandlungsgruppe_level_2.csv",
+    )
+    upload_dataframe(
+        make_latest_date_single(
+            df_expanded_behandlungsgruppe_level_2,
+            [
+                "datum",
+                "bundesland_id",
+                "bundesland_name",
+            ],
+            {},
+        ),
+        "divi_intensivregister/deutschland_kapazitaeten/latest_by_behandlungsgruppe_level_2_single.csv",
     )

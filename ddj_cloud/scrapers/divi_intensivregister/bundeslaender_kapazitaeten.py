@@ -4,6 +4,7 @@ from ddj_cloud.scrapers.divi_intensivregister.common import (
     filter_by_bundesland,
     filter_by_latest_date,
     load_data,
+    make_latest_date_single,
 )
 from ddj_cloud.utils.storage import upload_dataframe
 
@@ -27,4 +28,20 @@ def run():
         upload_dataframe(
             df_bundesland_latest_date,
             f"divi_intensivregister/bundeslaender_kapazitaeten/by_bundesland/{bundesland_id:02d}/latest.csv",
+        )
+
+        df_bundesland_latest_date_single = make_latest_date_single(
+            df_bundesland,
+            [
+                "datum",
+                "bundesland_id",
+                "bundesland_name",
+                "behandlungsgruppe",
+                "behandlungsgruppe_level_2",
+            ],
+            {},
+        )
+        upload_dataframe(
+            df_bundesland_latest_date_single,
+            f"divi_intensivregister/bundeslaender_kapazitaeten/by_bundesland/{bundesland_id:02d}/latest_single.csv",
         )

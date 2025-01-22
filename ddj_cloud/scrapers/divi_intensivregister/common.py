@@ -1,13 +1,26 @@
 from collections.abc import Generator
 from io import StringIO
+from pathlib import Path
 
 import pandas as pd
 import requests
 
 
 def load_data(url: str) -> pd.DataFrame:
+    cached_file = Path(__file__).parent / "cache" / url.split("/")[-1]
+
+    if cached_file.exists():
+        print("Using cached file:", cached_file)
+        return pd.read_csv(cached_file, low_memory=False)
+
+    print("Downloading data:", url)
     r = requests.get(url)
     r.raise_for_status()
+
+    cached_file.parent.mkdir(parents=True, exist_ok=True)
+    with open(cached_file, "w") as f:
+        f.write(r.text)
+
     return pd.read_csv(StringIO(r.text), low_memory=False)
 
 

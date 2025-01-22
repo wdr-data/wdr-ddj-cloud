@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: /home/jhoeke/git/ddj/wdr-ddj-cloud/scraper_template
+contact_email: mail@jhoeke.de
+contact_name: Jannes Höke
+description: Mirrors data from https://github.com/robert-koch-institut/Intensivkapazitaeten_und_COVID-19-Intensivbettenbelegung_in_Deutschland
+    and applies some transformations for display in Datawrapper
+display_name: DIVI Intensivregister
+ephemeral_storage: '512'
+interval: custom
+interval_custom: cron(0 13,14 * * ? *)
+memory_size: '1024'
+module_name: divi_intensivregister
+preset: pandas
+

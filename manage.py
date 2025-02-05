@@ -117,8 +117,7 @@ def _delete_scraper(scraper: dict, scrapers_config) -> Tuple[bool, list[dict]]:
 
 
 @click.group(help="Management utility for wdr-ddj-cloud. Each command has their own --help option.")
-def cli():
-    ...
+def cli(): ...
 
 
 @cli.command(

@@ -18,7 +18,8 @@
                 }
             }
         ],
-        "extra_env": []
+        "extra_env": [],
+        "deploy": false
     },
     {
         "display_name": "SWR Benzinpreise",
@@ -41,7 +42,8 @@
         ],
         "extra_env": [
             "SWR_BENZINPREISE_SERVICE_ACCOUNT"
-        ]
+        ],
+        "deploy": true
     },
     {
         "display_name": "NASA Waldbranddaten Rhodos",
@@ -66,7 +68,8 @@
             "NASA_WALDBRANDDATEN_RHODOS_MAP_KEY",
             "NASA_WALDBRANDDATEN_RHODOS_CHART_ID",
             "NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN"
-        ]
+        ],
+        "deploy": false
     },
     {
         "display_name": "NASA Waldbranddaten Maui",
@@ -91,7 +94,8 @@
             "NASA_WALDBRANDDATEN_MAUI_CHART_ID",
             "NASA_WALDBRANDDATEN_RHODOS_MAP_KEY",
             "NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN"
-        ]
+        ],
+        "deploy": false
     },
     {
         "display_name": "NASA Waldbranddaten Teneriffa",
@@ -116,7 +120,8 @@
             "NASA_WALDBRANDDATEN_TENERIFFA_CHART_ID",
             "NASA_WALDBRANDDATEN_RHODOS_MAP_KEY",
             "NASA_WALDBRANDDATEN_TENERIFFA_DATAWRAPPER_TOKEN"
-        ]
+        ],
+        "deploy": false
     },
     {
         "display_name": "Talsperren",
@@ -139,7 +144,8 @@
         ],
         "extra_env": [
             "TALSPERREN_DATAWRAPPER_TOKEN"
-        ]
+        ],
+        "deploy": true
     },
     {
         "display_name": "SPNV-​​Qualitätsmonitor NRW",
@@ -160,7 +166,8 @@
                 }
             }
         ],
-        "extra_env": []
+        "extra_env": [],
+        "deploy": true
     },
     {
         "display_name": "DIVI Intensivregister",
@@ -181,7 +188,8 @@
                 }
             }
         ],
-        "extra_env": []
+        "extra_env": [],
+        "deploy": true
     },
     {
         "display_name": "whitehouse.gov",
@@ -202,6 +210,7 @@
                 }
             }
         ],
-        "extra_env": []
+        "extra_env": [],
+        "deploy": true
     }
 ]

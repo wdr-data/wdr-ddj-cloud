@@ -186,6 +186,7 @@ def new_scraper(pretend: bool):
 
     new_entry["events"] = [event]
     new_entry["extra_env"] = []
+    new_entry["deploy"] = True
 
     scrapers_config.append(new_entry)
     _save_scrapers_config(scrapers_config)
@@ -203,6 +204,7 @@ def list_scrapers():
     for i, scraper in enumerate(scrapers_config):
         click.echo(click.style("Display name: ", bold=True) + scraper["display_name"])
         click.echo(click.style("Module name: ", bold=True) + scraper["module_name"])
+        click.echo(click.style("Deploy? ", bold=True) + f"{'Yes' if scraper['deploy'] else 'No'}")
         click.echo(
             click.style("Contact: ", bold=True)
             + f"{scraper['contact_name']} <{scraper['contact_email']}>"
@@ -312,6 +314,9 @@ def generate_serverless_yml():
     }
 
     for scraper in scrapers_config:
+        if not scraper["deploy"]:
+            continue
+
         events = []
 
         for i, event in enumerate(scraper["events"]):

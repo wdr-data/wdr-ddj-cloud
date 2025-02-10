@@ -133,7 +133,7 @@ def write_articles(articles: Iterable[Article], filename: str):
     upload_file(
         article_str.encode("utf-8"),
         filename,
-        content_type="text/plain; charset=utf-8",
+        content_type="text/plain;charset=utf-8",
     )
 
 

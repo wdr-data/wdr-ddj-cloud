@@ -162,7 +162,6 @@ def __upload_file(
     *,
     acl: str | None = None,
     content_type: str | None = None,
-    content_encoding: str | None = None,
 ):
     bio = BytesIO(content)
 
@@ -186,9 +185,6 @@ def __upload_file(
         if content_type is not None:
             extra_args["ContentType"] = content_type
 
-        if content_encoding is not None:
-            extra_args["ContentEncoding"] = content_encoding
-
         assert s3 is not None
         s3.upload_fileobj(
             bio,
@@ -204,33 +200,20 @@ def _upload_file(
     *,
     acl: str | None = None,
     content_type: str | None = None,
-    content_encoding: str | None = None,
     archive: bool = True,
 ) -> list[str]:
     """Internal file upload function that performs optional achiving and storage event tracking"""
     filenames = [filename]
 
     # Upload file normally
-    __upload_file(
-        content,
-        filename,
-        acl=acl,
-        content_type=content_type,
-        content_encoding=content_encoding,
-    )
+    __upload_file(content, filename, acl=acl, content_type=content_type)
     STORAGE_EVENTS.append({"type": "upload", "filename": filename})
 
     # Upload archived version
     if archive:
         timestamp = local_today().isoformat()
         filename_archive = f"archive/{timestamp}/{filename}"
-        __upload_file(
-            content,
-            filename_archive,
-            acl=acl,
-            content_type=content_type,
-            content_encoding=content_encoding,
-        )
+        __upload_file(content, filename_archive, acl=acl, content_type=content_type)
         STORAGE_EVENTS.append(
             {
                 "type": "archive",
@@ -248,7 +231,6 @@ def upload_file(  # noqa: PLR0913
     filename: str,
     *,
     content_type: str | None = None,
-    content_encoding: str | None = None,
     change_notification: str | None = None,
     compare_fn: Callable[[bytes, bytes], bool] = simple_compare,
     acl: str | None = "public-read",
@@ -361,7 +343,6 @@ def upload_dataframe(  # noqa: PLR0913
         write,
         filename,
         content_type="text/csv",
-        content_encoding="utf-8",
         acl=acl,
         compare_fn=compare_fn,
         create_cloudfront_invalidation=create_cloudfront_invalidation,

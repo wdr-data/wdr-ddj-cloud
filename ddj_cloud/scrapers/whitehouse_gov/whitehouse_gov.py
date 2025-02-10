@@ -131,9 +131,7 @@ def write_articles(articles: Iterable[Article], filename: str):
     article_str = "\n\n\n--- NEXT ARTICLE ---\n\n\n".join(article_strs)
 
     upload_file(
-        article_str.encode("utf-8"),
-        filename,
-        content_type="text/plain; charset=utf-8",
+        article_str.encode("utf-8"), filename, content_type="text/plain", content_encoding="utf-8"
     )
 
 

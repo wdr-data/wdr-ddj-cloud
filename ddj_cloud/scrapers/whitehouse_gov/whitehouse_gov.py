@@ -27,7 +27,11 @@ class Article:
 
     @property
     def text_clean(self) -> str:
-        return self.text.replace("\n\n\n\n", "\n").strip()
+        return (
+            self.text.replace("\n\n\n\n", "\n")
+            .replace(" ", " ")  # nbsp
+            .strip()
+        )
 
     def __str__(self) -> str:
         return f"""

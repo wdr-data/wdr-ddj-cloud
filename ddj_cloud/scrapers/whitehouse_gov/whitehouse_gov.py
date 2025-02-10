@@ -102,7 +102,7 @@ def extract_article_data(soup: bs4.BeautifulSoup) -> Article:
     main_content = soup.select_one("div.entry-content")
     assert main_content is not None
 
-    text = main_content.get_text()
+    text = main_content.get_text(separator="\n", strip=True)
 
     return Article(
         title=title,

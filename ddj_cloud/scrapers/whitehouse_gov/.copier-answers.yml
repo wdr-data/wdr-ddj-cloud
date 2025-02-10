@@ -1,0 +1,15 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: /home/jhoeke/git/ddj/wdr-ddj-cloud/scraper_template
+contact_email: mail@jhoeke.de
+contact_name: Jannes Höke
+description: 'Wir scrapen publizierte Beiträge von https://www.whitehouse.gov/presidential-actions/
+    und evtl. anderen Unterseiten, um diese zu analysieren
+
+    '
+display_name: whitehouse.gov
+ephemeral_storage: '512'
+interval: daily
+memory_size: '512'
+module_name: whitehouse_gov
+preset: minimal
+

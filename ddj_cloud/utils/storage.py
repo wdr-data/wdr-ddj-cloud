@@ -235,6 +235,7 @@ def upload_file(  # noqa: PLR0913
     compare_fn: Callable[[bytes, bytes], bool] = simple_compare,
     acl: str | None = "public-read",
     create_cloudfront_invalidation: bool = False,
+    archive: bool = True,
 ):
     """Upload a file to storage.
 
@@ -283,6 +284,7 @@ def upload_file(  # noqa: PLR0913
         filename,
         acl=acl,
         content_type=content_type,
+        archive=archive,
     )
 
     # Create CloudFront invalidation
@@ -303,6 +305,7 @@ def upload_dataframe(  # noqa: PLR0913
     acl: str | None = "public-read",
     create_cloudfront_invalidation: bool = False,
     datawrapper_datetimes: bool = False,
+    archive: bool = True,
 ):
     """Upload a dataframe to storage.
 
@@ -344,6 +347,7 @@ def upload_dataframe(  # noqa: PLR0913
         compare_fn=compare_fn,
         create_cloudfront_invalidation=create_cloudfront_invalidation,
         change_notification=change_notification,
+        archive=archive,
     )
 
 

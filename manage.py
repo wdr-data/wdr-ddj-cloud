@@ -1,15 +1,13 @@
 import importlib
 import json
 import os
-from pathlib import Path
-import sys
-from typing import Optional, Tuple
 import shutil
+import sys
+from pathlib import Path
 
 import click
-from copier import Worker, DEFAULT_DATA
 import yaml
-
+from copier import DEFAULT_DATA, Worker
 
 BASE_DIR = Path(__file__).parent
 TEMPLATE_NAME = "scraper_template"
@@ -25,8 +23,8 @@ def _success(
     text: str,
     *,
     nl: bool = True,
-    echo_kwargs: Optional[dict] = None,
-    style_kwargs: Optional[dict] = None,
+    echo_kwargs: dict | None = None,
+    style_kwargs: dict | None = None,
 ):
     click.echo(
         click.style(text, fg="green", bold=True, **(style_kwargs or {})),
@@ -39,8 +37,8 @@ def _warn(
     text: str,
     *,
     nl: bool = True,
-    echo_kwargs: Optional[dict] = None,
-    style_kwargs: Optional[dict] = None,
+    echo_kwargs: dict | None = None,
+    style_kwargs: dict | None = None,
 ):
     click.echo(
         click.style(text, fg="yellow", bold=True, **(style_kwargs or {})),
@@ -53,8 +51,8 @@ def _error(
     text: str,
     *,
     nl: bool = True,
-    echo_kwargs: Optional[dict] = None,
-    style_kwargs: Optional[dict] = None,
+    echo_kwargs: dict | None = None,
+    style_kwargs: dict | None = None,
 ):
     click.echo(
         click.style(text, fg="red", bold=True, **(style_kwargs or {})), nl=nl, **(echo_kwargs or {})
@@ -65,8 +63,8 @@ def _info(
     text: str,
     *,
     nl: bool = True,
-    echo_kwargs: Optional[dict] = None,
-    style_kwargs: Optional[dict] = None,
+    echo_kwargs: dict | None = None,
+    style_kwargs: dict | None = None,
 ):
     click.echo(
         click.style(text, fg="bright_blue", **(style_kwargs or {})), nl=nl, **(echo_kwargs or {})
@@ -88,17 +86,17 @@ def _save_scrapers_config(scrapers_config: list[dict]):
         json.dump(scrapers_config, fp, indent=4, ensure_ascii=False)
 
 
-def _find_scraper_by_name(name: str, scraper_config: list[dict]) -> Optional[dict]:
+def _find_scraper_by_name(name: str, scraper_config: list[dict]) -> dict | None:
     by_display_name = {entry["display_name"]: entry for entry in scraper_config}
     by_module_name = {entry["module_name"]: entry for entry in scraper_config}
     return by_display_name.get(name) or by_module_name.get(name)
 
 
-def _delete_scraper(scraper: dict, scrapers_config) -> Tuple[bool, list[dict]]:
+def _delete_scraper(scraper: dict, scrapers_config) -> tuple[bool, list[dict]]:
     _warn(f"Warning: This will delete all files at {SCRAPERS_DIR / scraper['module_name']}")
     _info("To continue, please type ", nl=False)
     click.echo(click.style("DELETE", fg="bright_red", bold=True), nl=False)
-    if "DELETE" != click.prompt("", default="", show_default=False):
+    if click.prompt("", default="", show_default=False) != "DELETE":
         _warn("Aborting!")
         return False, scrapers_config
 
@@ -117,8 +115,7 @@ def _delete_scraper(scraper: dict, scrapers_config) -> Tuple[bool, list[dict]]:
 
 
 @click.group(help="Management utility for wdr-ddj-cloud. Each command has their own --help option.")
-def cli():
-    ...
+def cli(): ...
 
 
 @cli.command(
@@ -189,6 +186,7 @@ def new_scraper(pretend: bool):
 
     new_entry["events"] = [event]
     new_entry["extra_env"] = []
+    new_entry["deploy"] = True
 
     scrapers_config.append(new_entry)
     _save_scrapers_config(scrapers_config)
@@ -206,6 +204,7 @@ def list_scrapers():
     for i, scraper in enumerate(scrapers_config):
         click.echo(click.style("Display name: ", bold=True) + scraper["display_name"])
         click.echo(click.style("Module name: ", bold=True) + scraper["module_name"])
+        click.echo(click.style("Deploy? ", bold=True) + f"{'Yes' if scraper['deploy'] else 'No'}")
         click.echo(
             click.style("Contact: ", bold=True)
             + f"{scraper['contact_name']} <{scraper['contact_email']}>"
@@ -266,7 +265,7 @@ def test_scraper(module_name):
         else:
             _warn("Warning: Scraper has no run() method")
 
-    except Exception as e:
+    except Exception:
         _error("Scraper failed! Logging error...\n")
         raise
 
@@ -292,8 +291,8 @@ def test_all_scrapers():
     for scraper in scrapers_config:
         try:
             test_scraper([scraper["module_name"]])
-        except:
-            print("")
+        except Exception:
+            print()
 
 
 @cli.command("generate", help='Generate the "serverless.yml" for deployment.')
@@ -315,6 +314,9 @@ def generate_serverless_yml():
     }
 
     for scraper in scrapers_config:
+        if not scraper["deploy"]:
+            continue
+
         events = []
 
         for i, event in enumerate(scraper["events"]):

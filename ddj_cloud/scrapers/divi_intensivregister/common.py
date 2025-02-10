@@ -60,3 +60,51 @@ def filter_by_bundesland(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame]
 
 def filter_by_landkreis(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame], None, None]:
     yield from filter_by_id_column(df, "landkreis_id")
+
+
+def add_rows_for_missing_dates(
+    df: pd.DataFrame,
+    copy_columns: list[str],
+    *,
+    max_date: str | None = None,
+) -> pd.DataFrame:
+    copy_columns_set = set(copy_columns)
+
+    if max_date is None:
+        max_date = df["datum"].max()
+
+    min_date = df["datum"].min()
+
+    dates_in_df = set(pd.to_datetime(df["datum"]).to_list())
+    dates_in_range = set(pd.date_range(min_date, max_date))
+    missing_dates = dates_in_range - dates_in_df
+
+    missing_date_dfs = []
+
+    for date in sorted(missing_dates):
+        date_iso = date.strftime("%Y-%m-%d")
+
+        # Get the previous row
+        previous_day = date - pd.Timedelta(days=1)
+        previous_day_iso = previous_day.strftime("%Y-%m-%d")
+        previous_row = df[df["datum"] == previous_day_iso]
+
+        # If the previous row is missing, we can't add a row for this date
+        if previous_row.size == 0:
+            continue
+
+        new_row: pd.DataFrame = previous_row.copy()
+        new_row["datum"] = date_iso
+
+        # NAs for columns that are not in the copy_columns list
+        for column in new_row.columns:
+            if column not in copy_columns_set and column != "datum":
+                new_row[column] = pd.NA
+
+        # Insert the new row
+        missing_date_dfs.append(new_row)
+        print(f"Added row for {date_iso}")
+        print(new_row)
+
+    df = pd.concat([df, *missing_date_dfs])
+    return df.sort_values(by=["datum"])

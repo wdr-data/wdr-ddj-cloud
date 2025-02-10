@@ -4,6 +4,7 @@ from functools import partial, reduce
 import pandas as pd
 
 from ddj_cloud.scrapers.divi_intensivregister.common import (
+    add_rows_for_missing_dates,
     filter_by_latest_date,
     load_data,
     make_latest_date_single,
@@ -11,6 +12,12 @@ from ddj_cloud.scrapers.divi_intensivregister.common import (
 from ddj_cloud.utils.storage import upload_dataframe
 
 url = "https://github.com/robert-koch-institut/Intensivkapazitaeten_und_COVID-19-Intensivbettenbelegung_in_Deutschland/raw/refs/heads/main/Intensivregister_Deutschland_Kapazitaeten.csv"
+
+meta_columns = [
+    "datum",
+    "bundesland_id",
+    "bundesland_name",
+]
 
 
 def expand_column(
@@ -60,17 +67,17 @@ def expand_df(
 
 def run():
     df = load_data(url)
+    df = add_rows_for_missing_dates(
+        df,
+        [*meta_columns, "behandlungsgruppe", "behandlungsgruppe_level_2"],
+    )
+
     upload_dataframe(df, "divi_intensivregister/deutschland_kapazitaeten/history_original.csv")
 
-    static_columns = [
-        "datum",
-        "bundesland_id",
-        "bundesland_name",
-    ]
     df_expanded_behandlungsgruppe = expand_df(
         df.drop(columns=["behandlungsgruppe_level_2"]),
         target_column="behandlungsgruppe",
-        static_columns=static_columns,
+        static_columns=meta_columns,
     )
     upload_dataframe(
         df_expanded_behandlungsgruppe,
@@ -96,7 +103,7 @@ def run():
     df_expanded_behandlungsgruppe_level_2 = expand_df(
         df.drop(columns=["behandlungsgruppe"]),
         target_column="behandlungsgruppe_level_2",
-        static_columns=static_columns,
+        static_columns=meta_columns,
     )
     upload_dataframe(
         df_expanded_behandlungsgruppe_level_2,
@@ -109,11 +116,7 @@ def run():
     upload_dataframe(
         make_latest_date_single(
             df_expanded_behandlungsgruppe_level_2,
-            [
-                "datum",
-                "bundesland_id",
-                "bundesland_name",
-            ],
+            meta_columns,
             {},
         ),
         "divi_intensivregister/deutschland_kapazitaeten/latest_by_behandlungsgruppe_level_2_single.csv",

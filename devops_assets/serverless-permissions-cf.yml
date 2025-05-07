@@ -246,3 +246,35 @@ Resources:
       GroupName: !Sub "${ServiceName}-lambda-test-group"
       ManagedPolicyArns:
         - !Ref ServerlessLambdaTestPolicy
+
+  ServerlessS3ReadOnlyPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "${ServiceName}-s3-readonly"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # Allow listing buckets and their location
+          - Effect: Allow
+            Action:
+              - s3:ListAllMyBuckets
+              - s3:ListBucket
+              - s3:GetBucketLocation
+            Resource: "*"
+          # Allow read access to all objects and bucket metadata
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:GetObjectVersion
+              - s3:GetBucketAcl
+              - s3:GetBucketPolicy
+            Resource:
+              - "arn:aws:s3:::*"
+              - "arn:aws:s3:::*/*"
+
+  ServerlessS3ReadOnlyGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: !Sub "${ServiceName}-s3-readonly-group"
+      ManagedPolicyArns:
+        - !Ref ServerlessS3ReadOnlyPolicy

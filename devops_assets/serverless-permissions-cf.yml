@@ -224,16 +224,22 @@ Resources:
             Resource:
               - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ServiceName}-*
 
-          # Schemas permissions for shareable test events
+          # Some registry operations must be global
           - Effect: Allow
             Action:
+              - schemas:ListRegistries
               - schemas:CreateRegistry
+              - schemas:GetDiscoveredSchema
+            Resource: "*"
+
+          # All other schema‐registry operations scoped to the lambda-testevent-schemas registry
+          - Effect: Allow
+            Action:
               - schemas:CreateSchema
               - schemas:DeleteSchema
               - schemas:DeleteSchemaVersion
               - schemas:DescribeRegistry
               - schemas:DescribeSchema
-              - schemas:GetDiscoveredSchema
               - schemas:ListSchemaVersions
               - schemas:UpdateSchema
             Resource:

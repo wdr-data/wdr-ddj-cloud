@@ -178,3 +178,71 @@ Resources:
 
             Resource:
               - "*"
+
+  ServerlessLambdaTestPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # List & describe all Lambdas
+          - Effect: Allow
+            Action:
+              - lambda:ListFunctions
+              - lambda:GetFunction
+              - lambda:GetFunctionConfiguration
+              - lambda:GetFunctionEventInvokeConfig
+              - lambda:ListVersionsByFunction
+              - lambda:ListAliases
+              - lambda:GetAlias
+              - lambda:ListTags
+            Resource: "*"
+
+          # Invoke only your service’s functions
+          - Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource:
+              - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ServiceName}-*
+
+          # Read recent logs from invocations
+          - Effect: Allow
+            Action:
+              - logs:DescribeLogStreams
+              - logs:GetLogEvents
+              - logs:FilterLogEvents
+            Resource:
+              - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${ServiceName}-*:log-stream:*
+
+          # Manage shared test-event definitions
+          - Effect: Allow
+            Action:
+              - lambda:ListFunctionEventInvokeConfigs
+              - lambda:GetFunctionEventInvokeConfig
+              - lambda:PutFunctionEventInvokeConfig
+              - lambda:DeleteFunctionEventInvokeConfig
+            Resource:
+              - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ServiceName}-*
+
+          # Schemas permissions for shareable test events
+          - Effect: Allow
+            Action:
+              - schemas:CreateRegistry
+              - schemas:CreateSchema
+              - schemas:DeleteSchema
+              - schemas:DeleteSchemaVersion
+              - schemas:DescribeRegistry
+              - schemas:DescribeSchema
+              - schemas:GetDiscoveredSchema
+              - schemas:ListSchemaVersions
+              - schemas:UpdateSchema
+            Resource:
+              - !Sub "arn:aws:schemas:${AWS::Region}:${AWS::AccountId}:registry/lambda-testevent-schemas"
+              - !Sub "arn:aws:schemas:${AWS::Region}:${AWS::AccountId}:schema/lambda-testevent-schemas/*"
+
+  ServerlessLambdaTestGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: !Sub "${ServiceName}-lambda-test-group"
+      ManagedPolicyArns:
+        - !Ref ServerlessLambdaTestPolicy

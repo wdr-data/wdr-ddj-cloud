@@ -71,11 +71,9 @@ class WahnbachReservoirFederation(Federation):
             assert len(following_nodes) >= 1, "Not enough following nodes found"
 
             # Parse content
-            content_match = re.search(
-                r"Stauinhalt:\s([\d,]+)\sMio.\s?m[3³]",
-                following_nodes[0].text.strip(),
-            )
-            assert content_match, "No match found for content"
+            content = following_nodes[0].text.strip()
+            content_match = re.search(r"Stauinhalt:\s([\d,\.]+)\sMio.\s?m[3³]", content)
+            assert content_match, "No match found for content: " + content
             content_mio_m3 = float(content_match.group(1).replace(",", "."))
 
             # # Parse percentage
@@ -101,7 +99,22 @@ class WahnbachReservoirFederation(Federation):
 
 """
 Example HTML:
+<div class="ce-bodytext">
+    <h5>&nbsp;</h5>
+    <h5>Aktuelle Daten vom 05. Mai 2025:</h5>
+    <p>Staupegel: 120,85 mNN<br> Stauinhalt: 34.713 Mio.&nbsp;m<sup>3</sup><br> Füllungsgrad: 84,86 %</p>
+    <h5>Daten vom 28. April 2025:</h5>
+    <p>Staupegel: 121,06 mNN<br> Stauinhalt: 35.096 Mio.&nbsp;m<sup>3</sup><br> Füllungsgrad: 85,80 %</p>
+    <h5>Daten vom 21. April 2025:</h5>
+    <p>Staupegel: 121,18 mNN<br> Stauinhalt: 35.316 Mio.&nbsp;m<sup>3</sup><br> Füllungsgrad: 86,34 %</p>
+    <h5>&nbsp;</h5>
+    <h5>Bisherige Tages-Spitzenabgaben:</h5>
+    <p>(Eine normale Abgabemenge liegt bei zirka 130.000 m³/d.)</p>
+    <p>193 400 m³ am 03. August 1990<br> 189.450 m³ am 07. August 2020<br> 189.062 m³ am 06. August 2020</p>
+    <p>&nbsp;</p>
+</div>
 
+OLD:
 <div class="ce-bodytext">
     <h5><br> Aktuelle Daten vom 22. Januar 2024:</h5>
     <p>Staupegel: 122,88 mNN<br> Stauinhalt: 38,516 Mio.&nbsp;m<sup>3</sup><br>
@@ -121,7 +134,7 @@ Example HTML:
 </div>
 
 
-OLD:
+OLDER:
 <div class="ce-bodytext">
     <h5>Aktuelle Daten vom 30. Oktober 2023:</h5>
     <p>Staupegel: 119,93 mNN</p>

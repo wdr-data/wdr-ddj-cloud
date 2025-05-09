@@ -40,11 +40,9 @@ custom:
     # Needed for lxml to work?
     pipCmdExtraArgs: ["--platform manylinux2014_x86_64", "--only-binary=:all:"]
 
-  customDomainBaseNews: scrapers.data.wdr.news
   customDomainBaseWdrDe: scrapers.data.wdr.de
-  acmCertificateId: 09a7667f-ce0e-4ca7-8ee3-31ba79f75f80
+  acmCertificateId: b24fb4c7-2b4d-45b5-a58e-7f18953fbffa
 
-  customDomainNameNews: "${self:provider.stage}.${self:custom.customDomainBaseNews}"
   customDomainNameWdrDe: "${self:provider.stage}.${self:custom.customDomainBaseWdrDe}"
 
 package:
@@ -166,7 +164,6 @@ resources:
 
           # ACM Certificate and DNS must be set up manually
           Aliases:
-            - "${self:custom.customDomainNameNews}"
             - "${self:custom.customDomainNameWdrDe}"
           ViewerCertificate:
             AcmCertificateArn:

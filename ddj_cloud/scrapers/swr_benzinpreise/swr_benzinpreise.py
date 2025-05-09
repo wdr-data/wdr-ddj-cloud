@@ -11,8 +11,8 @@ from ddj_cloud.utils import bigquery as bigquery_utils
 from ddj_cloud.utils.date_and_time import local_today
 from ddj_cloud.utils.storage import upload_dataframe
 
-PROJECT = "swr-data-1"
-DATASET = bigquery.DatasetReference(PROJECT, "Bundeskartellamt")
+PROJECT = "swr-datalab-prod"
+DATASET = bigquery.DatasetReference(PROJECT, "bundeskartellamt_trusted")
 TABLE_TAGESWERTE = "markttransparenzstelle_tageswerte"
 TABLE_AUFLOESUNG = "markttransparenzstelle_aufloesung"
 
@@ -86,7 +86,7 @@ def run():
 
     if SERVICE_ACCOUNT_ENV_VAR in os.environ:
         service_account_info = json.loads(os.environ[SERVICE_ACCOUNT_ENV_VAR])
-        bigquery_client = bigquery_utils.make_client(service_account_info, location="EU")
+        bigquery_client = bigquery_utils.make_client(service_account_info, location="europe-west3")
     else:
         print("Service account not found in environment, BigQuery client could not be created")
         print(f"Please set the environment variable {SERVICE_ACCOUNT_ENV_VAR}")

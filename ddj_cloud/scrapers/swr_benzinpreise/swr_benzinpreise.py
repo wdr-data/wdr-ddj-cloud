@@ -1,11 +1,11 @@
+import datetime as dt
 import json
 import os
-from functools import reduce, partial
-import datetime as dt
+from functools import partial, reduce
 
-from google.cloud import bigquery
 import numpy as np
 import pandas as pd
+from google.cloud import bigquery
 
 from ddj_cloud.utils import bigquery as bigquery_utils
 from ddj_cloud.utils.date_and_time import local_today

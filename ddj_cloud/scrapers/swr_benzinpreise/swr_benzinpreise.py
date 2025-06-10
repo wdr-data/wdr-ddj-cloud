@@ -198,3 +198,9 @@ def run():
         aufloesung_expanded_dfs,
     )
     upload_dataframe(df_aufloesung_expanded, "swr_benzinpreise/history_48_hours.csv")
+
+    df_aufloesung_expanded_24_hours = df_aufloesung_expanded[
+        df_aufloesung_expanded["datenstand"]
+        >= (df_aufloesung_expanded["datenstand"].max() - dt.timedelta(hours=24))
+    ]
+    upload_dataframe(df_aufloesung_expanded_24_hours, "swr_benzinpreise/history_24_hours.csv")

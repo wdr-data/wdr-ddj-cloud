@@ -326,7 +326,8 @@ def upload_dataframe(  # noqa: PLR0913
         for col in df.columns:
             # There's some different types of datetime columns,
             # like datetime64[ns, Europe/Berlin] and datetime64[ns, UTC]
-            if not str(df[col].dtype).startswith("datetime64"):
+            # But we ignore naive datetimes (apparently used for dates as well)
+            if not str(df[col].dtype).startswith("datetime64[ns,"):
                 continue
 
             # Convert to Berlin timezone

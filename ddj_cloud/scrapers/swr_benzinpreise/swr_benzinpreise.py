@@ -8,7 +8,7 @@ import pandas as pd
 from google.cloud import bigquery
 
 from ddj_cloud.utils import bigquery as bigquery_utils
-from ddj_cloud.utils.date_and_time import local_now, local_today
+from ddj_cloud.utils.date_and_time import UTC, local_now, local_today
 from ddj_cloud.utils.storage import upload_dataframe
 
 PROJECT = "swr-datalab-prod"
@@ -52,6 +52,9 @@ def load_tageswerte(client: bigquery.Client):
 
         # Backwards compatibility
         df.rename(columns={"meldedatum": "day"}, inplace=True)
+
+        # Tag datetimes
+        df["abrufdatum"] = df["abrufdatum"].dt.tz_localize(UTC)
 
         return df.replace({np.nan: None})
 
@@ -99,6 +102,9 @@ def load_aufloesung(client: bigquery.Client):
         )
         df["type"] = df["type"].map({1: "octane95", 2: "e10", 3: "diesel"})
         df.reset_index(drop=True)
+
+        # Tag datetimes
+        df["abrufdatum"] = df["abrufdatum"].dt.tz_localize(UTC)
 
         return df.replace({np.nan: None})
 
@@ -154,7 +160,11 @@ def run():
         inplace=True,
     )
 
-    upload_dataframe(df_latest, "swr_benzinpreise/latest.csv")
+    upload_dataframe(
+        df_latest,
+        "swr_benzinpreise/latest.csv",
+        datawrapper_datetimes=True,
+    )
 
     # Expand data
     tageswerte_expanded_dfs = [
@@ -171,7 +181,11 @@ def run():
         ),
         tageswerte_expanded_dfs,
     )
-    upload_dataframe(df_tageswerte_expanded, "swr_benzinpreise/history.csv")
+    upload_dataframe(
+        df_tageswerte_expanded,
+        "swr_benzinpreise/history.csv",
+        datawrapper_datetimes=True,
+    )
 
     df_tageswerte_30_days_expanded = df_tageswerte_expanded[
         df_tageswerte_expanded["day"] >= (local_today() - dt.timedelta(days=30))
@@ -197,10 +211,18 @@ def run():
         ),
         aufloesung_expanded_dfs,
     )
-    upload_dataframe(df_aufloesung_expanded, "swr_benzinpreise/history_48_hours.csv")
+    upload_dataframe(
+        df_aufloesung_expanded.copy(),
+        "swr_benzinpreise/history_48_hours.csv",
+        datawrapper_datetimes=True,
+    )
 
     df_aufloesung_expanded_24_hours = df_aufloesung_expanded[
         df_aufloesung_expanded["datenstand"]
         >= (df_aufloesung_expanded["datenstand"].max() - dt.timedelta(hours=24))
-    ]
-    upload_dataframe(df_aufloesung_expanded_24_hours, "swr_benzinpreise/history_24_hours.csv")
+    ].copy()
+    upload_dataframe(
+        df_aufloesung_expanded_24_hours,
+        "swr_benzinpreise/history_24_hours.csv",
+        datawrapper_datetimes=True,
+    )

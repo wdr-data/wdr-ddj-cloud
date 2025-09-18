@@ -228,7 +228,7 @@
                 "enabled": true,
                 "data": {
                     "interval": "custom",
-                    "interval_custom": "*/5 * * * *\n"
+                    "interval_custom": "cron(*/5 * * * *)"
                 }
             }
         ],

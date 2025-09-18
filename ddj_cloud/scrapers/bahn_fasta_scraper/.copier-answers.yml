@@ -7,9 +7,7 @@ description: Scrapes the DB FASTA API every five minutes and saves the results a
 display_name: Bahn Fasta Scraper
 ephemeral_storage: '512'
 interval: custom
-interval_custom: '*/5 * * * *
-
-    '
+interval_custom: cron(*/5 * * * *)
 memory_size: '1024'
 module_name: bahn_fasta_scraper
 preset: minimal

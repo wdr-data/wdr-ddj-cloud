@@ -228,7 +228,7 @@
                 "enabled": true,
                 "data": {
                     "interval": "custom",
-                    "interval_custom": "cron(*/5 * * * *)"
+                    "interval_custom": "rate(5 minutes)"
                 }
             }
         ],

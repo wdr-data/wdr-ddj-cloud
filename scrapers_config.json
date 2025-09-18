@@ -212,5 +212,27 @@
         ],
         "extra_env": [],
         "deploy": true
+    },
+    {
+        "display_name": "Bahn Fasta Scraper",
+        "module_name": "bahn_fasta_scraper",
+        "description": "Scrapes the DB FASTA API every five minutes and saves the results as .json",
+        "contact_name": "Manuel",
+        "contact_email": "manuel.paas@fm.wdr.de",
+        "memory_size": "1024",
+        "ephemeral_storage": "512",
+        "preset": "minimal",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "custom",
+                    "interval_custom": "*/5 * * * *\n"
+                }
+            }
+        ],
+        "extra_env": ["DB_CLIENT_ID", "DB_API_KEY"],
+        "deploy": true
     }
 ]

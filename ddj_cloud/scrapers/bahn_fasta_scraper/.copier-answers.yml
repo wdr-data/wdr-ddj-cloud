@@ -1,0 +1,16 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: /Users/manuelpaas/Library/CloudStorage/Dropbox/Jobs/Github/wdr-ddj-cloud/scraper_template
+contact_email: manuel.paas@fm.wdr.de
+contact_name: Manuel
+description: Scrapes the DB FASTA API every five minutes and saves the results as
+    .json
+display_name: Bahn Fasta Scraper
+ephemeral_storage: '512'
+interval: custom
+interval_custom: '*/5 * * * *
+
+    '
+memory_size: '1024'
+module_name: bahn_fasta_scraper
+preset: minimal
+

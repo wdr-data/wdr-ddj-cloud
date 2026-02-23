@@ -232,7 +232,32 @@
                 }
             }
         ],
-        "extra_env": ["DB_CLIENT_ID", "DB_API_KEY"],
+        "extra_env": [
+            "DB_CLIENT_ID",
+            "DB_API_KEY"
+        ],
+        "deploy": true
+    },
+    {
+        "display_name": "LANUK Pegelstände Karte",
+        "module_name": "lanuk_karte",
+        "description": "Port des LANUK Scrapers aus der pegelstaende-pipeline-nrw, um kurz- und mittelfristig eine Datawrapper-Karte zu befüllen ",
+        "contact_name": "Jannes Höke",
+        "contact_email": "mail@jhoeke.de",
+        "memory_size": "1024",
+        "ephemeral_storage": "512",
+        "preset": "minimal",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "custom",
+                    "interval_custom": "rate(30 minutes)"
+                }
+            }
+        ],
+        "extra_env": [],
         "deploy": true
     }
 ]

@@ -257,7 +257,11 @@
                 }
             }
         ],
-        "extra_env": [],
+        "extra_env": [
+            "LANUK_KARTE_DATAWRAPPER_TOKEN",
+            "LANUK_KARTE_CHART_ID_BASE",
+            "LANUK_KARTE_CHART_ID_LIVE"
+        ],
         "deploy": true
     }
 ]

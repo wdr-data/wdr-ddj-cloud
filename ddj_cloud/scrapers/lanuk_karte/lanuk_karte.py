@@ -247,10 +247,7 @@ def run():
             )
             value, timestamp, from_cache = None, None, True
 
-        has_info_levels = any(
-            v is not None
-            for v in (station.LANUV_Info_1, station.LANUV_Info_2, station.LANUV_Info_3)
-        )
+        has_info_levels = any((station.LANUV_Info_1, station.LANUV_Info_2, station.LANUV_Info_3))
         warnstufe = 0 if has_info_levels else None
 
         if value is not None and has_info_levels:
@@ -299,4 +296,4 @@ def run():
 
     # Update Datawrapper locator map (if configured)
     if os.environ.get("LANUK_KARTE_DATAWRAPPER_TOKEN"):
-        locator_map.run(rows)
+        locator_map.run([row for row in rows if any((row.info_1, row.info_2, row.info_3))])

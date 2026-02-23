@@ -127,21 +127,21 @@ def _process_chart(rows: list[StationRow]) -> None:
     chart_data_base = dw.get_data(CHART_ID_BASE)
     chart_data_live = dw.get_data(CHART_ID_LIVE)
 
-    # Keep area markers (rivers) from the base chart unchanged
-    area_markers = [marker for marker in chart_data_base["markers"] if marker["type"] == "area"]
+    # Keep all markers from the base chart (areas for rivers, points for legend, etc.)
+    base_markers = chart_data_base["markers"]
 
     # Generate fresh point markers for every station
     station_markers = [_make_marker(row) for row in rows]
 
     logger.info(
-        "Generated %d station markers (%d area markers from base)",
+        "Generated %d station markers (%d base markers kept)",
         len(station_markers),
-        len(area_markers),
+        len(base_markers),
     )
 
     new_chart_data_live = {
         **chart_data_live,
-        "markers": area_markers + station_markers,
+        "markers": base_markers + station_markers,
     }
 
     dw.add_json(CHART_ID_LIVE, new_chart_data_live)

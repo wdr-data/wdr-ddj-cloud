@@ -60,7 +60,7 @@ def _make_marker(row: StationRow) -> dict[str, Any]:
             "height": 700,
             "width": 1000,
         },
-        "scale": 1,
+        "scale": 0.5,
         "markerColor": marker_color,
         "markerSymbol": "",
         "markerTextColor": "#333333",

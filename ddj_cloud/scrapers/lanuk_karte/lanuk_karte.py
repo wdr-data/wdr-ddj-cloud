@@ -28,7 +28,16 @@ logger = logging.getLogger(__name__)
 
 STATIONS_URL = "https://www.hochwasserportal.nrw/data/internet/layers/10/index.json"
 BASE_URL = "https://www.hochwasserportal.nrw/data/internet/stations/"
-VALID_STATION_TYPES = {"Infopegel", "Gewässerkundlicher Pegel"}
+VALID_STATION_TYPES = {
+    "Infopegel",
+    "Gewässerkundlicher Pegel",
+    "Weiter Betreiber Infostufen",
+    "Weiterer Betreiber Normal",
+}
+# TRANSLATE_STATION_TYPES = {
+#     "Weiter Betreiber Infostufen": "Infopegel",
+#     "Weiterer Betreiber Normal": "Gewässerkundlicher Pegel",
+# }
 REQUEST_DELAY = 0.5  # seconds between per-station requests
 
 CACHE_DIR = Path(__file__).parent / "cache"
@@ -131,6 +140,7 @@ def _fetch_stations(session: requests.Session) -> list[Station]:
     stations: list[Station] = []
     for entry in raw_entries:
         if entry.get("WEB_STATYPE") not in VALID_STATION_TYPES:
+            logger.warning("Skipping invalid station type: %s", entry.get("WEB_STATYPE"))
             continue
 
         try:

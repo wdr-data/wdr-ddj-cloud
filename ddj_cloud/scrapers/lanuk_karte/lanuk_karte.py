@@ -20,7 +20,7 @@ import requests
 from pydantic import BaseModel, ValidationError, field_validator
 
 from ddj_cloud.scrapers.lanuk_karte import locator_map
-from ddj_cloud.scrapers.lanuk_karte.common import StationRow
+from ddj_cloud.scrapers.lanuk_karte.common import WARNSTUFE_COLORS, StationRow
 from ddj_cloud.utils.date_and_time import local_now
 from ddj_cloud.utils.storage import upload_dataframe
 
@@ -248,15 +248,42 @@ def run():
             value, timestamp, from_cache = None, None, True
 
         has_info_levels = any((station.LANUV_Info_1, station.LANUV_Info_2, station.LANUV_Info_3))
-        warnstufe = 0 if has_info_levels else None
+        has_mw = station.LANUV_MW is not None
 
-        if value is not None and has_info_levels:
-            if station.LANUV_Info_3 is not None and value >= station.LANUV_Info_3:
+        if not has_info_levels and not has_mw:
+            logger.warning(
+                "Skipping station %s (%s) because it has neither info levels nor MW",
+                station.station_name,
+                station.station_id,
+            )
+            continue
+
+        warnstufe: int = 0
+        if (has_info_levels or has_mw) and value is not None:
+            if (
+                has_info_levels
+                and station.LANUV_Info_3 is not None
+                and value >= station.LANUV_Info_3
+            ):
+                warnstufe = 5
+            elif (
+                has_info_levels
+                and station.LANUV_Info_2 is not None
+                and value >= station.LANUV_Info_2
+            ):
+                warnstufe = 4
+            elif (
+                has_info_levels
+                and station.LANUV_Info_1 is not None
+                and value >= station.LANUV_Info_1
+            ):
                 warnstufe = 3
-            elif station.LANUV_Info_2 is not None and value >= station.LANUV_Info_2:
+            elif has_mw and station.LANUV_MW is not None and value >= station.LANUV_MW:
                 warnstufe = 2
-            elif station.LANUV_Info_1 is not None and value >= station.LANUV_Info_1:
+            elif has_mw:
                 warnstufe = 1
+            else:
+                warnstufe = 0  # has info but no MW, below info_1
 
         rows.append(
             StationRow(
@@ -275,6 +302,7 @@ def run():
                 mnw=station.LANUV_MNW,
                 mw=station.LANUV_MW,
                 warnstufe=warnstufe,
+                warnstufe_color=WARNSTUFE_COLORS[warnstufe],
                 url_pegel=_build_pegel_url(station.station_id, station.station_name),
                 abrufdatum=now,
                 **_tooltip_texts(station, value, timestamp, has_info_levels),
@@ -284,7 +312,9 @@ def run():
         if not from_cache:
             time.sleep(REQUEST_DELAY)
 
-    df = pd.DataFrame([dataclasses.asdict(row) for row in rows])
+    # Symbol map CSV: filter out stations with neither info levels nor MW
+    rows_symbol = [row for row in rows if row.warnstufe is not None]
+    df = pd.DataFrame([dataclasses.asdict(row) for row in rows_symbol])
 
     upload_dataframe(
         df,
@@ -292,8 +322,9 @@ def run():
         datawrapper_datetimes=True,
     )
 
-    logger.info("Uploaded data for %d stations", len(df))
+    logger.info("Uploaded data for %d stations (%d filtered out)", len(df), len(rows) - len(df))
 
-    # Update Datawrapper locator map (if configured)
+    # Locator map: only stations with info levels (not zoomable)
     if os.environ.get("LANUK_KARTE_DATAWRAPPER_TOKEN"):
-        locator_map.run([row for row in rows if any((row.info_1, row.info_2, row.info_3))])
+        rows_locator = [row for row in rows if any((row.info_1, row.info_2, row.info_3))]
+        locator_map.run(rows_locator)

@@ -21,15 +21,6 @@ DATAWRAPPER_TOKEN = os.environ.get("LANUK_KARTE_DATAWRAPPER_TOKEN")
 CHART_ID_BASE = os.environ.get("LANUK_KARTE_CHART_ID_BASE")
 CHART_ID_LIVE = os.environ.get("LANUK_KARTE_CHART_ID_LIVE")
 
-# Marker fill color by warnstufe value
-WARNSTUFE_COLORS: dict[int | None, str] = {
-    None: "#999999",  # Grey – no info levels available
-    0: "#1B9E47",  # Green – below all thresholds
-    1: "#F5C542",  # Yellow – ≥ Info 1
-    2: "#F5943A",  # Orange – ≥ Info 2
-    3: "#D63230",  # Red – ≥ Info 3
-}
-
 
 def _make_tooltip(row: StationRow) -> str:
     """Build tooltip HTML for a station marker."""
@@ -45,7 +36,6 @@ def _make_tooltip(row: StationRow) -> str:
 
 def _make_marker(row: StationRow) -> dict[str, Any]:
     """Create a visible Datawrapper locator-map point marker for a station."""
-    marker_color = WARNSTUFE_COLORS.get(row.warnstufe, WARNSTUFE_COLORS[None])
 
     return {
         "title": "",
@@ -61,7 +51,7 @@ def _make_marker(row: StationRow) -> dict[str, Any]:
             "width": 1000,
         },
         "scale": 0.5,
-        "markerColor": marker_color,
+        "markerColor": row.warnstufe_color,
         "markerSymbol": "",
         "markerTextColor": "#333333",
         "anchor": "bottom-center",

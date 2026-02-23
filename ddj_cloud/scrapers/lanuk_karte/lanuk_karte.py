@@ -6,8 +6,10 @@ and uploads a CSV suitable for a Datawrapper map.
 Ported from pegelstaende-pipeline-nrw (simplified: no BigQuery, no intermediate stages).
 """
 
+import dataclasses
 import json
 import logging
+import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -17,6 +19,8 @@ import pandas as pd
 import requests
 from pydantic import BaseModel, ValidationError, field_validator
 
+from ddj_cloud.scrapers.lanuk_karte import locator_map
+from ddj_cloud.scrapers.lanuk_karte.common import StationRow
 from ddj_cloud.utils.date_and_time import local_now
 from ddj_cloud.utils.storage import upload_dataframe
 
@@ -218,7 +222,7 @@ def run():
     stations = _fetch_stations(session)
     logger.info("Found %d valid LANUK stations", len(stations))
 
-    rows: list[dict[str, Any]] = []
+    rows: list[StationRow] = []
 
     for station in stations:
         try:
@@ -248,32 +252,32 @@ def run():
                 warnstufe = 1
 
         rows.append(
-            {
-                "station_id": station.station_id,
-                "station_name": station.station_name,
-                "gewaesser": station.WTO_OBJECT,
-                "station_type": station.WEB_STATYPE,
-                "latitude": station.station_latitude,
-                "longitude": station.station_longitude,
-                "wasserstand_cm": value,
-                "messzeitpunkt": timestamp,
-                "info_1": station.LANUV_Info_1,
-                "info_2": station.LANUV_Info_2,
-                "info_3": station.LANUV_Info_3,
-                "mhw": station.LANUV_MHW,
-                "mnw": station.LANUV_MNW,
-                "mw": station.LANUV_MW,
-                "warnstufe": warnstufe,
-                "url_pegel": _build_pegel_url(station.station_id, station.station_name),
-                "abrufdatum": now,
+            StationRow(
+                station_id=station.station_id,
+                station_name=station.station_name,
+                gewaesser=station.WTO_OBJECT,
+                station_type=station.WEB_STATYPE,
+                latitude=station.station_latitude,
+                longitude=station.station_longitude,
+                wasserstand_cm=value,
+                messzeitpunkt=timestamp,
+                info_1=station.LANUV_Info_1,
+                info_2=station.LANUV_Info_2,
+                info_3=station.LANUV_Info_3,
+                mhw=station.LANUV_MHW,
+                mnw=station.LANUV_MNW,
+                mw=station.LANUV_MW,
+                warnstufe=warnstufe,
+                url_pegel=_build_pegel_url(station.station_id, station.station_name),
+                abrufdatum=now,
                 **_tooltip_texts(station, value, timestamp, has_info_levels),
-            }
+            )
         )
 
         if not from_cache:
             time.sleep(REQUEST_DELAY)
 
-    df = pd.DataFrame(rows)
+    df = pd.DataFrame([dataclasses.asdict(row) for row in rows])
 
     upload_dataframe(
         df,
@@ -282,3 +286,7 @@ def run():
     )
 
     logger.info("Uploaded data for %d stations", len(df))
+
+    # Update Datawrapper locator map (if configured)
+    if os.environ.get("LANUK_KARTE_DATAWRAPPER_TOKEN"):
+        locator_map.run(rows)

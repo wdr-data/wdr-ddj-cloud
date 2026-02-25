@@ -17,7 +17,7 @@ import requests
 from pydantic import BaseModel, ConfigDict, model_validator
 
 from ddj_cloud.scrapers.lanuk_karte.common import WARNSTUFE_COLORS, StationRow
-from ddj_cloud.utils.date_and_time import local_now
+from ddj_cloud.utils.date_and_time import BERLIN, local_now
 
 logger = logging.getLogger(__name__)
 
@@ -181,7 +181,7 @@ class EGLVResponse(BaseModel):
     @property
     def latest_measurement(self) -> tuple[datetime, float]:
         ts_str, value = self.gauge_measurements[-1]
-        return datetime.fromisoformat(ts_str.replace("Z", "+00:00")), value
+        return datetime.fromisoformat(ts_str), value
 
     @property
     def thresholds_by_name(self) -> dict[str, float]:
@@ -238,6 +238,7 @@ def run(session: requests.Session) -> list[StationRow]:
 
         thresholds = station_data.thresholds_by_name
         timestamp, value = station_data.latest_measurement
+        timestamp = timestamp.astimezone(BERLIN)  # Normalize to Berlin time
 
         if not thresholds:
             logger.warning("No thresholds for %s (%s), skipping", pegelname, station_id)

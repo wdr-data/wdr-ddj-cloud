@@ -16,7 +16,7 @@ import requests
 from pydantic import BaseModel, ValidationError, field_validator
 
 from ddj_cloud.scrapers.lanuk_karte.common import WARNSTUFE_COLORS, StationRow
-from ddj_cloud.utils.date_and_time import local_now
+from ddj_cloud.utils.date_and_time import BERLIN, local_now
 
 logger = logging.getLogger(__name__)
 
@@ -147,7 +147,7 @@ def _fetch_stations(session: requests.Session) -> list[Station]:
 
 def _fetch_current_level(
     session: requests.Session, site_no: str, station_no: str
-) -> tuple[float | None, datetime | None, bool]:
+) -> tuple[float, datetime, bool]:
     """Fetch the most recent water level measurement from the week endpoint.
 
     Returns (value_cm, timestamp, from_cache) — values are ``None`` on failure.
@@ -181,11 +181,11 @@ def _build_pegel_url(station_id: str, station_name: str) -> str:
 
 
 def _tooltip_texts(
-    station: Station, value: float | None, timestamp: datetime | None, has_info_levels: bool
+    station: Station, value: float, timestamp: datetime, has_info_levels: bool
 ) -> dict[str, str]:
     # Pre-formatted display columns for Datawrapper tooltips
-    display_wasserstand = f"{value:.0f} cm" if value is not None else "Keine Daten"
-    display_messzeitpunkt = timestamp.strftime("%d.%m.%Y, %H:%M Uhr") if timestamp else ""
+    display_wasserstand = f"{value:.0f} cm"
+    display_messzeitpunkt = timestamp.strftime("%d.%m.%Y, %H:%M Uhr")
 
     if has_info_levels:
         parts = []
@@ -230,6 +230,7 @@ def run(session: requests.Session) -> list[StationRow]:
             value, timestamp, from_cache = _fetch_current_level(
                 session, station.site_no, station.station_no
             )
+            timestamp = timestamp.astimezone(BERLIN)  # Normalize to Berlin time
         except Exception:
             logger.exception(
                 "Failed to fetch water level for %s (%s)",

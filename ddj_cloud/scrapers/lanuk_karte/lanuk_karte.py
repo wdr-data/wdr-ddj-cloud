@@ -288,6 +288,12 @@ def run():
             else:
                 warnstufe = 0  # has info but no MW, below info_1
 
+        quelle = (
+            "LANUK"
+            if station.WEB_STATYPE in ("Gewässerkundlicher Pegel", "Infopegel")
+            else "LANUK (Externer Betreiber)"
+        )
+
         rows.append(
             StationRow(
                 station_id=station.station_id,
@@ -307,6 +313,7 @@ def run():
                 warnstufe=warnstufe,
                 warnstufe_color=WARNSTUFE_COLORS[warnstufe],
                 url_pegel=_build_pegel_url(station.station_id, station.station_name),
+                quelle=quelle,
                 abrufdatum=now,
                 **_tooltip_texts(station, value, timestamp, use_info_levels),
             )
@@ -318,6 +325,7 @@ def run():
     # Symbol map CSV: filter out stations with neither info levels nor MW
     rows_symbol = [row for row in rows if row.warnstufe is not None]
     df = pd.DataFrame([dataclasses.asdict(row) for row in rows_symbol])
+    df.drop(columns=["warnstufe_color"], inplace=True)
 
     upload_dataframe(
         df,

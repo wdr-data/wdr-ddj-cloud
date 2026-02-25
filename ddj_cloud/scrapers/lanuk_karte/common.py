@@ -34,6 +34,7 @@ class StationRow:
     warnstufe_color: str
     url_pegel: str
     abrufdatum: datetime
+    quelle: str
     display_wasserstand: str
     display_messzeitpunkt: str
     display_info: str

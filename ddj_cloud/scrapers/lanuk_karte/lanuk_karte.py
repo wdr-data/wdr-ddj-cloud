@@ -168,7 +168,8 @@ def _fetch_current_level(
     payload, from_cache = _fetch_json(session, url, cache_filename)
 
     if not payload:
-        return None, None, from_cache
+        msg = "No payload"
+        raise RuntimeError(msg)
 
     # week.json contains one entry with columns "Timestamp,Value"
     for entry in payload:
@@ -178,7 +179,8 @@ def _fetch_current_level(
                 ts_str, value = data[-1]
                 return float(value), datetime.fromisoformat(ts_str), from_cache
 
-    return None, None, from_cache
+    msg = "No data"
+    raise RuntimeError(msg)
 
 
 def _build_pegel_url(station_id: str, station_name: str) -> str:
@@ -245,7 +247,7 @@ def run():
                 station.station_name,
                 station.station_id,
             )
-            value, timestamp, from_cache = None, None, True
+            continue
 
         has_info_levels = any((station.LANUV_Info_1, station.LANUV_Info_2, station.LANUV_Info_3))
         has_mw = station.LANUV_MW is not None

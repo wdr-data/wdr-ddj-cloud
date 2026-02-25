@@ -18,6 +18,7 @@ import pandas as pd
 import requests
 from pydantic import BaseModel, ValidationError, field_validator
 
+from ddj_cloud.scrapers.lanuk_karte import eglv
 from ddj_cloud.scrapers.lanuk_karte.common import WARNSTUFE_COLORS, StationRow
 from ddj_cloud.utils.date_and_time import local_now
 from ddj_cloud.utils.storage import upload_dataframe
@@ -322,9 +323,11 @@ def run():
         if not from_cache:
             time.sleep(REQUEST_DELAY)
 
-    # Symbol map CSV: filter out stations with neither info levels nor MW
-    rows_symbol = [row for row in rows if row.warnstufe is not None]
-    df = pd.DataFrame([dataclasses.asdict(row) for row in rows_symbol])
+    logger.info("Fetching EGLV stations...")
+    eglv_rows = eglv.run(session)
+    all_rows = rows + eglv_rows
+
+    df = pd.DataFrame([dataclasses.asdict(row) for row in all_rows])
     df.drop(columns=["warnstufe_color"], inplace=True)
 
     upload_dataframe(
@@ -333,7 +336,12 @@ def run():
         datawrapper_datetimes=True,
     )
 
-    logger.info("Uploaded data for %d stations (%d filtered out)", len(df), len(rows) - len(df))
+    logger.info(
+        "Uploaded data for %d stations total (%d LANUK, %d EGLV)",
+        len(all_rows),
+        len(rows),
+        len(eglv_rows),
+    )
 
     # Locator map: only stations with info levels (not zoomable)
     # Not currently being used

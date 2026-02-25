@@ -9,7 +9,6 @@ Ported from pegelstaende-pipeline-nrw (simplified: no BigQuery, no intermediate 
 import dataclasses
 import json
 import logging
-import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -19,7 +18,6 @@ import pandas as pd
 import requests
 from pydantic import BaseModel, ValidationError, field_validator
 
-from ddj_cloud.scrapers.lanuk_karte import locator_map
 from ddj_cloud.scrapers.lanuk_karte.common import WARNSTUFE_COLORS, StationRow
 from ddj_cloud.utils.date_and_time import local_now
 from ddj_cloud.utils.storage import upload_dataframe
@@ -330,6 +328,8 @@ def run():
     logger.info("Uploaded data for %d stations (%d filtered out)", len(df), len(rows) - len(df))
 
     # Locator map: only stations with info levels (not zoomable)
-    if os.environ.get("LANUK_KARTE_DATAWRAPPER_TOKEN"):
-        rows_locator = [row for row in rows if any((row.info_1, row.info_2, row.info_3))]
-        locator_map.run(rows_locator)
+    # Not currently being used
+    # from ddj_cloud.scrapers.lanuk_karte import locator_map
+    # if os.environ.get("LANUK_KARTE_DATAWRAPPER_TOKEN"):
+    #     rows_locator = [row for row in rows if any((row.info_1, row.info_2, row.info_3))]
+    #     locator_map.run(rows_locator)

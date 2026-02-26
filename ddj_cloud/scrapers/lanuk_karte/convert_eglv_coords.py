@@ -137,15 +137,25 @@ STATIONS = [
 ]
 # fmt: on
 
+ID_COL = 9
+PEGELNAME_COL = 54
+GEWAESSER_COL = 28
+
+
 def main():
     transformer = Transformer.from_crs("EPSG:25832", "EPSG:4326", always_xy=True)
 
-    print("    # id         pegelname                                              gewaesser                   latitude        longitude")
+    header_id = "id,".ljust(ID_COL)
+    header_pegelname = "pegelname,".ljust(PEGELNAME_COL)
+    header_gewaesser = "gewaesser,".ljust(GEWAESSER_COL)
+    print(f"#   ({header_id}{header_pegelname}{header_gewaesser}latitude,     longitude )")
+
     for station_id, pegelname, gewaesser, rechtswert, hochwert in STATIONS:
         lon, lat = transformer.transform(rechtswert, hochwert)
-        print(
-            f'    ("{station_id}", {lat:.8f}, {lon:.8f}),  # {pegelname} / {gewaesser}'
-        )
+        id_col = f'"{station_id}",'.ljust(ID_COL)
+        pegelname_col = f'"{pegelname}",'.ljust(PEGELNAME_COL)
+        gewaesser_col = f'"{gewaesser}",'.ljust(GEWAESSER_COL)
+        print(f"    ({id_col}{pegelname_col}{gewaesser_col}{lat:.8f},  {lon:.8f}),")
 
 
 if __name__ == "__main__":

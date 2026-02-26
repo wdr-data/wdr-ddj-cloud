@@ -31,7 +31,7 @@ CACHE_DIR = Path(__file__).parent / "cache"
 # Coordinates converted from UTM32N (EPSG:25832) via convert_eglv_coords.py.
 # fmt: off
 _STATIONS: list[tuple[str, str, str, float, float]] = [
-    # (station_id, pegelname,                                            gewaesser,               latitude,     longitude)
+#   (id,      pegelname,                                            gewaesser,                  latitude,     longitude )
     ("10104", "Econova Allee",                                      "Berne",                    51.49522673,  6.95239405),
     ("10135", "E Posener Straße (neu)",                             "Borbecker Mühlenbach",     51.44490827,  6.95548101),
     ("11038", "HRB Borbecker MB, Ablauf, unterhalb Bergmühle",      "Borbecker Mühlenbach",     51.47420364,  6.97276621),
@@ -43,14 +43,14 @@ _STATIONS: list[tuple[str, str, str, float, float]] = [
     ("22049", "An den Höfen, Hünxe (HRB)",                          "Bruckhauser Mühlenbach",   51.59603814,  6.75088750),
     ("21119", "HÜN HRB Zur alten Mühle, Ablauf",                    "Bruckhauser Mühlenbach",   51.60272381,  6.75603937),
     ("22119", "Zur alten Mühle, HRB Beckenpegel",                   "Bruckhauser Mühlenbach",   51.61100795,  6.76642994),
-    ("22101", "RRB Brüggerbach, Ulfkotter Strasse",                  "Brüggerbach",              51.60877619,  7.03438495),
+    ("22101", "RRB Brüggerbach, Ulfkotter Strasse",                 "Brüggerbach",              51.60877619,  7.03438495),
     ("20132", "DAT Stemmbrückenstraße",                             "Dattelner Mühlenbach",     51.64728527,  7.31857894),
     ("22047", "HRB Dattelner Mühlenbach, Becken neu",               "Dattelner Mühlenbach",     51.64752672,  7.32511109),
     ("20032", "Natroper Weg, Brücke",                               "Dattelner Mühlenbach",     51.66807991,  7.36361295),
     ("20043", "Wiesenstraße",                                       "Dattelner Mühlenbach",     51.64738118,  7.33104373),
     ("10042", "Westring in Castrop-Rauxel Bladenhorst",             "Deininghauser Bach",       51.56785230,  7.28082595),
     ("10128", "HER Brücke Am Berg",                                 "Dorneburger Mühlenbach",   51.52944209,  7.14874268),
-    ("10109", "Sonnenblumenweg, Kleingartenanlage",                  "Dorneburger Mühlenbach",   51.51814258,  7.18906362),
+    ("10109", "Sonnenblumenweg, Kleingartenanlage",                 "Dorneburger Mühlenbach",   51.51814258,  7.18906362),
     ("11108", "Ablauf Phönixsee, Brücke zum Magazin",               "Emscher",                  51.49348620,  7.50354825),
     ("10107", "Adelenstraße",                                       "Emscher",                  51.48881140,  7.53080629),
     ("10119", "Adenauerallee",                                      "Emscher",                  51.54473685,  7.08282866),
@@ -98,7 +98,7 @@ _STATIONS: list[tuple[str, str, str, float, float]] = [
     ("20100", "HRB Scharnhorst, Zulauf",                            "Körne",                    51.53761792,  7.53083336),
     ("10130", "HER Schachtstraße",                                  "Landwehrbach",             51.55823397,  7.24389990),
     ("10020", "Westring in Castrop-Rauxel, unterhalb SKU",          "Landwehrbach",             51.56540420,  7.27455510),
-    ("20122", "An der Rauschenburg, (Vinnum neu)",                   "Lippe",                    51.68013052,  7.36373121),
+    ("20122", "An der Rauschenburg, (Vinnum neu)",                  "Lippe",                    51.68013052,  7.36373121),
     ("20004", "Dorsten, Borkener Straße",                           "Lippe",                    51.66866948,  6.96421062),
     ("20001", "Fusternberg",                                        "Lippe",                    51.65193444,  6.64270586),
     ("28085", "Haltern, Recklinghäuser Straße",                     "Lippe",                    51.73058136,  7.18647168),
@@ -125,7 +125,7 @@ _STATIONS: list[tuple[str, str, str, float, float]] = [
     ("22105", "HRB 1, Pelkumer Bach, Zulauf Pumpwerk",              "Pelkumer Bach",            51.64231336,  7.71260322),
     ("20106", "Verbindungsweg HRB 2 und HRB 3",                     "Pelkumer Bach",            51.64396076,  7.71923615),
     ("20107", "Zulauf HRB III Pelkumer Bach",                       "Pelkumer Bach",            51.64298566,  7.72341371),
-    ("22102", "HRB Picksmühlenbach, Pawikerstr.",                    "Picksmühlenbach",          51.59493897,  7.03969986),
+    ("22102", "HRB Picksmühlenbach, Pawikerstr.",                   "Picksmühlenbach",          51.59493897,  7.03969986),
     ("20131", "DORS PW Erdbach Polsumer Weg",                       "Rapphofs Mühlenbach",      51.64688558,  7.00309526),
     ("21018", "HRB Rapphofs Mühlenbach, Ablauf",                    "Rapphofs Mühlenbach",      51.62207096,  7.02970087),
     ("22018", "HRB Rapphofs Mühlenbach, Becken",                    "Rapphofs Mühlenbach",      51.62295577,  7.03123456),

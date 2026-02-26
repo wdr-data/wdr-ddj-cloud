@@ -27,7 +27,7 @@ pydantic = "~=2.9.2"
 [dev-packages]
 click = "~=8.1"
 black = "*"
-copier = "~=9.0"
+copier = "~=9.4.0"
 copier-templates-extensions = "~=0.3"
 python-slugify = "~=6.1"
 pipenv = "*"

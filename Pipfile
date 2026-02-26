@@ -23,6 +23,7 @@ fastparquet = "2023.10.1"
 python-slugify = "*"
 babel = "*"
 pydantic = "~=2.9.2"
+shapely = "~=2.0"
 
 [dev-packages]
 click = "~=8.1"

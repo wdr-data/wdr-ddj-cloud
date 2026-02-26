@@ -11,6 +11,7 @@ import pandas as pd
 import requests
 
 from ddj_cloud.scrapers.lanuk_karte import eglv, lanuk
+from ddj_cloud.scrapers.lanuk_karte.geo_filter import is_in_nrw
 from ddj_cloud.utils.storage import upload_dataframe
 
 logger = logging.getLogger(__name__)
@@ -22,8 +23,9 @@ def run():
     lanuk_rows = lanuk.run(session)
     eglv_rows = eglv.run(session)
     all_rows = lanuk_rows + eglv_rows
+    filtered_rows = [row for row in all_rows if is_in_nrw(row.latitude, row.longitude)]
 
-    df = pd.DataFrame([dataclasses.asdict(row) for row in all_rows])
+    df = pd.DataFrame([dataclasses.asdict(row) for row in filtered_rows])
     df.drop(columns=["warnstufe_color"], inplace=True)
 
     upload_dataframe(
@@ -33,10 +35,11 @@ def run():
     )
 
     logger.info(
-        "Uploaded data for %d stations total (%d LANUK, %d EGLV)",
-        len(all_rows),
+        "Uploaded data for %d stations total (%d LANUK, %d EGLV), %d filtered outside NRW",
+        len(filtered_rows),
         len(lanuk_rows),
         len(eglv_rows),
+        len(all_rows) - len(filtered_rows),
     )
 
     # Locator map: only stations with info levels (not zoomable)

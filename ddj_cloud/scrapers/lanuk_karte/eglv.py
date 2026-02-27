@@ -163,6 +163,7 @@ class EGLVThreshold(BaseModel):
 
     name: str
     value: float
+    periode: str | None
 
 
 class EGLVResponse(BaseModel):
@@ -184,8 +185,8 @@ class EGLVResponse(BaseModel):
         return datetime.fromisoformat(ts_str), value
 
     @property
-    def thresholds_by_name(self) -> dict[str, float]:
-        return {t.name: t.value for t in self.thresholds}
+    def thresholds_by_name(self) -> dict[str, EGLVThreshold]:
+        return {t.name: t for t in self.thresholds}
 
 
 # -- Fetcher --
@@ -201,7 +202,7 @@ def _fetch_station(session: requests.Session, station_id: str) -> tuple[EGLVResp
     cached = CACHE_DIR / cache_filename
 
     if cached.exists():
-        logger.info("Using cached %s", cache_filename)
+        logger.debug("Using cached %s", cache_filename)
         raw = json.loads(cached.read_text())
         from_cache = True
     else:
@@ -248,23 +249,35 @@ def run(session: requests.Session) -> list[StationRow]:
         mw = thresholds.get("MW")
         mhw = thresholds.get("MHW")
 
-        if mw is None:
-            logger.warning("No MW threshold for %s (%s), skipping", pegelname, station_id)
+        if mw is None or mhw is None or mnw is None:
+            logger.warning("Missing a threshold for %s (%s), skipping", pegelname, station_id)
             continue
 
-        warnstufe = 1 if value <= mw else 2
+        warnstufe = 1 if value <= mw.value else 2
 
         display_wasserstand = f"{value:.0f} cm"
         display_messzeitpunkt = timestamp.strftime("%d.%m.%Y, %H:%M Uhr")
 
         stats_parts = []
-        if mnw is not None:
-            stats_parts.append(f"MNW: {mnw:.0f}")
-        if mw is not None:
-            stats_parts.append(f"MW: {mw:.0f}")
-        if mhw is not None:
-            stats_parts.append(f"MHW: {mhw:.0f}")
+        stats_parts.append(f"MNW: {mnw.value:.0f}")
+        stats_parts.append(f"MW: {mw.value:.0f}")
+        stats_parts.append(f"MHW: {mhw.value:.0f}")
         display_stats = (" · ".join(stats_parts) + " cm") if stats_parts else ""
+
+        # Check if all thresholds are in the same period
+        stat_period = mw.periode
+        if stat_period != mnw.periode:
+            msg = f"Thresholds for {pegelname} ({station_id}) have different periods: {stat_period} vs {mnw.periode}"
+            raise RuntimeError(msg)
+
+        if stat_period != mhw.periode:
+            msg = f"Thresholds for {pegelname} ({station_id}) have different periods: {stat_period} vs {mhw.periode}"
+            raise RuntimeError(msg)
+
+        # if stat_period is None:
+        #     msg = f"Thresholds for {pegelname} ({station_id}) have no period"
+        #     logger.warning(msg)
+        #     continue
 
         rows.append(
             StationRow(
@@ -279,9 +292,10 @@ def run(session: requests.Session) -> list[StationRow]:
                 info_1=None,
                 info_2=None,
                 info_3=None,
-                mhw=mhw,
-                mnw=mnw,
-                mw=mw,
+                mhw=mhw.value,
+                mnw=mnw.value,
+                mw=mw.value,
+                stats_period=stat_period or "Keine Angabe",
                 warnstufe=warnstufe,
                 warnstufe_color=WARNSTUFE_COLORS[warnstufe],
                 url_pegel=f"https://pegel.eglv.de/Zeitreihe/{station_id}/",

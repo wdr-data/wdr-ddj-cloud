@@ -59,6 +59,7 @@ class StationRow:
     mhw: float | None
     mnw: float | None
     mw: float | None
+    stats_period: str | None
     warnstufe: int
     warnstufe_color: str
     url_pegel: str

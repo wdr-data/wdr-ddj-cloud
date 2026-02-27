@@ -103,7 +103,7 @@ def _fetch_json(session: requests.Session, url: str, cache_filename: str) -> tup
     """
     cached = CACHE_DIR / cache_filename
     if cached.exists():
-        logger.info("Using cached %s", cache_filename)
+        logger.debug("Using cached %s", cache_filename)
         return json.loads(cached.read_text()), True
 
     response = session.get(url, timeout=30)
@@ -302,6 +302,7 @@ def run(session: requests.Session) -> list[StationRow]:
                 mhw=station.LANUV_MHW,
                 mnw=station.LANUV_MNW,
                 mw=station.LANUV_MW,
+                stats_period="2008-2018",  # TODO: Check if this is correct
                 warnstufe=warnstufe,
                 warnstufe_color=WARNSTUFE_COLORS[warnstufe],
                 url_pegel=_build_pegel_url(station.station_id, station.station_name),

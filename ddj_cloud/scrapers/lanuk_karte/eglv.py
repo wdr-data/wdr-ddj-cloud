@@ -289,7 +289,7 @@ def run(session: requests.Session) -> list[StationRow]:
                 quelle="EGLV",
                 display_wasserstand=display_wasserstand,
                 display_messzeitpunkt=display_messzeitpunkt,
-                display_info="Keine Informationswerte vorhanden",
+                display_info="Keine Hochwasser-Warnstufen vorhanden",
                 display_stats=display_stats,
             )
         )

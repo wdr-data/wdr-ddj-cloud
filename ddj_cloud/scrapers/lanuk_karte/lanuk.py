@@ -190,14 +190,14 @@ def _tooltip_texts(
     if has_info_levels:
         parts = []
         if station.LANUV_Info_1 is not None:
-            parts.append(f"Info 1: {station.LANUV_Info_1:.0f} cm")
+            parts.append(f"Warnstufe 1: {station.LANUV_Info_1:.0f} cm")
         if station.LANUV_Info_2 is not None:
-            parts.append(f"Info 2: {station.LANUV_Info_2:.0f} cm")
+            parts.append(f"Warnstufe 2: {station.LANUV_Info_2:.0f} cm")
         if station.LANUV_Info_3 is not None:
-            parts.append(f"Info 3: {station.LANUV_Info_3:.0f} cm")
+            parts.append(f"Warnstufe 3: {station.LANUV_Info_3:.0f} cm")
         display_info = " · ".join(parts)
     else:
-        display_info = "Keine Informationswerte vorhanden"
+        display_info = "Keine Hochwasser-Warnstufen vorhanden"
 
     stats_parts = []
     if station.LANUV_MNW is not None:

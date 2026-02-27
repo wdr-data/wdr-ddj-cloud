@@ -11,6 +11,7 @@ import pandas as pd
 import requests
 
 from ddj_cloud.scrapers.lanuk_karte import eglv, lanuk
+from ddj_cloud.scrapers.lanuk_karte.common import STATION_TYPE_DISPLAY
 from ddj_cloud.scrapers.lanuk_karte.geo_filter import is_in_nrw
 from ddj_cloud.utils.storage import upload_dataframe
 
@@ -23,6 +24,10 @@ def run():
     lanuk_rows = lanuk.run(session)
     eglv_rows = eglv.run(session)
     all_rows = lanuk_rows + eglv_rows
+
+    for row in all_rows:
+        row.station_type = STATION_TYPE_DISPLAY.get(row.station_type, "Gewöhnlicher Pegel")
+
     filtered_rows = [row for row in all_rows if is_in_nrw(row.latitude, row.longitude)]
 
     df = pd.DataFrame([dataclasses.asdict(row) for row in filtered_rows])

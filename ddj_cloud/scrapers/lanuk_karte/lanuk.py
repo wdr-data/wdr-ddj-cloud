@@ -173,9 +173,7 @@ def _fetch_current_level(
     raise RuntimeError(msg)
 
 
-def _fetch_operator(
-    session: requests.Session, site_no: str, station_no: str
-) -> str:
+def _fetch_operator(session: requests.Session, site_no: str, station_no: str) -> str:
     """Fetch the LANUV_Betr (operator) field from the station index endpoint."""
     url = f"{BASE_URL}{site_no}/{station_no}/index.json"
     cache_filename = f"index_{site_no}_{station_no}.json"
@@ -253,9 +251,7 @@ def run(session: requests.Session) -> list[StationRow]:
 
     for station in stations:
         try:
-            value, timestamp = _fetch_current_level(
-                session, station.site_no, station.station_no
-            )
+            value, timestamp = _fetch_current_level(session, station.site_no, station.station_no)
             timestamp = timestamp.astimezone(BERLIN)  # Normalize to Berlin time
         except Exception:
             logger.exception(
@@ -277,13 +273,20 @@ def run(session: requests.Session) -> list[StationRow]:
             )
             operator = "LANUK"
 
-        use_info_levels = (
-            any((station.LANUV_Info_1, station.LANUV_Info_2, station.LANUV_Info_3))
-            and (
-                station.WEB_STATYPE == "Infopegel"
-                or (station.WEB_STATYPE == "Weiter Betreiber Infostufen" and operator == "WSV")
-            )
+        has_info_levels = any((station.LANUV_Info_1, station.LANUV_Info_2, station.LANUV_Info_3))
+        is_valid_infopegel = station.WEB_STATYPE == "Infopegel" or (
+            station.WEB_STATYPE == "Weiter Betreiber Infostufen" and operator == "WSV"
         )
+
+        use_info_levels = has_info_levels and is_valid_infopegel
+
+        if has_info_levels and not is_valid_infopegel:
+            logger.warning(
+                "Station %s (%s) has info levels but is not an Infopegel and not a WSV",
+                station.station_name,
+                station.station_id,
+            )
+
         has_mw = station.LANUV_MW is not None
 
         if not use_info_levels and not has_mw:

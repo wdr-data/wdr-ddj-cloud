@@ -279,7 +279,10 @@ def run(session: requests.Session) -> list[StationRow]:
 
         use_info_levels = (
             any((station.LANUV_Info_1, station.LANUV_Info_2, station.LANUV_Info_3))
-            and station.WEB_STATYPE == "Infopegel"  # Ignore non-LANUK Infopegels
+            and (
+                station.WEB_STATYPE == "Infopegel"
+                or (station.WEB_STATYPE == "Weiter Betreiber Infostufen" and operator == "WSV")
+            )
         )
         has_mw = station.LANUV_MW is not None
 

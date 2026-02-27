@@ -28,6 +28,11 @@ def run():
     for row in all_rows:
         row.station_name = clean_station_name(row.station_name)
         row.station_type = STATION_TYPE_DISPLAY.get(row.station_type, "Gewöhnlicher Pegel")
+        # WSV stations with info levels get "Hochwasser-Meldepegel" even though they're
+        # "Weiter Betreiber Infostufen" — other external operators' levels aren't official enough
+        if row.operator == "WSV" and any((row.info_1, row.info_2, row.info_3)):
+            row.station_type = "Hochwasser-Meldepegel"
+
         row.operator = row.operator or row.quelle
         if row.quelle == "LANUK (Externer Betreiber)":
             if row.operator != "LANUK":

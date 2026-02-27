@@ -26,9 +26,15 @@ def run():
     all_rows = lanuk_rows + eglv_rows
 
     for row in all_rows:
-        row.operator = row.operator or row.quelle
         row.station_name = clean_station_name(row.station_name)
         row.station_type = STATION_TYPE_DISPLAY.get(row.station_type, "Gewöhnlicher Pegel")
+        row.operator = row.operator or row.quelle
+        if row.quelle == "LANUK (Externer Betreiber)":
+            if row.operator != "LANUK":
+                row.quelle = f"LANUK (via {row.operator})"
+            else:
+                logger.warning("Missing operator for %s (%s)", row.station_name, row.station_id)
+                continue
 
     filtered_rows = [row for row in all_rows if is_in_nrw(row.latitude, row.longitude)]
 

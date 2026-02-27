@@ -17,6 +17,11 @@ from ddj_cloud.utils.storage import upload_dataframe
 
 logger = logging.getLogger(__name__)
 
+OPERATOR_SPECIAL_CASES = {
+    "28606": "LANUK/Stadt Wachtberg",  # Niederbachem
+    "28561": "Stadt Menden",  # Menden Oberrödingh
+}
+
 
 def run():
     session = requests.Session()
@@ -37,6 +42,8 @@ def run():
         if row.quelle == "LANUK (Externer Betreiber)":
             if row.operator != "LANUK":
                 row.quelle = f"LANUK (via {row.operator})"
+            elif special_operator := OPERATOR_SPECIAL_CASES.get(row.station_id):
+                row.quelle = special_operator
             else:
                 logger.warning("Missing operator for %s (%s)", row.station_name, row.station_id)
                 continue

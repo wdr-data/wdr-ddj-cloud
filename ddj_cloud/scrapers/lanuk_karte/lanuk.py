@@ -95,16 +95,15 @@ class Station(BaseModel):
 # -- Caching (pattern from divi_intensivregister/common.py) --
 
 
-def _fetch_json(session: requests.Session, url: str, cache_filename: str) -> tuple[Any, bool]:
+def _fetch_json(session: requests.Session, url: str, cache_filename: str) -> Any:
     """Fetch JSON from *url*, using a local file cache when available.
 
-    Returns ``(data, from_cache)`` so callers can skip rate-limit delays on
-    cache hits.
+    Automatically sleeps after non-cached requests to respect rate limits.
     """
     cached = CACHE_DIR / cache_filename
     if cached.exists():
         logger.debug("Using cached %s", cache_filename)
-        return json.loads(cached.read_text()), True
+        return json.loads(cached.read_text())
 
     response = session.get(url, timeout=30)
     response.raise_for_status()
@@ -116,7 +115,8 @@ def _fetch_json(session: requests.Session, url: str, cache_filename: str) -> tup
     except Exception:
         pass  # read-only on Lambda
 
-    return data, False
+    time.sleep(REQUEST_DELAY)
+    return data
 
 
 # -- Fetchers --
@@ -125,7 +125,7 @@ def _fetch_json(session: requests.Session, url: str, cache_filename: str) -> tup
 def _fetch_stations(session: requests.Session) -> list[Station]:
     """Fetch the station list, validate each entry, skip invalid ones."""
     raw_entries: list[dict[str, Any]]
-    raw_entries, _ = _fetch_json(session, STATIONS_URL, "stations.json")
+    raw_entries = _fetch_json(session, STATIONS_URL, "stations.json")
 
     stations: list[Station] = []
     for entry in raw_entries:
@@ -147,15 +147,15 @@ def _fetch_stations(session: requests.Session) -> list[Station]:
 
 def _fetch_current_level(
     session: requests.Session, site_no: str, station_no: str
-) -> tuple[float, datetime, bool]:
+) -> tuple[float, datetime]:
     """Fetch the most recent water level measurement from the week endpoint.
 
-    Returns (value_cm, timestamp, from_cache) — values are ``None`` on failure.
+    Returns (value_cm, timestamp).
     """
     url = f"{BASE_URL}{site_no}/{station_no}/S/week.json"
     cache_filename = f"week_{site_no}_{station_no}.json"
     payload: list[dict[str, Any]]
-    payload, from_cache = _fetch_json(session, url, cache_filename)
+    payload = _fetch_json(session, url, cache_filename)
 
     if not payload:
         msg = "No payload"
@@ -167,7 +167,7 @@ def _fetch_current_level(
             data = entry.get("data", [])
             if data:
                 ts_str, value = data[-1]
-                return float(value), datetime.fromisoformat(ts_str), from_cache
+                return float(value), datetime.fromisoformat(ts_str)
 
     msg = "No data"
     raise RuntimeError(msg)
@@ -227,7 +227,7 @@ def run(session: requests.Session) -> list[StationRow]:
 
     for station in stations:
         try:
-            value, timestamp, from_cache = _fetch_current_level(
+            value, timestamp = _fetch_current_level(
                 session, station.site_no, station.station_no
             )
             timestamp = timestamp.astimezone(BERLIN)  # Normalize to Berlin time
@@ -311,8 +311,5 @@ def run(session: requests.Session) -> list[StationRow]:
                 **_tooltip_texts(station, value, timestamp, use_info_levels),
             )
         )
-
-        if not from_cache:
-            time.sleep(REQUEST_DELAY)
 
     return rows

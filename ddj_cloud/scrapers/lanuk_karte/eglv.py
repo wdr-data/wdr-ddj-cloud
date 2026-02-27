@@ -192,11 +192,10 @@ class EGLVResponse(BaseModel):
 # -- Fetcher --
 
 
-def _fetch_station(session: requests.Session, station_id: str) -> tuple[EGLVResponse, bool]:
+def _fetch_station(session: requests.Session, station_id: str) -> EGLVResponse:
     """Fetch and validate the EGLV API response for one station.
 
-    Returns (parsed_response, from_cache).
-    Raises on HTTP error or validation failure.
+    Automatically sleeps after non-cached requests to respect rate limits.
     """
     cache_filename = f"eglv_{station_id}.json"
     cached = CACHE_DIR / cache_filename
@@ -204,7 +203,6 @@ def _fetch_station(session: requests.Session, station_id: str) -> tuple[EGLVResp
     if cached.exists():
         logger.debug("Using cached %s", cache_filename)
         raw = json.loads(cached.read_text())
-        from_cache = True
     else:
         response = session.get(
             MEASUREMENTS_URL,
@@ -221,9 +219,9 @@ def _fetch_station(session: requests.Session, station_id: str) -> tuple[EGLVResp
         except Exception:
             pass  # read-only on Lambda
 
-        from_cache = False
+        time.sleep(REQUEST_DELAY)
 
-    return EGLVResponse.model_validate(raw), from_cache
+    return EGLVResponse.model_validate(raw)
 
 
 def run(session: requests.Session) -> list[StationRow]:
@@ -232,7 +230,7 @@ def run(session: requests.Session) -> list[StationRow]:
 
     for station_id, pegelname, gewaesser, lat, lon in _STATIONS:
         try:
-            station_data, from_cache = _fetch_station(session, station_id)
+            station_data = _fetch_station(session, station_id)
         except Exception:
             logger.exception("Failed to fetch EGLV water level for %s (%s)", pegelname, station_id)
             continue
@@ -307,9 +305,6 @@ def run(session: requests.Session) -> list[StationRow]:
                 display_stats=display_stats,
             )
         )
-
-        if not from_cache:
-            time.sleep(REQUEST_DELAY)
 
     logger.info("Fetched %d EGLV stations", len(rows))
     return rows

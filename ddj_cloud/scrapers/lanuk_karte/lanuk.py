@@ -173,6 +173,32 @@ def _fetch_current_level(
     raise RuntimeError(msg)
 
 
+def _fetch_operator(
+    session: requests.Session, site_no: str, station_no: str
+) -> str:
+    """Fetch the LANUV_Betr (operator) field from the station index endpoint."""
+    url = f"{BASE_URL}{site_no}/{station_no}/index.json"
+    cache_filename = f"index_{site_no}_{station_no}.json"
+    data = _fetch_json(session, url, cache_filename)
+    return data.get("LANUV_Betr", "").strip()
+
+
+_OPERATOR_DISPLAY: dict[str, str] = {
+    "LANUK": "LANUK",
+    "---": "WSV",
+}
+
+
+def _normalize_operator(raw: str) -> str:
+    """Normalize a LANUV_Betr value to a display name."""
+    if raw in _OPERATOR_DISPLAY:
+        return _OPERATOR_DISPLAY[raw]
+    # "Verband_Aggerverband" / "Verband Ruhrverband" / "Verband WVER" etc.
+    if raw.startswith("Verband"):
+        return raw.split("_", 1)[-1].split(" ", 1)[-1]
+    return raw or "LANUK"
+
+
 def _build_pegel_url(station_id: str, station_name: str) -> str:
     return (
         f"https://www.hochwasserportal.nrw/webpublic/#/overview/Wasserstand"
@@ -238,6 +264,18 @@ def run(session: requests.Session) -> list[StationRow]:
                 station.station_id,
             )
             continue
+
+        try:
+            operator = _normalize_operator(
+                _fetch_operator(session, station.site_no, station.station_no)
+            )
+        except Exception:
+            logger.exception(
+                "Failed to fetch operator for %s (%s)",
+                station.station_name,
+                station.station_id,
+            )
+            operator = "LANUK"
 
         use_info_levels = (
             any((station.LANUV_Info_1, station.LANUV_Info_2, station.LANUV_Info_3))
@@ -307,6 +345,7 @@ def run(session: requests.Session) -> list[StationRow]:
                 warnstufe_color=WARNSTUFE_COLORS[warnstufe],
                 url_pegel=_build_pegel_url(station.station_id, station.station_name),
                 quelle=quelle,
+                operator=operator,
                 abrufdatum=now,
                 **_tooltip_texts(station, value, timestamp, use_info_levels),
             )

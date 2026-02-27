@@ -299,6 +299,7 @@ def run(session: requests.Session) -> list[StationRow]:
                 url_pegel=f"https://pegel.eglv.de/Zeitreihe/{station_id}/",
                 abrufdatum=now,
                 quelle="EGLV",
+                operator="",  # Set by orchestrator
                 display_wasserstand=display_wasserstand,
                 display_messzeitpunkt=display_messzeitpunkt,
                 display_info="Keine Hochwasser-Warnstufen vorhanden",

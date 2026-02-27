@@ -79,6 +79,7 @@ class StationRow:
     url_pegel: str
     abrufdatum: datetime
     quelle: str
+    operator: str
     display_wasserstand: str
     display_messzeitpunkt: str
     display_info: str

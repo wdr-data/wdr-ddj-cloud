@@ -26,6 +26,7 @@ def run():
     all_rows = lanuk_rows + eglv_rows
 
     for row in all_rows:
+        row.operator = row.operator or row.quelle
         row.station_name = clean_station_name(row.station_name)
         row.station_type = STATION_TYPE_DISPLAY.get(row.station_type, "Gewöhnlicher Pegel")
 

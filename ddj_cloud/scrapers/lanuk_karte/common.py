@@ -67,9 +67,11 @@ class StationRow:
     longitude: float
     wasserstand_cm: float | None
     messzeitpunkt: datetime | None
+    has_info: bool
     info_1: float | None
     info_2: float | None
     info_3: float | None
+    has_stats: bool
     mhw: float | None
     mnw: float | None
     mw: float | None
@@ -82,5 +84,3 @@ class StationRow:
     operator: str
     display_wasserstand: str
     display_messzeitpunkt: str
-    display_info: str
-    display_stats: str

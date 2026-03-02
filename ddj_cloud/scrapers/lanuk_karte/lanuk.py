@@ -204,42 +204,6 @@ def _build_pegel_url(station_id: str, station_name: str) -> str:
     )
 
 
-def _tooltip_texts(
-    station: Station, value: float, timestamp: datetime, has_info_levels: bool
-) -> dict[str, str]:
-    # Pre-formatted display columns for Datawrapper tooltips
-    display_wasserstand = f"{value:.0f} cm"
-    display_messzeitpunkt = timestamp.strftime("%d.%m.%Y, %H:%M Uhr")
-
-    if has_info_levels:
-        parts = []
-        if station.LANUV_Info_1 is not None:
-            parts.append(f"Warnstufe 1: {station.LANUV_Info_1:.0f} cm")
-        if station.LANUV_Info_2 is not None:
-            parts.append(f"Warnstufe 2: {station.LANUV_Info_2:.0f} cm")
-        if station.LANUV_Info_3 is not None:
-            parts.append(f"Warnstufe 3: {station.LANUV_Info_3:.0f} cm")
-        display_info = " · ".join(parts)
-    else:
-        display_info = "Keine Hochwasser-Warnstufen vorhanden"
-
-    stats_parts = []
-    if station.LANUV_MNW is not None:
-        stats_parts.append(f"MNW: {station.LANUV_MNW:.0f}")
-    if station.LANUV_MW is not None:
-        stats_parts.append(f"MW: {station.LANUV_MW:.0f}")
-    if station.LANUV_MHW is not None:
-        stats_parts.append(f"MHW: {station.LANUV_MHW:.0f}")
-    display_stats = (" · ".join(stats_parts) + " cm") if stats_parts else ""
-
-    return {
-        "display_wasserstand": display_wasserstand,
-        "display_messzeitpunkt": display_messzeitpunkt,
-        "display_info": display_info,
-        "display_stats": display_stats,
-    }
-
-
 def run(session: requests.Session) -> list[StationRow]:
     now = local_now()
 
@@ -340,9 +304,11 @@ def run(session: requests.Session) -> list[StationRow]:
                 longitude=station.station_longitude,
                 wasserstand_cm=value,
                 messzeitpunkt=timestamp,
+                has_info=use_info_levels,
                 info_1=station.LANUV_Info_1,
                 info_2=station.LANUV_Info_2,
                 info_3=station.LANUV_Info_3,
+                has_stats=any((station.LANUV_MNW, station.LANUV_MW, station.LANUV_MHW)),
                 mhw=station.LANUV_MHW,
                 mnw=station.LANUV_MNW,
                 mw=station.LANUV_MW,
@@ -353,7 +319,8 @@ def run(session: requests.Session) -> list[StationRow]:
                 quelle=quelle,
                 operator=operator,
                 abrufdatum=now,
-                **_tooltip_texts(station, value, timestamp, use_info_levels),
+                display_wasserstand=f"{value:.0f} cm",
+                display_messzeitpunkt=timestamp.strftime("%d.%m.%Y, %H:%M Uhr"),
             )
         )
 

@@ -287,9 +287,11 @@ def run(session: requests.Session) -> list[StationRow]:
                 longitude=lon,
                 wasserstand_cm=value,
                 messzeitpunkt=timestamp,
+                has_info=False,
                 info_1=None,
                 info_2=None,
                 info_3=None,
+                has_stats=any((mnw and mnw.value, mw and mw.value, mhw and mhw.value)),
                 mhw=mhw.value,
                 mnw=mnw.value,
                 mw=mw.value,
@@ -302,8 +304,6 @@ def run(session: requests.Session) -> list[StationRow]:
                 operator="",  # Set by orchestrator
                 display_wasserstand=display_wasserstand,
                 display_messzeitpunkt=display_messzeitpunkt,
-                display_info="Keine Hochwasser-Warnstufen vorhanden",
-                display_stats=display_stats,
             )
         )
 

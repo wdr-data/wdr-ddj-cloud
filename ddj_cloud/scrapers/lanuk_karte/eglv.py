@@ -178,7 +178,10 @@ SELECTED_STATIONS: set[str] = {
     "20122",
     "24014",
     "30004",
-    # No stats, but what can you do?
+}
+
+# No stats, but what can you do?
+SELECTED_STATIONS_NO_STATS = {
     "22049",
     "21018",
     "22047",
@@ -280,9 +283,19 @@ def run(session: requests.Session) -> list[StationRow]:
         timestamp, value = station_data.latest_measurement
         timestamp = timestamp.astimezone(BERLIN)  # Normalize to Berlin time
 
+        if not thresholds and station_id not in SELECTED_STATIONS_NO_STATS:
+            logger.warning("No thresholds for %s (%s), skipping", pegelname, station_id)
+            continue
+
         mnw = thresholds.get("MNW")
         mw = thresholds.get("MW")
         mhw = thresholds.get("MHW")
+
+        if (
+            mw is None or mhw is None or mnw is None
+        ) and station_id not in SELECTED_STATIONS_NO_STATS:
+            logger.warning("Missing a threshold for %s (%s), skipping", pegelname, station_id)
+            continue
 
         display_wasserstand = f"{value:.0f} cm"
         display_messzeitpunkt = timestamp.strftime("%d.%m.%Y, %H:%M Uhr")

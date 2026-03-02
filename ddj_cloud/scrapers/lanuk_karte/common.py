@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Literal
 
 STATION_TYPE_DISPLAY: dict[str, str] = {
-    "Infopegel": "Hochwasser-Meldepegel",
+    "Infopegel": "Hochwasser-Warnpegel",
     "Gewässerkundlicher Pegel": "Gewöhnlicher Pegel",
     "Weiter Betreiber Infostufen": "Gewöhnlicher Pegel",
     "Weiterer Betreiber Normal": "Gewöhnlicher Pegel",

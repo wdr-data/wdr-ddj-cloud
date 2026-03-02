@@ -155,6 +155,39 @@ _STATIONS: list[tuple[str, str, str, float, float]] = [
 # fmt: on
 
 
+SELECTED_STATIONS: set[str] = {
+    "10026",
+    "10099",
+    "10101",
+    "10113",
+    "10119",
+    "10124",
+    "10132",
+    "11110",
+    "10107",
+    "11133",
+    "20001",
+    "20002",
+    "20004",
+    "20008",
+    "20012",
+    "20041",
+    "20084",
+    "20093",
+    "20115",
+    "20122",
+    "24014",
+    "30004",
+    # No stats, but what can you do?
+    "22049",
+    "21018",
+    "22047",
+    "11108",
+    "23083",
+    "22113",
+    "23014",
+}
+
 # -- Pydantic models --
 
 
@@ -229,6 +262,14 @@ def run(session: requests.Session) -> list[StationRow]:
     rows: list[StationRow] = []
 
     for station_id, pegelname, gewaesser, lat, lon in _STATIONS:
+        if station_id not in SELECTED_STATIONS:
+            logger.info(
+                "Skipping station %s (%s) because it is not in the selected stations",
+                pegelname,
+                station_id,
+            )
+            continue
+
         try:
             station_data = _fetch_station(session, station_id)
         except Exception:
@@ -239,38 +280,28 @@ def run(session: requests.Session) -> list[StationRow]:
         timestamp, value = station_data.latest_measurement
         timestamp = timestamp.astimezone(BERLIN)  # Normalize to Berlin time
 
-        if not thresholds:
-            logger.warning("No thresholds for %s (%s), skipping", pegelname, station_id)
-            continue
-
         mnw = thresholds.get("MNW")
         mw = thresholds.get("MW")
         mhw = thresholds.get("MHW")
 
-        if mw is None or mhw is None or mnw is None:
-            logger.warning("Missing a threshold for %s (%s), skipping", pegelname, station_id)
-            continue
-
-        warnstufe = 1 if value <= mw.value else 2
-
         display_wasserstand = f"{value:.0f} cm"
         display_messzeitpunkt = timestamp.strftime("%d.%m.%Y, %H:%M Uhr")
 
-        stats_parts = []
-        stats_parts.append(f"MNW: {mnw.value:.0f}")
-        stats_parts.append(f"MW: {mw.value:.0f}")
-        stats_parts.append(f"MHW: {mhw.value:.0f}")
-        display_stats = (" · ".join(stats_parts) + " cm") if stats_parts else ""
+        warnstufe = 0
+        stat_period = None
 
-        # Check if all thresholds are in the same period
-        stat_period = mw.periode
-        if stat_period != mnw.periode:
-            msg = f"Thresholds for {pegelname} ({station_id}) have different periods: {stat_period} vs {mnw.periode}"
-            raise RuntimeError(msg)
+        if mw is not None:
+            warnstufe = 1 if value <= mw.value else 2
 
-        if stat_period != mhw.periode:
-            msg = f"Thresholds for {pegelname} ({station_id}) have different periods: {stat_period} vs {mhw.periode}"
-            raise RuntimeError(msg)
+            # Check if all thresholds are in the same period
+            stat_period = mw.periode
+            if mnw is not None and stat_period != mnw.periode:
+                msg = f"Thresholds for {pegelname} ({station_id}) have different periods: {stat_period} vs {mnw.periode}"
+                raise RuntimeError(msg)
+
+            if mhw is not None and stat_period != mhw.periode:
+                msg = f"Thresholds for {pegelname} ({station_id}) have different periods: {stat_period} vs {mhw.periode}"
+                raise RuntimeError(msg)
 
         # if stat_period is None:
         #     msg = f"Thresholds for {pegelname} ({station_id}) have no period"
@@ -292,9 +323,9 @@ def run(session: requests.Session) -> list[StationRow]:
                 info_2=None,
                 info_3=None,
                 has_stats=any((mnw and mnw.value, mw and mw.value, mhw and mhw.value)),
-                mhw=mhw.value,
-                mnw=mnw.value,
-                mw=mw.value,
+                mhw=mhw and mhw.value,
+                mnw=mnw and mnw.value,
+                mw=mw and mw.value,
                 stats_period=stat_period or "Keine Angabe",
                 warnstufe=warnstufe,
                 warnstufe_color=WARNSTUFE_COLORS[warnstufe],

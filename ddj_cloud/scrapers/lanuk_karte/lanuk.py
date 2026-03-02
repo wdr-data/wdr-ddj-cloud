@@ -289,9 +289,9 @@ def run(session: requests.Session) -> list[StationRow]:
                 warnstufe = 0  # has info but no MW, below info_1
 
         quelle = (
-            "LANUK"
+            "Landesumweltamt NRW"
             if station.WEB_STATYPE in ("Gewässerkundlicher Pegel", "Infopegel")
-            else "LANUK (Externer Betreiber)"
+            else "Landesumweltamt NRW (Externer Betreiber)"
         )
 
         rows.append(

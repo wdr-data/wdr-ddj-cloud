@@ -1,6 +1,7 @@
 import datetime as dt
 from collections.abc import Iterable
-from typing import Literal, NotRequired
+from typing import NotRequired
+from urllib.parse import quote
 
 import requests
 
@@ -12,9 +13,11 @@ from ddj_cloud.scrapers.talsperren.common import (
     apply_guarded,
 )
 
+BASE_URL = "https://wver.de/karten_messwerte/Messdatenportal/Messdaten/"
+
 
 class EifelRurReservoirMeta(ReservoirMeta):
-    id: int
+    station_name: str
     skip: NotRequired[bool]
 
 
@@ -23,7 +26,7 @@ class EifelRurFederation(Federation):
 
     reservoirs: dict[str, EifelRurReservoirMeta] = {  # type: ignore
         "Oleftalsperre": {
-            "id": 6,
+            "station_name": "Oleftalsperre OW",
             "capacity_mio_m3": 19.30,
             "lat": 50.4952,
             "lon": 6.4216,
@@ -31,7 +34,7 @@ class EifelRurFederation(Federation):
         },
         # Doesn't seem to have data anymore
         "Rurtalsperre Gesamt": {
-            "id": 14,
+            "station_name": "",
             "skip": True,
             "capacity_mio_m3": 203.20,
             "lat": 50.637222,
@@ -39,42 +42,42 @@ class EifelRurFederation(Federation):
             "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
         "Rurtalsperre Obersee": {
-            "id": 13,
+            "station_name": "Rurtalsperre Obersee OW",
             "capacity_mio_m3": 17.77,
             "lat": 50.6056,
             "lon": 6.3925,
             "main_purpose": "Trinkwasserversorgung",
         },
         "Rurtalsperre Hauptsee": {
-            "id": 12,
+            "station_name": "Rurtalsperre Hauptsee OW",
             "capacity_mio_m3": 184.83,
             "lat": 50.637222,
             "lon": 6.441944,
             "main_purpose": "Flussregulierung",
         },
         "Urfttalsperre": {
-            "id": 16,
+            "station_name": "Urfttalsperre OW",
             "capacity_mio_m3": 45.51,
             "lat": 50.6029,
             "lon": 6.4195,
             "main_purpose": "Flussregulierung",
         },
         "Wehebachtalsperre": {
-            "id": 17,
+            "station_name": "Wehebachtalsperre OW",
             "capacity_mio_m3": 25.06,
             "lat": 50.7550,
             "lon": 6.3401,
             "main_purpose": "Trinkwasserversorgung; Flussregulierung",
         },
         "Stauanlage Heimbach": {
-            "id": 2,
+            "station_name": "Stb. Heimbach OW",
             "capacity_mio_m3": 1.21,
             "lat": 50.6285,
             "lon": 6.4792,
             "main_purpose": "Flussregulierung",
         },
         "Stauanlage Obermaubach": {
-            "id": 5,
+            "station_name": "Stb. Obermaubach OW",
             "capacity_mio_m3": 1.65,
             "lat": 50.7143,
             "lon": 6.4483,
@@ -82,13 +85,8 @@ class EifelRurFederation(Federation):
         },
     }
 
-    def _build_url(
-        self,
-        id: int,
-        *,
-        days: Literal[3, 7, 30] = 30,
-    ) -> str:
-        return f"https://wver.de/wp-json/pegel/verlauf/type=cluster&id={id}&days={days}"
+    def _build_url(self, station_name: str) -> str:
+        return f"{BASE_URL}{quote(station_name)}TalsperreninhaltTag.Mittel.json"
 
     def _get_json(self, url: str):
         return requests.get(url).json()
@@ -97,27 +95,24 @@ class EifelRurFederation(Federation):
         if self.reservoirs[name].get("skip", False):
             return []
 
-        url = self._build_url(self.reservoirs[name]["id"])
+        url = self._build_url(self.reservoirs[name]["station_name"])
         json_data = self._get_json(url)
 
-        assert "sensoren" in json_data, "No sensors found in JSON data"
-
-        content_sensor = next(
-            (sensor for sensor in json_data["sensoren"] if sensor["name"] == "Stauinhalt"),
-            None,
+        assert "data" in json_data, "No data found in JSON response"
+        assert json_data.get("ts_unitname") == "Millionen Kubikmeter", (
+            f"Unexpected unit: {json_data.get('ts_unitname')}"
         )
-        assert content_sensor, "No content sensor found"
 
         return [
             ReservoirRecord(
                 federation_name=self.name,
                 name=name,
-                ts_measured=dt.datetime.fromisoformat(entry["timestamp"]).replace(tzinfo=TZ_BERLIN),
+                ts_measured=dt.datetime.fromisoformat(entry[0]).astimezone(TZ_BERLIN),
                 capacity_mio_m3=self.reservoirs[name]["capacity_mio_m3"],
-                content_mio_m3=float(entry["value"]),
+                content_mio_m3=float(entry[1]),
             )
-            for entry in content_sensor["pegelverlauf"]
-            if float(entry["value"]) >= 0  # Negative values seem to be errors
+            for entry in json_data["data"]
+            if entry[1] is not None and float(entry[1]) >= 0
         ]
 
     def get_data(

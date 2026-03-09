@@ -1,3 +1,5 @@
 import logging
+from os import getenv
 
-logging.basicConfig(level=logging.DEBUG)
+if getenv("STAGE") == "testing":
+    logging.basicConfig(level=logging.DEBUG)

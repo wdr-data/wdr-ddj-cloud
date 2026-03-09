@@ -16,6 +16,8 @@ DATASET = bigquery.DatasetReference(PROJECT, "bundeskartellamt_trusted")
 TABLE_TAGESWERTE = "markttransparenzstelle_tageswerte"
 TABLE_AUFLOESUNG = "markttransparenzstelle_aufloesung"
 
+LABELS = {"cost_category": "wdr", "triggered_by": "wdr-ddj-cloud"}
+
 
 def load_tageswerte(client: bigquery.Client):
     query = "SELECT * FROM `@table_name` WHERE ags = @ags ORDER BY meldedatum DESC, type ASC"
@@ -26,6 +28,7 @@ def load_tageswerte(client: bigquery.Client):
         query_parameters=[
             bigquery.ScalarQueryParameter("ags", "STRING", "05"),
         ],
+        labels=LABELS,
     )
 
     def df_cleaner(df: pd.DataFrame) -> pd.DataFrame:
@@ -80,6 +83,7 @@ def load_aufloesung(client: bigquery.Client):
             bigquery.ScalarQueryParameter("datenstand_start", "TIMESTAMP", start),
             bigquery.ScalarQueryParameter("datenstand_end", "TIMESTAMP", end),
         ],
+        labels=LABELS,
     )
 
     def df_cleaner(df: pd.DataFrame) -> pd.DataFrame:

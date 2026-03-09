@@ -24,6 +24,7 @@ python-slugify = "*"
 babel = "*"
 pydantic = "~=2.9.2"
 shapely = "~=2.0"
+requests = "~=2.28"
 
 [dev-packages]
 click = "~=8.1"

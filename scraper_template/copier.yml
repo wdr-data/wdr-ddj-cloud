@@ -21,7 +21,7 @@ module_name:
   type: str
   help: |-
     The name of the Python module for your scraper.
-       Please ensure this is a valid Python module name!
+       This must use valid Python module name syntax (ie. no spaces or dashes).
   when: "{{ display_name != display_name | modulify }}"
   default: "{{ display_name | modulify }}"
 
@@ -53,8 +53,8 @@ interval:
 interval_custom:
   type: str
   help: |-
-    Enter a custom rate expression
-       See https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+    Enter a custom rate expression (either a `cron(...)` expression or a `rate(...)` expression).
+       See https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-scheduled-rule-pattern.html
   when: "{{ interval == 'custom' }}"
 
 memory_size:

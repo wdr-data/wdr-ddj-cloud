@@ -1,3 +1,4 @@
+import csv
 import os
 from collections.abc import Callable
 from io import BytesIO
@@ -337,7 +338,7 @@ def upload_dataframe(  # noqa: PLR0913
             df[col] = df[col].dt.strftime("%Y-%m-%d %H:%M:%S")
 
     # Convert to csv and encode to get bytes
-    write = df.to_csv(index=False).encode("utf-8")
+    write = df.to_csv(index=False, quoting=csv.QUOTE_NONNUMERIC).encode("utf-8")
 
     # Upload file
     upload_file(

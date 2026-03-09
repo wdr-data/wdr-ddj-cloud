@@ -327,7 +327,7 @@ def generate_serverless_yml():
                     {
                         "schedule": {
                             "name": name,
-                            "rate": rate,
+                            "rate": rate.strip(),
                             "enabled": event["enabled"],
                             "input": {
                                 "module_name": scraper["module_name"],

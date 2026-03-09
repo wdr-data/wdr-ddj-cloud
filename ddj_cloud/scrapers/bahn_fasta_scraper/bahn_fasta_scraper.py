@@ -16,6 +16,10 @@ def run():
     und speichert das JSON mit Zeitstempel im Dateinamen.
     """
 
+    if os.environ.get("STAGE") == "prod":
+        print("Skipping in production, has only ever been running in staging")
+        return
+
     client_id = os.environ.get("DB_CLIENT_ID")
     api_key = os.environ.get("DB_API_KEY")
     if not client_id or not api_key:

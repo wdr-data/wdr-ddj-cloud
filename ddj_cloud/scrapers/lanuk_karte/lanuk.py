@@ -33,6 +33,11 @@ REQUEST_DELAY = 0.5  # seconds between per-station requests
 CACHE_DIR = Path(__file__).parent / "cache"
 
 
+KNOWN_BAD_STATIONS = {
+    "437628332",  # Siedlingsheide1
+    "28403",  # Gloertalsperre_Zulauf (Ennepe-Ruhr Kreis)
+}
+
 # -- Pydantic model (ported from pegelstaende-pipeline-nrw) --
 
 
@@ -218,6 +223,9 @@ def run(session: requests.Session) -> list[StationRow]:
             value, timestamp = _fetch_current_level(session, station.site_no, station.station_no)
             timestamp = timestamp.astimezone(BERLIN)  # Normalize to Berlin time
         except Exception:
+            if station.station_id in KNOWN_BAD_STATIONS:
+                continue
+
             logger.exception(
                 "Failed to fetch water level for %s (%s)",
                 station.station_name,

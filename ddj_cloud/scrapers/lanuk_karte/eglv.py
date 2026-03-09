@@ -265,7 +265,7 @@ def run(session: requests.Session) -> list[StationRow]:
     rows: list[StationRow] = []
 
     for station_id, pegelname, gewaesser, lat, lon in _STATIONS:
-        if station_id not in SELECTED_STATIONS:
+        if station_id not in (SELECTED_STATIONS | SELECTED_STATIONS_NO_STATS):
             logger.info(
                 "Skipping station %s (%s) because it is not in the selected stations",
                 pegelname,

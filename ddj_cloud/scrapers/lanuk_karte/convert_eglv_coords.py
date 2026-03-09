@@ -59,7 +59,7 @@ STATIONS = [
     ("12112", "HRB Vieselerhofstraße, Beckenpegel",                "Emscher",                  400724.64,          5705786.699999999),
     ("12108", "Phönixsee, Beckenpegel",                            "Emscher",                  396801.49000000005, 5705232.749999998),
     ("10143", "Schwarzbach, Rotthauser Straße",                    "Emscher",                  366746.3240354175,  5705031.236388591),
-    ("11118", "BO Goldhammer Bach, Ablauf Blücherstraße, Brücke",  "Goldhamer Bach",           372225.93828821136, 5706504.61852393),
+    ("11118", "BO Goldhammer Bach, Ablauf Blücherstraße, Brücke",  "Goldhammer Bach",           372225.93828821136, 5706504.61852393),
     ("12118", "HRB Goldhammer Bach, Beckenpegel",                  "Goldhammer Bach",          372346.29840974894, 5706428.723022182),
     ("20020", "Am Strandbad",                                      "Hammbach",                 359350.2899999999,  5727000.839999999),
     ("20017", "Rosenstraße",                                       "Hammbach",                 359450.72,          5727825.689999999),

@@ -39,7 +39,7 @@ def run():
             row.station_type = "Hochwasser-Meldepegel"
 
         row.operator = row.operator or row.quelle
-        if row.quelle == "LANUK (Externer Betreiber)":
+        if row.quelle == "Landesumweltamt NRW (Externer Betreiber)":
             if row.operator != "LANUK":
                 row.quelle = f"LANUK (via {row.operator})"
             elif special_operator := OPERATOR_SPECIAL_CASES.get(row.station_id):

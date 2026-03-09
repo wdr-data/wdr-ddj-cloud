@@ -12,9 +12,13 @@ from ddj_cloud.utils.date_and_time import UTC, local_now, local_today
 from ddj_cloud.utils.storage import upload_dataframe
 
 PROJECT = "swr-datalab-prod"
-DATASET = bigquery.DatasetReference(PROJECT, "bundeskartellamt_trusted")
+DATASET_BUNDESKARTELLAMT = bigquery.DatasetReference(PROJECT, "bundeskartellamt_trusted")
 TABLE_TAGESWERTE = "markttransparenzstelle_tageswerte"
 TABLE_AUFLOESUNG = "markttransparenzstelle_aufloesung"
+
+DATASET_BOERSE = bigquery.DatasetReference(PROJECT, "boerse_ard_trusted")
+# Schema: ['openPrice:FLOAT', 'closePrice:FLOAT', 'lowPrice:FLOAT', 'highPrice:FLOAT', 'cumulativeVolumeUnit:FLOAT', 'meldedatum:DATE', 'datenstand:TIMESTAMP', 'abrufdatum:TIMESTAMP']
+TABLE_ROHOEL = "boerse_ard_rohoel_zeitreihe_int"
 
 LABELS = {"cost_category": "wdr", "triggered_by": "wdr-ddj-cloud"}
 
@@ -24,7 +28,7 @@ def load_tageswerte(client: bigquery.Client):
     query = bigquery_utils.insert_table_name(query, TABLE_TAGESWERTE, "@table_name")
 
     job_config = bigquery.QueryJobConfig(
-        default_dataset=DATASET,
+        default_dataset=DATASET_BUNDESKARTELLAMT,
         query_parameters=[
             bigquery.ScalarQueryParameter("ags", "STRING", "05"),
         ],
@@ -77,7 +81,7 @@ def load_aufloesung(client: bigquery.Client):
     end = now + dt.timedelta(days=1)
 
     job_config = bigquery.QueryJobConfig(
-        default_dataset=DATASET,
+        default_dataset=DATASET_BUNDESKARTELLAMT,
         query_parameters=[
             bigquery.ScalarQueryParameter("ags", "STRING", "05"),
             bigquery.ScalarQueryParameter("datenstand_start", "TIMESTAMP", start),
@@ -109,6 +113,69 @@ def load_aufloesung(client: bigquery.Client):
 
         # Tag datetimes
         df["abrufdatum"] = df["abrufdatum"].dt.tz_localize(UTC)
+
+        return df.replace({np.nan: None})
+
+    yield from bigquery_utils.iter_results(
+        client,
+        query,
+        job_config,
+        df_cleaner,
+    )
+
+
+def load_rohoel(client: bigquery.Client):
+    # `lowPrice` and `highPrice` are the same as `closePrice` before 2026-03-05
+    # `openPrice` not really interesting
+    # `cumulativeVolumeUnit` seems to be always 0
+    query = """
+        SELECT
+            closePrice,
+            meldedatum,
+            datenstand,
+            abrufdatum
+        FROM `@table_name`
+        QUALIFY ROW_NUMBER() OVER (
+            PARTITION BY meldedatum
+            ORDER BY datenstand DESC, abrufdatum DESC
+        ) = 1
+        ORDER BY meldedatum DESC
+    """
+    query = bigquery_utils.insert_table_name(query, TABLE_ROHOEL, "@table_name")
+
+    job_config = bigquery.QueryJobConfig(
+        default_dataset=DATASET_BOERSE,
+        labels=LABELS,
+    )
+
+    def df_cleaner(df: pd.DataFrame) -> pd.DataFrame:
+        rohoel_datenstand_tz = df["datenstand"].dt.tz
+        rohoel_abrufdatum_tz = df["abrufdatum"].dt.tz
+
+        df.rename(
+            columns={
+                "meldedatum": "day",
+                "closePrice": "rohoel_close_price",
+                "lowPrice": "rohoel_low_price",
+                "highPrice": "rohoel_high_price",
+                "datenstand": "rohoel_datenstand",
+                "abrufdatum": "rohoel_abrufdatum",
+            },
+            inplace=True,
+        )
+
+        if rohoel_datenstand_tz is None:
+            df["rohoel_datenstand"] = df["rohoel_datenstand"].dt.tz_localize(UTC)
+        else:
+            df["rohoel_datenstand"] = df["rohoel_datenstand"].dt.tz_convert(UTC)
+
+        if rohoel_abrufdatum_tz is None:
+            df["rohoel_abrufdatum"] = df["rohoel_abrufdatum"].dt.tz_localize(UTC)
+        else:
+            df["rohoel_abrufdatum"] = df["rohoel_abrufdatum"].dt.tz_convert(UTC)
+
+        df.drop_duplicates(subset=["day"], inplace=True, ignore_index=True)
+        df.reset_index(drop=True)
 
         return df.replace({np.nan: None})
 
@@ -180,21 +247,50 @@ def run():
             pd.merge,
             how="outer",
             on="day",
-            copy=False,
             validate="one_to_one",
         ),
         tageswerte_expanded_dfs,
     )
+
+    df_rohoel = pd.DataFrame(load_rohoel(bigquery_client))
+
+    rohoel_value_columns = [
+        "rohoel_close_price",
+    ]
+
+    # Duplicate columns so we can render a second, dotted line in the Datawrapper chart
+    # that shows the transition over weekends/holidays
+    for column in rohoel_value_columns:
+        df_rohoel.insert(
+            list(df_rohoel.columns).index(column),
+            f"{column}_gestrichelt",
+            df_rohoel[column],
+        )
+
+    df_rohoel_history = df_rohoel[df_rohoel[rohoel_value_columns].notna().any(axis=1)].copy()
     upload_dataframe(
+        df_rohoel_history,
+        "swr_benzinpreise/history_rohoel.csv",
+        datawrapper_datetimes=True,
+    )
+
+    df_daily_history = pd.merge(
         df_tageswerte_expanded,
+        df_rohoel,
+        how="outer",
+        on="day",
+        validate="one_to_one",
+    )
+    upload_dataframe(
+        df_daily_history,
         "swr_benzinpreise/history.csv",
         datawrapper_datetimes=True,
     )
 
-    df_tageswerte_30_days_expanded = df_tageswerte_expanded[
-        df_tageswerte_expanded["day"] >= (local_today() - dt.timedelta(days=30))
+    df_daily_30_days_expanded = df_daily_history[
+        df_daily_history["day"] >= (local_today() - dt.timedelta(days=30))
     ]
-    upload_dataframe(df_tageswerte_30_days_expanded, "swr_benzinpreise/history_30_days.csv")
+    upload_dataframe(df_daily_30_days_expanded, "swr_benzinpreise/history_30_days.csv")
 
     # Load data
     df_aufloesung = pd.DataFrame(load_aufloesung(bigquery_client))
@@ -210,7 +306,6 @@ def run():
             pd.merge,
             how="outer",
             on="datenstand",
-            copy=False,
             validate="one_to_one",
         ),
         aufloesung_expanded_dfs,

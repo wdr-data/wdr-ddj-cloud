@@ -42,7 +42,7 @@ custom:
     # Put Python requirements in a separate layer so each scraper deploys faster
     # Can be disabled by setting NO_LAMBDA_LAYER=1
     layer:
-      name: ${self:provider.stage}-scraper-requirements
+      name: ${self:service}-${self:provider.stage}-scraper-requirements
       description: Python requirements lambda layer
       compatibleRuntimes:
         - python3.11

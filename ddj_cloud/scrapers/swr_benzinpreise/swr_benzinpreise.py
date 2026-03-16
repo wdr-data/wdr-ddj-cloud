@@ -156,8 +156,6 @@ def load_rohoel(client: bigquery.Client):
             columns={
                 "meldedatum": "day",
                 "closePrice": "rohoel_close_price",
-                "lowPrice": "rohoel_low_price",
-                "highPrice": "rohoel_high_price",
                 "datenstand": "rohoel_datenstand",
                 "abrufdatum": "rohoel_abrufdatum",
             },

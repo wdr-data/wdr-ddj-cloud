@@ -192,9 +192,7 @@ def new_scraper(pretend: bool):
     _save_scrapers_config(scrapers_config)
 
     _success("Success!")
-    _info(
-        f'Tip: You can test your scraper with "pipenv run manage test {new_entry["module_name"]}"'
-    )
+    _info(f'Tip: You can test your scraper with "uv run manage test {new_entry["module_name"]}"')
 
 
 @cli.command("list", help="Print a list of all configured scrapers.")
@@ -238,9 +236,20 @@ def delete_scraper(module_name):
     scrapers_config = _delete_scraper(scraper, scrapers_config)
 
 
-@cli.command("test", help="Test a scraper locally.")
-@click.argument("module_name", type=str)
-def test_scraper(module_name):
+def _load_local_test_env():
+    env_file = BASE_DIR / ".env"
+    if env_file.exists():
+        try:
+            load_dotenv = importlib.import_module("dotenv").load_dotenv
+        except ModuleNotFoundError:
+            _error('Error: python-dotenv is required for local .env loading. Run "uv sync --dev".')
+            sys.exit(1)
+
+        _info(f'Loading environment variables from "{env_file.name}"...')
+        load_dotenv(env_file)
+
+
+def _run_scraper_test(module_name: str):
     _info(f'Loading scraper module "{module_name}"...')
 
     # Disable S3/CloudFront for local testing
@@ -269,10 +278,10 @@ def test_scraper(module_name):
         _error("Scraper failed! Logging error...\n")
         raise
 
-    _success("Scraper ran succesfully!")
+    _success("Scraper ran successfully!")
 
     # Print storage events
-    from ddj_cloud.utils import storage
+    storage = importlib.import_module("ddj_cloud.utils.storage")
 
     _info("\nThe scraper performed the following storage operations:")
 
@@ -284,15 +293,23 @@ def test_scraper(module_name):
     _info(str(LOCAL_STORAGE_PATH))
 
 
+@cli.command("test", help="Test a scraper locally.")
+@click.argument("module_name", type=str)
+def test_scraper(module_name):
+    _load_local_test_env()
+    _run_scraper_test(module_name)
+
+
 @cli.command("test-all", help="Test all scrapers locally.")
 def test_all_scrapers():
+    _load_local_test_env()
     scrapers_config = _load_scrapers_config()
 
     for scraper in scrapers_config:
         try:
-            test_scraper([scraper["module_name"]])
+            _run_scraper_test(scraper["module_name"])
         except Exception:
-            print()
+            click.echo()
 
 
 @cli.command("generate", help='Generate the "serverless.yml" for deployment.')
@@ -305,6 +322,19 @@ def generate_serverless_yml():
         serverless_part_yml = yaml.safe_load(fp)
 
     functions = serverless_part_yml.get("functions", {})
+
+    # Allow disabling the layer, mostly for local testing
+    use_layer = not os.environ.get("NO_LAMBDA_LAYER")
+    _info(f"{'Using' if use_layer else 'Not using'} layer for Python requirements.")
+
+    if use_layer and not os.environ.get("AWS_ACCESS_KEY_ID"):
+        _warn(
+            "This requires AWS credentials, even for just packaging. Set `NO_LAMBDA_LAYER=1` to disable."
+        )
+
+    if not use_layer:
+        serverless_part_yml.get("custom", {}).get("pythonRequirements", {}).pop("layer", None)
+
     scrapers_config = _load_scrapers_config()
 
     rate_presets = {
@@ -321,7 +351,7 @@ def generate_serverless_yml():
 
         for i, event in enumerate(scraper["events"]):
             if event["type"] == "schedule":
-                name = "${self:service}-${self:provider.stage}-" + f'{scraper["module_name"]}-{i}'
+                name = "${self:service}-${self:provider.stage}-" + f"{scraper['module_name']}-{i}"
                 rate = event["data"]["interval_custom"] or rate_presets[event["data"]["interval"]]
                 events.append(
                     {
@@ -347,6 +377,9 @@ def generate_serverless_yml():
             "events": events,
             "environment": extra_env_vars,
         }
+
+        if use_layer:
+            function_definition["layers"] = [{"Ref": "PythonRequirementsLambdaLayer"}]
 
         # We use pascal case for the key, otherwise they literally put "Underscore" there
         name_pascal_case = scraper["module_name"].replace("_", " ").title().replace(" ", "")

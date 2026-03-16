@@ -76,7 +76,7 @@ _STATIONS: list[tuple[str, str, str, float, float]] = [
     ("12112", "HRB Vieselerhofstraße, Beckenpegel",                 "Emscher",                  51.49449631,  7.56992087),
     ("12108", "Phönixsee, Beckenpegel",                             "Emscher",                  51.48881447,  7.51358923),
     ("10143", "Schwarzbach, Rotthauser Straße",                     "Emscher",                  51.48072024,  7.08100001),
-    ("11118", "BO Goldhammer Bach, Ablauf Blücherstraße, Brücke",   "Goldhamer Bach",           51.49522608,  7.15933451),
+    ("11118", "BO Goldhammer Bach, Ablauf Blücherstraße, Brücke",   "Goldhammer Bach",           51.49522608,  7.15933451),
     ("12118", "HRB Goldhammer Bach, Beckenpegel",                   "Goldhammer Bach",          51.49457119,  7.16109487),
     ("20020", "Am Strandbad",                                       "Hammbach",                 51.67634757,  6.96576066),
     ("20017", "Rosenstraße",                                        "Hammbach",                 51.68378463,  6.96688017),
@@ -265,7 +265,7 @@ def run(session: requests.Session) -> list[StationRow]:
     rows: list[StationRow] = []
 
     for station_id, pegelname, gewaesser, lat, lon in _STATIONS:
-        if station_id not in SELECTED_STATIONS:
+        if station_id not in (SELECTED_STATIONS | SELECTED_STATIONS_NO_STATS):
             logger.info(
                 "Skipping station %s (%s) because it is not in the selected stations",
                 pegelname,

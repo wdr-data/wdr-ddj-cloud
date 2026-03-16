@@ -8,7 +8,7 @@ It provides tools to quickly and easily create new scrapers, deploy them to AWS 
 
 ## Prerequisites
 
-You also need [Git](https://git-scm.com/downloads) and [Visual Studio Code](https://code.visualstudio.com/Download) or another editor of your choice to contribute a scraper to this project. It is recommended to install the [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Pylance extension](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) for Visual Studio Code.
+You need [Git](https://git-scm.com/downloads) and [Visual Studio Code](https://code.visualstudio.com/Download) or another editor of your choice to contribute a scraper to this project. It is recommended to install the [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Pylance extension](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) for Visual Studio Code.
 
 You will also need a [GitHub account](https://github.com/signup) if you don't already have one and request access to this repository.
 

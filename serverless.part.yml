@@ -39,6 +39,14 @@ custom:
     # Needed for lxml to work?
     pipCmdExtraArgs: ["--platform manylinux2014_x86_64", "--only-binary=:all:"]
 
+    # Put Python requirements in a separate layer so each scraper deploys faster
+    # Can be disabled by setting NO_LAMBDA_LAYER=1
+    layer:
+      name: ${self:provider.stage}-scraper-requirements
+      description: Python requirements lambda layer
+      compatibleRuntimes:
+        - python3.11
+
   customDomainBaseWdrDe: scrapers.data.wdr.de
   acmCertificateId: b24fb4c7-2b4d-45b5-a58e-7f18953fbffa
 

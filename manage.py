@@ -322,6 +322,19 @@ def generate_serverless_yml():
         serverless_part_yml = yaml.safe_load(fp)
 
     functions = serverless_part_yml.get("functions", {})
+
+    # Allow disabling the layer, mostly for local testing
+    use_layer = not os.environ.get("NO_LAMBDA_LAYER")
+    _info(f"{'Using' if use_layer else 'Not using'} layer for Python requirements.")
+
+    if use_layer and not os.environ.get("AWS_ACCESS_KEY_ID"):
+        _warn(
+            "This requires AWS credentials, even for just packaging. Set `NO_LAMBDA_LAYER=1` to disable."
+        )
+
+    if not use_layer:
+        serverless_part_yml.get("custom", {}).get("pythonRequirements", {}).pop("layer", None)
+
     scrapers_config = _load_scrapers_config()
 
     rate_presets = {
@@ -364,6 +377,9 @@ def generate_serverless_yml():
             "events": events,
             "environment": extra_env_vars,
         }
+
+        if use_layer:
+            function_definition["layers"] = [{"Ref": "PythonRequirementsLambdaLayer"}]
 
         # We use pascal case for the key, otherwise they literally put "Underscore" there
         name_pascal_case = scraper["module_name"].replace("_", " ").title().replace(" ", "")

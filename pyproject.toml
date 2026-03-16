@@ -47,7 +47,8 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["ddj_cloud", "manage.py"]
+packages = ["ddj_cloud"]
+include = ["manage.py"]
 
 [tool.ruff]
 target-version = "py311"

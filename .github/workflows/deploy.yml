@@ -98,3 +98,30 @@ jobs:
           TALSPERREN_DATAWRAPPER_TOKEN: ${{ secrets.NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN }}
           DB_CLIENT_ID: ${{ secrets.DB_CLIENT_ID }}
           DB_API_KEY: ${{ secrets.DB_API_KEY }}
+
+      - name: Log artifact sizes
+        run: |
+          echo "=== .serverless zip files ==="
+          ls -lh .serverless/*.zip
+          echo "=== Function zip contents (uncompressed size) ==="
+          python3 -c "
+          import zipfile
+          for name in ['wdr-ddj-cloud']:
+              z = zipfile.ZipFile(f'.serverless/{name}.zip')
+              total = sum(i.file_size for i in z.infolist())
+              print(f'{name}.zip: {total/1024/1024:.1f} MB uncompressed, {len(z.infolist())} files')
+              # Show top dirs
+              from collections import Counter
+              dirs = Counter(i.filename.split('/')[0] for i in z.infolist())
+              for d, c in dirs.most_common(10):
+                  print(f'  {d}: {c} files')
+          "
+          echo "=== Layer zip uncompressed size ==="
+          python3 -c "
+          import zipfile, os
+          z = zipfile.ZipFile('.serverless/pythonRequirements.zip')
+          total = sum(i.file_size for i in z.infolist())
+          print(f'Layer: {total/1024/1024:.1f} MB uncompressed, {len(z.infolist())} files')
+          "
+          echo "=== Requirements dir size ==="
+          du -sh .serverless/requirements/ || true

@@ -241,6 +241,17 @@ def delete_scraper(module_name):
 def test_scraper(module_name):
     _info(f'Loading scraper module "{module_name}"...')
 
+    env_file = BASE_DIR / ".env"
+    if env_file.exists():
+        try:
+            load_dotenv = importlib.import_module("dotenv").load_dotenv
+        except ModuleNotFoundError:
+            _error('Error: python-dotenv is required for local .env loading. Run "uv sync --dev".')
+            sys.exit(1)
+
+        _info(f'Loading environment variables from "{env_file.name}"...')
+        load_dotenv(env_file)
+
     # Disable S3/CloudFront for local testing
     os.environ["USE_LOCAL_STORAGE"] = "1"
 

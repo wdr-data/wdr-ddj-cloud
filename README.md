@@ -90,6 +90,12 @@ You can run the following command to test your scraper:
 
 where `<scraper_name>` is the Python module name of your scraper.
 
+If a local `.env` file exists in the repository root, `manage test` will load it automatically before importing the scraper.
+
+For commands other than `manage test`, use uv's explicit `.env` support when needed, for example:
+
+    uv run --env-file .env manage generate
+
 The testing script will show you if any errors occurred during the execution of your scraper and it will also show you a summary of the files written by your scraper.
 
 ### Deploying your scraper

@@ -44,6 +44,7 @@ dev = [
     "copier~=9.4.0",
     "copier-templates-extensions~=0.3",
     "colorama",
+    "python-dotenv",
 ]
 
 [tool.hatch.build.targets.wheel]

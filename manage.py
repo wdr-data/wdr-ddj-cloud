@@ -236,11 +236,7 @@ def delete_scraper(module_name):
     scrapers_config = _delete_scraper(scraper, scrapers_config)
 
 
-@cli.command("test", help="Test a scraper locally.")
-@click.argument("module_name", type=str)
-def test_scraper(module_name):
-    _info(f'Loading scraper module "{module_name}"...')
-
+def _load_local_test_env():
     env_file = BASE_DIR / ".env"
     if env_file.exists():
         try:
@@ -251,6 +247,10 @@ def test_scraper(module_name):
 
         _info(f'Loading environment variables from "{env_file.name}"...')
         load_dotenv(env_file)
+
+
+def _run_scraper_test(module_name: str):
+    _info(f'Loading scraper module "{module_name}"...')
 
     # Disable S3/CloudFront for local testing
     os.environ["USE_LOCAL_STORAGE"] = "1"
@@ -293,15 +293,23 @@ def test_scraper(module_name):
     _info(str(LOCAL_STORAGE_PATH))
 
 
+@cli.command("test", help="Test a scraper locally.")
+@click.argument("module_name", type=str)
+def test_scraper(module_name):
+    _load_local_test_env()
+    _run_scraper_test(module_name)
+
+
 @cli.command("test-all", help="Test all scrapers locally.")
 def test_all_scrapers():
+    _load_local_test_env()
     scrapers_config = _load_scrapers_config()
 
     for scraper in scrapers_config:
         try:
-            test_scraper([scraper["module_name"]])
+            _run_scraper_test(scraper["module_name"])
         except Exception:
-            print()
+            click.echo()
 
 
 @cli.command("generate", help='Generate the "serverless.yml" for deployment.')

@@ -8,7 +8,7 @@ It provides tools to quickly and easily create new scrapers, deploy them to AWS 
 
 ## Prerequisites
 
-An installation of Python 10 is required, even if you already have working Python installation with a different version. You can install it via the Windows Store [here](https://www.microsoft.com/store/productId/9PJPW5LDXLZ5).
+An installation of Python 3.11 is required, even if you already have working Python installation with a different version. You can install it via the Windows Store [here](https://www.microsoft.com/store/productId/9PJPW5LDXLZ5).
 
 You also need [Git](https://git-scm.com/downloads) and [Visual Studio Code](https://code.visualstudio.com/Download) or another editor of your choice to contribute a scraper to this project. It is recommended to install the [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Pylance extension](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) for Visual Studio Code.
 

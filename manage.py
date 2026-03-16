@@ -192,9 +192,7 @@ def new_scraper(pretend: bool):
     _save_scrapers_config(scrapers_config)
 
     _success("Success!")
-    _info(
-        f'Tip: You can test your scraper with "pipenv run manage test {new_entry["module_name"]}"'
-    )
+    _info(f'Tip: You can test your scraper with "uv run manage test {new_entry["module_name"]}"')
 
 
 @cli.command("list", help="Print a list of all configured scrapers.")
@@ -243,6 +241,17 @@ def delete_scraper(module_name):
 def test_scraper(module_name):
     _info(f'Loading scraper module "{module_name}"...')
 
+    env_file = BASE_DIR / ".env"
+    if env_file.exists():
+        try:
+            load_dotenv = importlib.import_module("dotenv").load_dotenv
+        except ModuleNotFoundError:
+            _error('Error: python-dotenv is required for local .env loading. Run "uv sync --dev".')
+            sys.exit(1)
+
+        _info(f'Loading environment variables from "{env_file.name}"...')
+        load_dotenv(env_file)
+
     # Disable S3/CloudFront for local testing
     os.environ["USE_LOCAL_STORAGE"] = "1"
 
@@ -272,7 +281,7 @@ def test_scraper(module_name):
     _success("Scraper ran succesfully!")
 
     # Print storage events
-    from ddj_cloud.utils import storage
+    storage = importlib.import_module("ddj_cloud.utils.storage")
 
     _info("\nThe scraper performed the following storage operations:")
 
@@ -321,7 +330,7 @@ def generate_serverless_yml():
 
         for i, event in enumerate(scraper["events"]):
             if event["type"] == "schedule":
-                name = "${self:service}-${self:provider.stage}-" + f'{scraper["module_name"]}-{i}'
+                name = "${self:service}-${self:provider.stage}-" + f"{scraper['module_name']}-{i}"
                 rate = event["data"]["interval_custom"] or rate_presets[event["data"]["interval"]]
                 events.append(
                     {

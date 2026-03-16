@@ -8,25 +8,33 @@ It provides tools to quickly and easily create new scrapers, deploy them to AWS 
 
 ## Prerequisites
 
-An installation of Python 3.11 is required, even if you already have working Python installation with a different version. You can install it via the Windows Store [here](https://www.microsoft.com/store/productId/9PJPW5LDXLZ5).
-
 You also need [Git](https://git-scm.com/downloads) and [Visual Studio Code](https://code.visualstudio.com/Download) or another editor of your choice to contribute a scraper to this project. It is recommended to install the [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and [Pylance extension](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) for Visual Studio Code.
 
 You will also need a [GitHub account](https://github.com/signup) if you don't already have one and request access to this repository.
 
 ## Setup
 
-### Installing `pipenv`
+### Installing `uv`
 
-Pipenv is a tool that manages virtual environments and dependencies for Python projects and runs commands in the correct environment.
+uv is a fast Python package manager that manages Python installations, virtual environments, and dependencies for Python projects.
 
-In a terminal, run the following command to install `pipenv`:
+If you install uv using the standalone installer below, you usually do not need to install Python separately. uv will download a compatible interpreter automatically during `uv sync` if needed.
 
-    pip install --user --upgrade pipenv
+If you install uv via `pip`, you do need an existing Python installation first. The standalone installer is recommended.
 
-You can verify that `pipenv` is installed by running:
+Follow the installation instructions at https://docs.astral.sh/uv/getting-started/installation/ or run one of the following commands:
 
-    python -m pipenv --version
+On Linux/macOS:
+
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+On Windows (PowerShell):
+
+    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+You can verify that `uv` is installed by running:
+
+    uv --version
 
 You can now close the terminal.
 
@@ -48,9 +56,9 @@ Once the repository is open in Visual Studio Code, you can close the git bash te
 
 Before we can start, we need to install the dependencies for the project. Open a terminal in Visual Studio Code by selecting "Terminal" -> "New Terminal" from the menu. Then run the following command to install the dependencies:
 
-    python -m pipenv sync --dev
+    uv sync --dev
 
-If this is your first time running this command, `pipenv` will create a virtual environment for the project and install all dependencies. This may take a while. After completion, it is recommended to restart Visual Studio Code.
+If this is your first time running this command, `uv` will download Python 3.11 if necessary, create a virtual environment for the project, and install all dependencies. This may take a while. After completion, it is recommended to restart Visual Studio Code.
 
 ## Creating a scraper
 
@@ -62,7 +70,7 @@ If you are familiar with Git, you should create a new branch for your scraper. O
 
 This project provides a template for new scrapers. To create a new scraper, run the following command in the terminal:
 
-    pipenv run manage new
+    uv run manage new
 
 You will be guided through the process of creating a new scraper. You will be asked for the name of the scraper and some additional information. The name of the scraper will be used as the name of the folder for the scraper.
 
@@ -78,9 +86,15 @@ Find the scraper you created in the `ddj_cloud/scrapers` folder and open the `.p
 
 You can run the following command to test your scraper:
 
-    pipenv run manage test <scraper_name>
+    uv run manage test <scraper_name>
 
 where `<scraper_name>` is the Python module name of your scraper.
+
+If a local `.env` file exists in the repository root, `manage test` will load it automatically before importing the scraper.
+
+For commands other than `manage test`, use uv's explicit `.env` support when needed, for example:
+
+    uv run --env-file .env manage generate
 
 The testing script will show you if any errors occurred during the execution of your scraper and it will also show you a summary of the files written by your scraper.
 

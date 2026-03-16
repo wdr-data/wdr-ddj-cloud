@@ -81,7 +81,6 @@ ignore = [
 [tool.pyright]
 pythonVersion = "3.11"
 include = ["ddj_cloud", "scraper_template"]
-extend-exclude = []
 typeCheckingMode = "standard"
 reportUnnecessaryTypeIgnoreComment = "warning"
 reportUnusedImport = "none"

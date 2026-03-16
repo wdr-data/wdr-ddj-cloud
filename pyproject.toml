@@ -45,6 +45,7 @@ dev = [
     "copier-templates-extensions~=0.3",
     "colorama",
     "python-dotenv",
+    "pip>=26.0.1",
 ]
 
 [tool.hatch.build.targets.wheel]

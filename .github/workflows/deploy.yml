@@ -3,6 +3,12 @@ name: Deploy to AWS
 on:
   push:
     branches: [main, production]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force re-upload of all deployment artifacts"
+        type: boolean
+        default: false
 
 jobs:
   scraper:
@@ -75,7 +81,7 @@ jobs:
         run: uv export --frozen --format requirements.txt --no-dev --no-emit-project --no-header --no-hashes --no-annotate --output-file requirements.txt
 
       - name: Deploy with serverless
-        run: npx serverless deploy
+        run: npx serverless deploy ${{ inputs.force == true && '--force' || '' }}
         env:
           STAGE: ${{ env.STAGE }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

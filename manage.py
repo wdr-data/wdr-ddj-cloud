@@ -278,7 +278,7 @@ def _run_scraper_test(module_name: str):
         _error("Scraper failed! Logging error...\n")
         raise
 
-    _success("Scraper ran succesfully!")
+    _success("Scraper ran successfully!")
 
     # Print storage events
     storage = importlib.import_module("ddj_cloud.utils.storage")

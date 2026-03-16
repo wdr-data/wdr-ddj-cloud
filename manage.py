@@ -192,9 +192,7 @@ def new_scraper(pretend: bool):
     _save_scrapers_config(scrapers_config)
 
     _success("Success!")
-    _info(
-        f'Tip: You can test your scraper with "pipenv run manage test {new_entry["module_name"]}"'
-    )
+    _info(f'Tip: You can test your scraper with "uv run manage test {new_entry["module_name"]}"')
 
 
 @cli.command("list", help="Print a list of all configured scrapers.")
@@ -321,7 +319,7 @@ def generate_serverless_yml():
 
         for i, event in enumerate(scraper["events"]):
             if event["type"] == "schedule":
-                name = "${self:service}-${self:provider.stage}-" + f'{scraper["module_name"]}-{i}'
+                name = "${self:service}-${self:provider.stage}-" + f"{scraper['module_name']}-{i}"
                 rate = event["data"]["interval_custom"] or rate_presets[event["data"]["interval"]]
                 events.append(
                     {

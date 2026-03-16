@@ -135,7 +135,7 @@ Resources:
               - "lambda:GetLayerVersion"
               - "lambda:DeleteLayerVersion"
             Resource:
-              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:*"
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:${ServiceName}-*"
 
           - Effect: Allow
             Action:

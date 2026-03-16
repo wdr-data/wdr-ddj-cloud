@@ -131,6 +131,14 @@ Resources:
 
           - Effect: Allow
             Action:
+              - "lambda:PublishLayerVersion"
+              - "lambda:GetLayerVersion"
+              - "lambda:DeleteLayerVersion"
+            Resource:
+              - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:*"
+
+          - Effect: Allow
+            Action:
               - "ec2:DescribeSecurityGroups"
               - "ec2:DescribeSubnets"
               - "ec2:DescribeVpcs"

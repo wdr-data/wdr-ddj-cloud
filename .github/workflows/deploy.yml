@@ -21,7 +21,7 @@ jobs:
 
     steps:
       # Checkout repository
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Environment variables
       - name: Set environment variables for staging
@@ -42,7 +42,7 @@ jobs:
 
       # Set up Python and install dependencies
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -57,7 +57,7 @@ jobs:
 
       # Set up Serverless for deployment
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
@@ -68,7 +68,7 @@ jobs:
       # Additional caching
       - name: Cache serverless-python-requirements
         id: serverless-python-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .serverless-python-cache
           key: serverless-python-cache-${{ hashFiles('**/uv.lock', '**/serverless.part.yml') }}

@@ -40,7 +40,7 @@ manage = "manage:cli"
 [dependency-groups]
 dev = [
     "click~=8.1",
-    "black",
+    "ruff~=0.15.6",
     "copier~=9.4.0",
     "copier-templates-extensions~=0.3",
     "colorama",

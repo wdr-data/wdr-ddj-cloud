@@ -46,6 +46,7 @@ dev = [
     "colorama",
     "python-dotenv",
     "pip>=26.0.1",
+    "awscli>=1.44.59",
 ]
 
 [tool.hatch.build.targets.wheel]

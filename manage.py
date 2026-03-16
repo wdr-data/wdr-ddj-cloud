@@ -281,7 +281,7 @@ def test_scraper(module_name):
     _success("Scraper ran succesfully!")
 
     # Print storage events
-    from ddj_cloud.utils import storage
+    storage = importlib.import_module("ddj_cloud.utils.storage")
 
     _info("\nThe scraper performed the following storage operations:")
 

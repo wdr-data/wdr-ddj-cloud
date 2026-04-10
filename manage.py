@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 import sys
+import traceback
 from pathlib import Path
 
 import click
@@ -317,7 +318,7 @@ def test_all_scrapers(include_not_deployed: bool):
         try:
             _run_scraper_test(scraper["module_name"])
         except Exception:
-            click.echo()
+            click.echo(traceback.format_exc())
 
 
 @cli.command("generate", help='Generate the "serverless.yml" for deployment.')

@@ -62,7 +62,7 @@ def _calculate_daily_capacity(
 
     # Aktive Anlagen filtern (nicht in Planung, nicht stillgelegt)
     active = df[
-        df["Lage"].isin(location_labels)
+        df["WindAnLandOderAufSee"].isin(location_labels)
         & ~df["EinheitBetriebsstatus"].isin(INACTIVE_STATUSES)
     ].copy()
     active["Inbetriebnahmedatum"] = pd.to_datetime(active["Inbetriebnahmedatum"])
@@ -71,7 +71,7 @@ def _calculate_daily_capacity(
 
     # Geplante Anlagen
     planned = df[
-        df["Lage"].isin(location_labels)
+        df["WindAnLandOderAufSee"].isin(location_labels)
         & (df["EinheitBetriebsstatus"] == "In Planung")
     ].copy()
     planned["GeplantesInbetriebnahmedatum"] = pd.to_datetime(

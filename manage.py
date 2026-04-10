@@ -301,11 +301,19 @@ def test_scraper(module_name):
 
 
 @cli.command("test-all", help="Test all scrapers locally.")
-def test_all_scrapers():
+@click.option(
+    "--include-not-deployed",
+    is_flag=True,
+    help="Also test scrapers that are not deployed.",
+)
+def test_all_scrapers(include_not_deployed: bool):
     _load_local_test_env()
     scrapers_config = _load_scrapers_config()
 
     for scraper in scrapers_config:
+        if not scraper["deploy"] and not include_not_deployed:
+            continue
+
         try:
             _run_scraper_test(scraper["module_name"])
         except Exception:

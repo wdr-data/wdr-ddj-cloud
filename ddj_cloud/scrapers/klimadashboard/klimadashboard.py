@@ -2,45 +2,16 @@ import json
 import subprocess
 from pathlib import Path
 
+import pandas as pd
+
 from ddj_cloud.scrapers.klimadashboard.src.energiemix import update_energiemix
 from ddj_cloud.scrapers.klimadashboard.src.msr_wind_processor import process_wind
-from ddj_cloud.utils.storage import (
-    DownloadFailedException,
-    download_file,
-    upload_dataframe,
-    upload_file,
-)
+from ddj_cloud.utils.storage import upload_dataframe
 
-VERSION_STRING = "V0.02 vom 10.04.2026"
+VERSION_STRING = "V0.03 vom 10.04.2026"
 
-DB_S3_KEY = "klimadashboard/mastr.db"
 DB_LOCAL_PATH = Path(__file__).parent / "src" / "mastr.db"
 SCRAPER_SCRIPT = Path(__file__).parent / "src" / "msr_scraper.py"
-
-
-def _download_db():
-    """Lädt mastr.db von S3 herunter (falls vorhanden)."""
-    try:
-        bio = download_file(DB_S3_KEY)
-        DB_LOCAL_PATH.write_bytes(bio.read())
-        size_mb = DB_LOCAL_PATH.stat().st_size / 1024 / 1024
-        print(f"  mastr.db von S3 heruntergeladen ({size_mb:.1f} MB)")
-    except DownloadFailedException:
-        print("  Keine mastr.db auf S3 gefunden (erster Lauf).")
-
-
-def _upload_db():
-    """Lädt mastr.db auf S3 hoch."""
-    if not DB_LOCAL_PATH.exists():
-        print("  Warnung: mastr.db nicht gefunden, Upload übersprungen.")
-        return
-    upload_file(
-        DB_LOCAL_PATH.read_bytes(),
-        DB_S3_KEY,
-        archive=False,
-    )
-    size_mb = DB_LOCAL_PATH.stat().st_size / 1024 / 1024
-    print(f"  mastr.db auf S3 hochgeladen ({size_mb:.1f} MB)")
 
 
 def _run_scraper():
@@ -54,7 +25,6 @@ def _run_scraper():
 
     if result.returncode != 0:
         stderr = result.stderr.strip()
-        # Versuche JSON-Status aus stdout zu parsen
         try:
             status = json.loads(result.stdout.strip())
             msg = status.get("message", stderr)
@@ -76,8 +46,10 @@ def run():
 
     # MaStR Wind-Ausbau
     print("MaStR Wind-Daten aktualisieren...")
-    _download_db()
     _run_scraper()
     df_onshore, df_offshore = process_wind(DB_LOCAL_PATH)
-    _upload_db()
+
+    # Ergebnisse als CSV auf S3 hochladen
+    df_combined = pd.concat([df_onshore, df_offshore], ignore_index=True)
+    upload_dataframe(df_combined, "klimadashboard/wind_taeglich.csv")
     print("MaStR Wind-Daten aktualisiert.")

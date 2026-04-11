@@ -190,12 +190,61 @@ def _iterate_date_range(  # noqa: PLR0913
     return rows
 
 
-def process_wind(db_path: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
+def _aggregate_summaries(
+    df_onshore: pd.DataFrame,
+    df_offshore: pd.DataFrame,
+) -> dict[str, pd.DataFrame]:
+    """Erstellt monatliche und jährliche Zusammenfassungen.
+
+    Gibt dict mit 4 DataFrames zurück:
+    - gesamt_monatlich: Gesamtleistung (GW) zum Monatsende
+    - zubau_monatlich: Neue Kapazität (MW) pro Monat
+    - gesamt_jaehrlich: Gesamtleistung (GW) zum Jahresende
+    - zubau_jaehrlich: Neue Kapazität (MW) pro Jahr
+    """
+    # Datum als Index für Resampling
+    for df in (df_onshore, df_offshore):
+        df["_datum"] = pd.to_datetime(df["datum"])
+
+    results = {}
+    for freq, label in [("M", "monatlich"), ("Y", "jaehrlich")]:
+        # Gesamtleistung: letzter Wert der Periode
+        gesamt = pd.DataFrame({"datum": df_onshore.set_index("_datum").resample(freq).last().index})
+        gesamt["datum"] = gesamt["datum"].dt.strftime("%Y-%m-%d")
+
+        on = df_onshore.set_index("_datum").resample(freq).last()
+        off = df_offshore.set_index("_datum").resample(freq).last()
+        gesamt["onshore"] = on["installiert_gesamt"].values
+        gesamt["onshore_geplant"] = on["geplant_gesamt"].values
+        gesamt["offshore"] = off["installiert_gesamt"].values
+        gesamt["offshore_geplant"] = off["geplant_gesamt"].values
+        results[f"gesamt_{label}"] = gesamt
+
+        # Zubau: Summe der Periode (MW)
+        zubau = pd.DataFrame({"datum": df_onshore.set_index("_datum").resample(freq).sum(numeric_only=True).index})
+        zubau["datum"] = zubau["datum"].dt.strftime("%Y-%m-%d")
+
+        on_sum = df_onshore.set_index("_datum").resample(freq).sum(numeric_only=True)
+        off_sum = df_offshore.set_index("_datum").resample(freq).sum(numeric_only=True)
+        zubau["onshore"] = on_sum["installiert_taeglich"].values
+        zubau["onshore_geplant"] = on_sum["geplant_taeglich"].values
+        zubau["offshore"] = off_sum["installiert_taeglich"].values
+        zubau["offshore_geplant"] = off_sum["geplant_taeglich"].values
+        results[f"zubau_{label}"] = zubau
+
+    # Temporäre Spalte entfernen
+    for df in (df_onshore, df_offshore):
+        df.drop(columns=["_datum"], inplace=True)
+
+    return results
+
+
+def process_wind(db_path: Path) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, pd.DataFrame]]:
     """
     Berechnet die täglichen Ausbaudaten für Onshore und Offshore Wind.
 
     Liest aus wind_extended in mastr.db, schreibt ee_wind_taeglich.
-    Gibt (df_onshore, df_offshore) zurück.
+    Gibt (df_onshore, df_offshore, summaries) zurück.
     """
     db = sqlite3.connect(db_path)
     _create_result_table(db)
@@ -243,7 +292,12 @@ def process_wind(db_path: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     db.close()
 
     print(f"  {len(df_onshore) + len(df_offshore)} Tagesdatensätze berechnet.")
-    return df_onshore, df_offshore
+
+    # Monatliche und jährliche Zusammenfassungen
+    print("  Berechne monatliche/jährliche Zusammenfassungen...")
+    summaries = _aggregate_summaries(df_onshore, df_offshore)
+
+    return df_onshore, df_offshore, summaries
 
 
 if __name__ == "__main__":

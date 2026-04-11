@@ -47,9 +47,13 @@ def run():
     # MaStR Wind-Ausbau
     print("MaStR Wind-Daten aktualisieren...")
     _run_scraper()
-    df_onshore, df_offshore = process_wind(DB_LOCAL_PATH)
+    df_onshore, df_offshore, summaries = process_wind(DB_LOCAL_PATH)
 
-    # Ergebnisse als CSV auf S3 hochladen
+    # Ergebnisse als CSV hochladen
     df_combined = pd.concat([df_onshore, df_offshore], ignore_index=True)
     upload_dataframe(df_combined, "klimadashboard/wind_taeglich.csv")
+
+    for name, df_summary in summaries.items():
+        upload_dataframe(df_summary, f"klimadashboard/wind_{name}.csv")
+
     print("MaStR Wind-Daten aktualisiert.")

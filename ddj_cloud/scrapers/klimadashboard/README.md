@@ -15,12 +15,16 @@ Holt den täglichen Anteil erneuerbarer Energien von der [Fraunhofer Energy Char
 
 **Benötigte Umgebungsvariablen:** `DATAWRAPPER_API_KEY`
 
-### MaStR-Daten / Wind-Ausbau (`src/msr_scraper.py` + `src/msr_wind_processor.py`)
+### MaStR-Daten (`src/msr_scraper.py` + Prozessoren)
 
-Holt alle Energiearten aus dem Marktstammdatenregister über [open-mastr](https://github.com/OpenEnergyPlatform/open-mastr) (Bulk-Download, kein API-Key nötig) und berechnet tägliche Wind-Ausbaudaten (installiert, geplant, nötig für Klimaziel 2030).
+Holt alle Energiearten aus dem Marktstammdatenregister über [open-mastr](https://github.com/OpenEnergyPlatform/open-mastr) (Bulk-Download, kein API-Key nötig).
 
+**Wind-Prozessor** (`src/msr_wind_processor.py`): Tägliche, monatliche und jährliche Wind-Ausbaudaten.
 - Onshore-Ziel: 115 GW bis 2030 (Wind-an-Land-Gesetz)
 - Offshore-Ziel: 30 GW bis 2030 (Wind-auf-See-Gesetz)
+
+**Solar-Prozessor** (`src/msr_solar_processor.py`): Tägliche, monatliche und jährliche Solar-Ausbaudaten.
+- Solar-Ziel: 215 GW bis 2030 (EEG 2023)
 
 **Benötigte Umgebungsvariablen:** `DATAWRAPPER_API_KEY`
 

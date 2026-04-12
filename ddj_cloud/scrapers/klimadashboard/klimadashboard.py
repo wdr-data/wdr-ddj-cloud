@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 from ddj_cloud.scrapers.klimadashboard.src.energiemix import update_energiemix
+from ddj_cloud.scrapers.klimadashboard.src.msr_solar_processor import process_solar
 from ddj_cloud.scrapers.klimadashboard.src.msr_wind_processor import process_wind
 from ddj_cloud.utils.storage import upload_dataframe
 
@@ -57,3 +58,13 @@ def run():
         upload_dataframe(df_summary, f"klimadashboard/wind_{name}.csv")
 
     print("MaStR Wind-Daten aktualisiert.")
+
+    # MaStR Solar-Ausbau
+    print("MaStR Solar-Daten verarbeiten...")
+    df_solar, solar_summaries = process_solar(DB_LOCAL_PATH)
+    upload_dataframe(df_solar, "klimadashboard/solar_taeglich.csv")
+
+    for name, df_summary in solar_summaries.items():
+        upload_dataframe(df_summary, f"klimadashboard/solar_{name}.csv")
+
+    print("MaStR Solar-Daten aktualisiert.")

@@ -1,12 +1,10 @@
-import json
-import subprocess
-import sys
 from pathlib import Path
 
 import pandas as pd
 
 from ddj_cloud.scrapers.klimadashboard.src.energiemix import update_energiemix
 from ddj_cloud.scrapers.klimadashboard.src.msr_dw_display import upload_all as upload_dw_charts
+from ddj_cloud.scrapers.klimadashboard.src.msr_scraper import scrape_mastr
 from ddj_cloud.scrapers.klimadashboard.src.msr_solar_processor import process_solar
 from ddj_cloud.scrapers.klimadashboard.src.msr_wind_processor import process_wind
 from ddj_cloud.utils.storage import (
@@ -14,13 +12,11 @@ from ddj_cloud.utils.storage import (
     upload_file,
 )
 
-VERSION_STRING = "V0.04 vom 13.04.2026"
+VERSION_STRING = "V0.05 vom 13.04.2026"
 
 # mastr.db in local_storage (analog zu anderen Scrapern)
 DB_LOCAL_PATH = Path(__file__).parent.parent.parent.parent / "local_storage" / "klimadashboard" / "mastr.db"
 DB_S3_KEY = "klimadashboard/mastr.db"
-SCRAPER_SCRIPT = Path(__file__).parent / "src" / "msr_scraper.py"
-
 
 
 def _upload_db():
@@ -37,44 +33,6 @@ def _upload_db():
     print(f"  mastr.db auf S3 hochgeladen ({size_mb:.1f} MB)")
 
 
-def _run_scraper():
-    """Führt den MaStR-Scraper in einem isolierten venv aus (via uv run).
-
-    Stderr wird live gestreamt (Fortschritt), stdout enthält JSON-Ergebnis.
-    """
-    DB_LOCAL_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-    process = subprocess.Popen(
-        ["uv", "run", str(SCRAPER_SCRIPT), str(DB_LOCAL_PATH)],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-
-    # Stream stderr live for progress
-    for line in process.stderr:
-        print(f"  {line}", end="", file=sys.stderr, flush=True)
-
-    process.wait()
-    # Last line of stdout is our JSON; open-mastr may leak other output
-    stdout_lines = process.stdout.read().strip().splitlines()
-    last_line = stdout_lines[-1] if stdout_lines else ""
-
-    if process.returncode != 0:
-        try:
-            status = json.loads(last_line)
-            msg = status.get("message", "")
-        except (json.JSONDecodeError, ValueError):
-            msg = last_line
-        err_msg = f"MaStR-Scraper fehlgeschlagen: {msg}"
-        raise RuntimeError(err_msg)
-
-    status = json.loads(last_line)
-    counts = status.get("counts", {})
-    total = sum(counts.values())
-    print(f"  MaStR-Scraper: {total} Einheiten geladen")
-
-
 def run():
     # Energiemix (Fraunhofer API)
     df = update_energiemix()
@@ -82,7 +40,10 @@ def run():
 
     # MaStR: Scraper, Prozessoren, DB auf S3
     print("MaStR-Daten aktualisieren...")
-    _run_scraper()
+    DB_LOCAL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    counts = scrape_mastr(DB_LOCAL_PATH)
+    total = sum(counts.values())
+    print(f"  MaStR-Scraper: {total} Einheiten geladen")
 
     # Wind
     print("Wind-Daten verarbeiten...")

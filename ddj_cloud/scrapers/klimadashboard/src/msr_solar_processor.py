@@ -168,7 +168,7 @@ def _aggregate_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     df["_datum"] = pd.to_datetime(df["datum"])
 
     results = {}
-    for freq, label in [("M", "monatlich"), ("Y", "jaehrlich")]:
+    for freq, label in [("ME", "monatlich"), ("YE", "jaehrlich")]:
         resampled = df.set_index("_datum").resample(freq)
 
         gesamt = pd.DataFrame({"datum": resampled.last().index})

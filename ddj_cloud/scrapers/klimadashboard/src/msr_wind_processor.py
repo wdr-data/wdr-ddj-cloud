@@ -207,7 +207,7 @@ def _aggregate_summaries(
         df["_datum"] = pd.to_datetime(df["datum"])
 
     results = {}
-    for freq, label in [("M", "monatlich"), ("Y", "jaehrlich")]:
+    for freq, label in [("ME", "monatlich"), ("YE", "jaehrlich")]:
         # Gesamtleistung: letzter Wert der Periode
         gesamt = pd.DataFrame({"datum": df_onshore.set_index("_datum").resample(freq).last().index})
         gesamt["datum"] = gesamt["datum"].dt.strftime("%Y-%m-%d")

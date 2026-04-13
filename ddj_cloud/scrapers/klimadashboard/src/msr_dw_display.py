@@ -12,6 +12,7 @@ Charts (alle monatlich):
 """
 
 import os
+from datetime import datetime
 
 import pandas as pd
 from datawrapper import Datawrapper
@@ -46,10 +47,10 @@ def _upload_chart(client: Datawrapper, chart_id: str, df: pd.DataFrame, title: s
         print(f"  Überspringe '{title}' (keine Chart-ID konfiguriert)")
         return
     # String mit der letzten Aktualisierung
-    notes_str = f"{NOTES_STR} Letzte Aktualisierung: {}"
+    notes_str = f"{NOTES_STR}Zuletzt aktualisiert: {datetime.now().strftime('%d.%m.%Y, %H:%M')}"
     csv_data = df.to_csv(index=False)
     client.add_data(chart_id=chart_id, data=csv_data)
-    client.update_metadata(chart_id=chart_id, metadata={"title": title, "notes": notes_str})
+    client.update_chart(chart_id=chart_id, title=title, metadata={"annotate": {"notes": notes_str}})
     client.publish_chart(chart_id=chart_id)
     print(f"  Chart '{title}' aktualisiert ({chart_id})")
 

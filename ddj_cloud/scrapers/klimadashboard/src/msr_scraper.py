@@ -23,10 +23,14 @@ def main():
     mastr.download(data=ENERGY_TYPES)
 
     counts = {}
+    total = len(ENERGY_TYPES)
 
     with sqlite3.connect(OPEN_MASTR_DB) as src_conn, sqlite3.connect(target_db) as dst_conn:
-        for energy_type in ENERGY_TYPES:
+        for i, energy_type in enumerate(ENERGY_TYPES, 1):
             table_name = f"{energy_type}_extended"
+            # Progress to stderr (visible live), JSON result to stdout
+            print(f"[{i}/{total}] {energy_type}...", file=sys.stderr, flush=True)
+
             df = pd.read_sql(f"SELECT * FROM {table_name}", src_conn)  # noqa: S608
 
             col_temp = "DatumBeginnVoruebergehendeStilllegung"
@@ -40,6 +44,7 @@ def main():
 
             df.to_sql(table_name, dst_conn, if_exists="replace", index=False)
             counts[energy_type] = len(df)
+            print(f"[{i}/{total}] {energy_type}: {len(df)} Einheiten", file=sys.stderr, flush=True)
 
     print(json.dumps({"status": "ok", "counts": counts}))
 

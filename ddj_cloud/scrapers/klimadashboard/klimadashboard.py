@@ -1,5 +1,6 @@
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -7,37 +8,81 @@ import pandas as pd
 from ddj_cloud.scrapers.klimadashboard.src.energiemix import update_energiemix
 from ddj_cloud.scrapers.klimadashboard.src.msr_solar_processor import process_solar
 from ddj_cloud.scrapers.klimadashboard.src.msr_wind_processor import process_wind
-from ddj_cloud.utils.storage import upload_dataframe
+from ddj_cloud.utils.storage import (
+    DownloadFailedException,
+    download_file,
+    upload_dataframe,
+    upload_file,
+)
 
-VERSION_STRING = "V0.03 vom 10.04.2026"
+VERSION_STRING = "V0.04 vom 13.04.2026"
 
-DB_LOCAL_PATH = Path(__file__).parent / "src" / "mastr.db"
+# mastr.db in local_storage (analog zu anderen Scrapern)
+DB_LOCAL_PATH = Path(__file__).parent.parent.parent.parent / "local_storage" / "klimadashboard" / "mastr.db"
+DB_S3_KEY = "klimadashboard/mastr.db"
 SCRAPER_SCRIPT = Path(__file__).parent / "src" / "msr_scraper.py"
 
 
+def _download_db():
+    """Lädt mastr.db von S3 herunter (falls vorhanden)."""
+    try:
+        bio = download_file(DB_S3_KEY)
+        DB_LOCAL_PATH.parent.mkdir(parents=True, exist_ok=True)
+        DB_LOCAL_PATH.write_bytes(bio.read())
+        size_mb = DB_LOCAL_PATH.stat().st_size / 1024 / 1024
+        print(f"  mastr.db von S3 heruntergeladen ({size_mb:.1f} MB)")
+    except DownloadFailedException:
+        print("  Keine mastr.db auf S3 gefunden (erster Lauf).")
+
+
+def _upload_db():
+    """Lädt mastr.db auf S3 hoch."""
+    if not DB_LOCAL_PATH.exists():
+        print("  Warnung: mastr.db nicht gefunden, Upload übersprungen.")
+        return
+    upload_file(
+        DB_LOCAL_PATH.read_bytes(),
+        DB_S3_KEY,
+        archive=False,
+    )
+    size_mb = DB_LOCAL_PATH.stat().st_size / 1024 / 1024
+    print(f"  mastr.db auf S3 hochgeladen ({size_mb:.1f} MB)")
+
+
 def _run_scraper():
-    """Führt den MaStR-Scraper in einem isolierten venv aus (via uv run)."""
-    result = subprocess.run(
+    """Führt den MaStR-Scraper in einem isolierten venv aus (via uv run).
+
+    Stderr wird live gestreamt (Fortschritt), stdout enthält JSON-Ergebnis.
+    """
+    DB_LOCAL_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    process = subprocess.Popen(
         ["uv", "run", str(SCRAPER_SCRIPT), str(DB_LOCAL_PATH)],
-        capture_output=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True,
-        check=False,
     )
 
-    if result.returncode != 0:
-        stderr = result.stderr.strip()
+    # Stream stderr live for progress
+    for line in process.stderr:
+        print(f"  {line}", end="", file=sys.stderr, flush=True)
+
+    process.wait()
+    stdout = process.stdout.read()
+
+    if process.returncode != 0:
         try:
-            status = json.loads(result.stdout.strip())
-            msg = status.get("message", stderr)
+            status = json.loads(stdout.strip())
+            msg = status.get("message", "")
         except (json.JSONDecodeError, ValueError):
-            msg = stderr or result.stdout.strip()
+            msg = stdout.strip()
         err_msg = f"MaStR-Scraper fehlgeschlagen: {msg}"
         raise RuntimeError(err_msg)
 
-    status = json.loads(result.stdout.strip())
+    status = json.loads(stdout.strip())
     counts = status.get("counts", {})
     total = sum(counts.values())
-    print(f"  MaStR-Scraper: {total} Einheiten geladen ({counts})")
+    print(f"  MaStR-Scraper: {total} Einheiten geladen")
 
 
 def run():
@@ -45,26 +90,31 @@ def run():
     df = update_energiemix()
     upload_dataframe(df, "klimadashboard/test_energiemix1.csv")
 
-    # MaStR Wind-Ausbau
-    print("MaStR Wind-Daten aktualisieren...")
+    # MaStR: DB von S3 holen, Scraper, Prozessoren, DB zurück auf S3
+    print("MaStR-Daten aktualisieren...")
+    _download_db()
     _run_scraper()
-    df_onshore, df_offshore, summaries = process_wind(DB_LOCAL_PATH)
 
-    # Ergebnisse als CSV hochladen
-    df_combined = pd.concat([df_onshore, df_offshore], ignore_index=True)
-    upload_dataframe(df_combined, "klimadashboard/wind_taeglich.csv")
-
-    for name, df_summary in summaries.items():
+    # Wind
+    print("Wind-Daten verarbeiten...")
+    df_onshore, df_offshore, wind_summaries = process_wind(DB_LOCAL_PATH)
+    df_wind = pd.concat([df_onshore, df_offshore], ignore_index=True)
+    upload_dataframe(df_wind, "klimadashboard/wind_taeglich.csv")
+    for name, df_summary in wind_summaries.items():
         upload_dataframe(df_summary, f"klimadashboard/wind_{name}.csv")
 
-    print("MaStR Wind-Daten aktualisiert.")
+    # Ausbau-Grafik für Wind aktualisieren
 
-    # MaStR Solar-Ausbau
-    print("MaStR Solar-Daten verarbeiten...")
+    # Solar
+    print("Solar-Daten verarbeiten...")
     df_solar, solar_summaries = process_solar(DB_LOCAL_PATH)
     upload_dataframe(df_solar, "klimadashboard/solar_taeglich.csv")
-
     for name, df_summary in solar_summaries.items():
         upload_dataframe(df_summary, f"klimadashboard/solar_{name}.csv")
 
-    print("MaStR Solar-Daten aktualisiert.")
+    # Ausbau-Grafik für Solar aktualisieren
+
+    # DB auf S3 hochladen
+    _upload_db()
+
+    print("MaStR-Daten aktualisiert.")

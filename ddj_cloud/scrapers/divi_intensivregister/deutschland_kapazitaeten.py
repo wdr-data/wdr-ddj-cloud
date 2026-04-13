@@ -58,7 +58,6 @@ def expand_df(
             pd.merge,
             how="outer",
             on=static_columns,
-            copy=False,  # type: ignore
             validate="one_to_one",
         ),
         expanded_dfs,

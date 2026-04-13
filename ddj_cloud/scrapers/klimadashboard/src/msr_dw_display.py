@@ -4,11 +4,11 @@ Datawrapper-Upload für Wind- und Solar-Ausbaudaten.
 Nimmt die von msr_wind_processor und msr_solar_processor erzeugten DataFrames
 und lädt sie gefiltert in Datawrapper-Charts hoch.
 
-Charts:
-- Wind-Ausbau (täglich, Gesamtleistung onshore/offshore + nötig)
-- Solar-Ausbau (täglich, Gesamtleistung + nötig)
-- Gesamt-Ausbau (täglich, Wind + Solar kombiniert)
-- Ausbau pro Jahr (jährlich, Wind + Solar Zubau)
+Charts (alle monatlich):
+- Wind-Ausbau: Gesamtleistung onshore/offshore + nötig
+- Solar-Ausbau: Gesamtleistung + nötig
+- Wind-Zubau: Neue Kapazität onshore/offshore pro Monat
+- Solar-Zubau: Neue Kapazität pro Monat
 """
 
 import os
@@ -22,8 +22,8 @@ load_dotenv()
 # Datawrapper Chart-IDs (TODO: eintragen nach Erstellung)
 CHART_WIND = ""  # Wind-Ausbau Gesamtleistung
 CHART_SOLAR = ""  # Solar-Ausbau Gesamtleistung
-CHART_GESAMT = ""  # Wind + Solar kombiniert
-CHART_ZUBAU_JAHR = ""  # Jährlicher Zubau Wind + Solar
+CHART_WIND_ZUBAU = ""  # Wind-Zubau monatlich
+CHART_SOLAR_ZUBAU = ""  # Solar-Zubau monatlich
 
 
 def _get_dw_client() -> Datawrapper:
@@ -46,91 +46,51 @@ def _upload_chart(client: Datawrapper, chart_id: str, df: pd.DataFrame, title: s
     print(f"  Chart '{title}' aktualisiert ({chart_id})")
 
 
-def build_wind_chart_data(
-    df_onshore: pd.DataFrame,
-    df_offshore: pd.DataFrame,
-) -> pd.DataFrame:
-    """Baut Wind-Chart: Datum, Onshore, Offshore, Onshore geplant, Offshore geplant, Nötig."""
-    on = df_onshore[["datum", "installiert_gesamt", "geplant_gesamt", "noetig_gesamt"]].copy()
-    on.columns = ["Datum", "Onshore (GW)", "Onshore geplant (GW)", "Nötig Onshore (GW)"]
-
-    off = df_offshore[["datum", "installiert_gesamt", "geplant_gesamt", "noetig_gesamt"]].copy()
-    off.columns = ["Datum", "Offshore (GW)", "Offshore geplant (GW)", "Nötig Offshore (GW)"]
-
-    merged = on.merge(off, on="Datum")
-    return merged
+def build_wind_chart_data(wind_gesamt_monatlich: pd.DataFrame) -> pd.DataFrame:
+    """Wind-Gesamtleistung monatlich: Onshore, Offshore, geplant, nötig."""
+    df = wind_gesamt_monatlich.copy()
+    df.columns = ["Datum", "Onshore (GW)", "Onshore geplant (GW)", "Offshore (GW)", "Offshore geplant (GW)"]
+    return df
 
 
-def build_solar_chart_data(df_solar: pd.DataFrame) -> pd.DataFrame:
-    """Baut Solar-Chart: Datum, Installiert, Geplant, Nötig."""
-    out = df_solar[["datum", "installiert_gesamt", "geplant_gesamt", "noetig_gesamt"]].copy()
-    out.columns = ["Datum", "Installiert (GW)", "Geplant (GW)", "Nötig (GW)"]
-    return out
+def build_solar_chart_data(solar_gesamt_monatlich: pd.DataFrame) -> pd.DataFrame:
+    """Solar-Gesamtleistung monatlich: Installiert, geplant."""
+    df = solar_gesamt_monatlich.copy()
+    df.columns = ["Datum", "Installiert (GW)", "Geplant (GW)"]
+    return df
 
 
-def build_gesamt_chart_data(
-    df_onshore: pd.DataFrame,
-    df_offshore: pd.DataFrame,
-    df_solar: pd.DataFrame,
-) -> pd.DataFrame:
-    """Baut Gesamt-Chart: Wind + Solar kombiniert."""
-    wind_on = df_onshore.set_index("datum")[["installiert_gesamt"]].rename(
-        columns={"installiert_gesamt": "Wind Onshore (GW)"}
-    )
-    wind_off = df_offshore.set_index("datum")[["installiert_gesamt"]].rename(
-        columns={"installiert_gesamt": "Wind Offshore (GW)"}
-    )
-    solar = df_solar.set_index("datum")[["installiert_gesamt"]].rename(
-        columns={"installiert_gesamt": "Solar (GW)"}
-    )
-
-    merged = wind_on.join(wind_off).join(solar)
-    merged.index.name = "Datum"
-    return merged.reset_index()
+def build_wind_zubau_data(wind_zubau_monatlich: pd.DataFrame) -> pd.DataFrame:
+    """Wind-Zubau monatlich: Onshore, Offshore, geplant."""
+    df = wind_zubau_monatlich.copy()
+    df.columns = ["Datum", "Onshore (MW)", "Onshore geplant (MW)", "Offshore (MW)", "Offshore geplant (MW)"]
+    return df
 
 
-def build_zubau_jahr_data(
-    wind_zubau: pd.DataFrame,
-    solar_zubau: pd.DataFrame,
-) -> pd.DataFrame:
-    """Baut Jahres-Zubau-Chart: Wind + Solar MW pro Jahr."""
-    w = wind_zubau.copy()
-    w["Wind Onshore (MW)"] = w["onshore"]
-    w["Wind Offshore (MW)"] = w["offshore"]
-    w["Jahr"] = pd.to_datetime(w["datum"]).dt.year
-
-    s = solar_zubau.copy()
-    s["Solar (MW)"] = s["installiert"]
-    s["Jahr"] = pd.to_datetime(s["datum"]).dt.year
-
-    merged = w[["Jahr", "Wind Onshore (MW)", "Wind Offshore (MW)"]].merge(
-        s[["Jahr", "Solar (MW)"]], on="Jahr"
-    )
-    return merged
+def build_solar_zubau_data(solar_zubau_monatlich: pd.DataFrame) -> pd.DataFrame:
+    """Solar-Zubau monatlich: Installiert, geplant."""
+    df = solar_zubau_monatlich.copy()
+    df.columns = ["Datum", "Installiert (MW)", "Geplant (MW)"]
+    return df
 
 
 def upload_all(
-    df_onshore: pd.DataFrame,
-    df_offshore: pd.DataFrame,
-    df_solar: pd.DataFrame,
-    wind_zubau_jahr: pd.DataFrame,
-    solar_zubau_jahr: pd.DataFrame,
+    wind_gesamt_monatlich: pd.DataFrame,
+    wind_zubau_monatlich: pd.DataFrame,
+    solar_gesamt_monatlich: pd.DataFrame,
+    solar_zubau_monatlich: pd.DataFrame,
 ):
     """Lädt alle Charts auf Datawrapper hoch."""
     client = _get_dw_client()
 
-    # Wind-Ausbau
-    df_wind = build_wind_chart_data(df_onshore, df_offshore)
-    _upload_chart(client, CHART_WIND, df_wind, "Windkraft-Ausbau in Deutschland")
+    df = build_wind_chart_data(wind_gesamt_monatlich)
+    _upload_chart(client, CHART_WIND, df, "Windkraft-Ausbau in Deutschland")
 
-    # Solar-Ausbau
-    df_sol = build_solar_chart_data(df_solar)
-    _upload_chart(client, CHART_SOLAR, df_sol, "Solarenergie-Ausbau in Deutschland")
+    df = build_solar_chart_data(solar_gesamt_monatlich)
+    _upload_chart(client, CHART_SOLAR, df, "Solarenergie-Ausbau in Deutschland")
 
-    # Gesamt
-    df_ges = build_gesamt_chart_data(df_onshore, df_offshore, df_solar)
-    _upload_chart(client, CHART_GESAMT, df_ges, "Erneuerbarer Ausbau in Deutschland")
+    df = build_wind_zubau_data(wind_zubau_monatlich)
+    _upload_chart(client, CHART_WIND_ZUBAU, df, "Windkraft-Zubau pro Monat")
 
-    # Zubau pro Jahr
-    df_zub = build_zubau_jahr_data(wind_zubau_jahr, solar_zubau_jahr)
-    _upload_chart(client, CHART_ZUBAU_JAHR, df_zub, "Jährlicher Zubau Wind & Solar")
+    df = build_solar_zubau_data(solar_zubau_monatlich)
+    _upload_chart(client, CHART_SOLAR_ZUBAU, df, "Solarenergie-Zubau pro Monat")

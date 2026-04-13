@@ -19,11 +19,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Jährliche statt monatliche Aggregation
+YEARLY_AGGREGATES = False
+
 # Datawrapper Chart-IDs (TODO: eintragen nach Erstellung)
 CHART_WIND = ""  # Wind-Ausbau Gesamtleistung
 CHART_SOLAR = ""  # Solar-Ausbau Gesamtleistung
-CHART_WIND_ZUBAU = ""  # Wind-Zubau monatlich
-CHART_SOLAR_ZUBAU = ""  # Solar-Zubau monatlich
+CHART_WIND_ZUBAU = ""  # Wind-Zubau
+CHART_SOLAR_ZUBAU = ""  # Solar-Zubau
 
 
 def _get_dw_client() -> Datawrapper:
@@ -75,22 +78,25 @@ def build_solar_zubau_data(solar_zubau_monatlich: pd.DataFrame) -> pd.DataFrame:
 
 
 def upload_all(
-    wind_gesamt_monatlich: pd.DataFrame,
-    wind_zubau_monatlich: pd.DataFrame,
-    solar_gesamt_monatlich: pd.DataFrame,
-    solar_zubau_monatlich: pd.DataFrame,
+    wind_summaries: dict[str, pd.DataFrame],
+    solar_summaries: dict[str, pd.DataFrame],
 ):
-    """Lädt alle Charts auf Datawrapper hoch."""
+    """Lädt alle Charts auf Datawrapper hoch.
+
+    Nutzt monatliche oder jährliche Daten je nach YEARLY_AGGREGATES.
+    """
+    suffix = "jaehrlich" if YEARLY_AGGREGATES else "monatlich"
+    period = "pro Jahr" if YEARLY_AGGREGATES else "pro Monat"
     client = _get_dw_client()
 
-    df = build_wind_chart_data(wind_gesamt_monatlich)
+    df = build_wind_chart_data(wind_summaries[f"gesamt_{suffix}"])
     _upload_chart(client, CHART_WIND, df, "Windkraft-Ausbau in Deutschland")
 
-    df = build_solar_chart_data(solar_gesamt_monatlich)
+    df = build_solar_chart_data(solar_summaries[f"gesamt_{suffix}"])
     _upload_chart(client, CHART_SOLAR, df, "Solarenergie-Ausbau in Deutschland")
 
-    df = build_wind_zubau_data(wind_zubau_monatlich)
-    _upload_chart(client, CHART_WIND_ZUBAU, df, "Windkraft-Zubau pro Monat")
+    df = build_wind_zubau_data(wind_summaries[f"zubau_{suffix}"])
+    _upload_chart(client, CHART_WIND_ZUBAU, df, f"Windkraft-Zubau {period}")
 
-    df = build_solar_zubau_data(solar_zubau_monatlich)
-    _upload_chart(client, CHART_SOLAR_ZUBAU, df, "Solarenergie-Zubau pro Monat")
+    df = build_solar_zubau_data(solar_summaries[f"zubau_{suffix}"])
+    _upload_chart(client, CHART_SOLAR_ZUBAU, df, f"Solarenergie-Zubau {period}")

@@ -100,10 +100,8 @@ def run():
     # Datawrapper-Charts aktualisieren
     print("Datawrapper-Charts aktualisieren...")
     upload_dw_charts(
-        wind_gesamt_monatlich=wind_summaries["gesamt_monatlich"],
-        wind_zubau_monatlich=wind_summaries["zubau_monatlich"],
-        solar_gesamt_monatlich=solar_summaries["gesamt_monatlich"],
-        solar_zubau_monatlich=solar_summaries["zubau_monatlich"],
+        wind_summaries=wind_summaries,
+        solar_summaries=solar_summaries,
     )
 
     # DB auf S3 hochladen

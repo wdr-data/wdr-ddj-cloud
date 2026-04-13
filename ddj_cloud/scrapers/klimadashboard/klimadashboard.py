@@ -9,8 +9,6 @@ from ddj_cloud.scrapers.klimadashboard.src.energiemix import update_energiemix
 from ddj_cloud.scrapers.klimadashboard.src.msr_solar_processor import process_solar
 from ddj_cloud.scrapers.klimadashboard.src.msr_wind_processor import process_wind
 from ddj_cloud.utils.storage import (
-    DownloadFailedException,
-    download_file,
     upload_dataframe,
     upload_file,
 )
@@ -22,17 +20,6 @@ DB_LOCAL_PATH = Path(__file__).parent.parent.parent.parent / "local_storage" / "
 DB_S3_KEY = "klimadashboard/mastr.db"
 SCRAPER_SCRIPT = Path(__file__).parent / "src" / "msr_scraper.py"
 
-
-def _download_db():
-    """Lädt mastr.db von S3 herunter (falls vorhanden)."""
-    try:
-        bio = download_file(DB_S3_KEY)
-        DB_LOCAL_PATH.parent.mkdir(parents=True, exist_ok=True)
-        DB_LOCAL_PATH.write_bytes(bio.read())
-        size_mb = DB_LOCAL_PATH.stat().st_size / 1024 / 1024
-        print(f"  mastr.db von S3 heruntergeladen ({size_mb:.1f} MB)")
-    except DownloadFailedException:
-        print("  Keine mastr.db auf S3 gefunden (erster Lauf).")
 
 
 def _upload_db():
@@ -90,9 +77,8 @@ def run():
     df = update_energiemix()
     upload_dataframe(df, "klimadashboard/test_energiemix1.csv")
 
-    # MaStR: DB von S3 holen, Scraper, Prozessoren, DB zurück auf S3
+    # MaStR: Scraper, Prozessoren, DB auf S3
     print("MaStR-Daten aktualisieren...")
-    _download_db()
     _run_scraper()
 
     # Wind

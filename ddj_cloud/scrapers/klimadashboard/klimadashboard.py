@@ -56,18 +56,20 @@ def _run_scraper():
         print(f"  {line}", end="", file=sys.stderr, flush=True)
 
     process.wait()
-    stdout = process.stdout.read()
+    # Last line of stdout is our JSON; open-mastr may leak other output
+    stdout_lines = process.stdout.read().strip().splitlines()
+    last_line = stdout_lines[-1] if stdout_lines else ""
 
     if process.returncode != 0:
         try:
-            status = json.loads(stdout.strip())
+            status = json.loads(last_line)
             msg = status.get("message", "")
         except (json.JSONDecodeError, ValueError):
-            msg = stdout.strip()
+            msg = last_line
         err_msg = f"MaStR-Scraper fehlgeschlagen: {msg}"
         raise RuntimeError(err_msg)
 
-    status = json.loads(stdout.strip())
+    status = json.loads(last_line)
     counts = status.get("counts", {})
     total = sum(counts.values())
     print(f"  MaStR-Scraper: {total} Einheiten geladen")

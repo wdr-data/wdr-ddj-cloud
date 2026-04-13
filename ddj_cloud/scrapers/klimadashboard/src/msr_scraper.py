@@ -16,8 +16,43 @@ ENERGY_TYPES = ["wind", "solar", "biomass", "hydro", "combustion", "nuclear", "g
 OPEN_MASTR_DB = Path.home() / ".open-MaStR" / "data" / "sqlite" / "open-mastr.db"
 
 
+def _check_last_download(target_db: Path) -> str | None:
+    """Prüft DatumDownload in der Ziel-DB. Gibt Datum als String oder None zurück."""
+    if not target_db.exists():
+        return None
+    try:
+        with sqlite3.connect(target_db) as conn:
+            row = conn.execute("SELECT DatumDownload FROM wind_extended LIMIT 1").fetchone()
+            return row[0] if row else None
+    except Exception:
+        return None
+
+
 def main():
+    from datetime import date
+
     target_db = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / "mastr.db"
+
+    # Skip download if DB already has today's data
+    last_download = _check_last_download(target_db)
+    today = date.today().isoformat()
+
+    if last_download == today:
+        print(f"DB already up to date ({today}), skipping download.", file=sys.stderr, flush=True)
+        # Read counts from existing DB
+        counts = {}
+        with sqlite3.connect(target_db) as conn:
+            for energy_type in ENERGY_TYPES:
+                table_name = f"{energy_type}_extended"
+                try:
+                    row = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()  # noqa: S608
+                    counts[energy_type] = row[0]
+                except Exception:
+                    counts[energy_type] = 0
+        print(json.dumps({"status": "ok", "counts": counts}))
+        return
+
+    print(f"Last download: {last_download or 'none'}, updating...", file=sys.stderr, flush=True)
 
     mastr = Mastr()
     mastr.download(data=ENERGY_TYPES)

@@ -176,10 +176,19 @@ def _iterate_date_range(  # noqa: PLR0913
             geplant_gesamt = round(cumulative_gw + cumulative_planned_gw, 2)
             geplant_taeglich = round(planned_kw / 1_000, 1)
 
+        installiert_gesamt = cumulative_gw if day_str <= heute else None
+        installiert_taeglich = daily_mw if day_str <= heute else None
+
+        # Subtract existing from planned where both exist (avoid double-counting)
+        if installiert_gesamt is not None and geplant_gesamt is not None:
+            geplant_gesamt = round(geplant_gesamt - installiert_gesamt, 2)
+        if installiert_taeglich is not None and geplant_taeglich is not None:
+            geplant_taeglich = round(geplant_taeglich - installiert_taeglich, 1)
+
         row = {
             "datum": day_str,
-            "installiert_gesamt": cumulative_gw if day_str <= heute else None,
-            "installiert_taeglich": daily_mw if day_str <= heute else None,
+            "installiert_gesamt": installiert_gesamt,
+            "installiert_taeglich": installiert_taeglich,
             "geplant_gesamt": geplant_gesamt,
             "geplant_taeglich": geplant_taeglich,
             "noetig_gesamt": noetig_gesamt,
@@ -218,18 +227,26 @@ def _aggregate_summaries(
         gesamt["onshore_geplant"] = on["geplant_gesamt"].values
         gesamt["offshore"] = off["installiert_gesamt"].values
         gesamt["offshore_geplant"] = off["geplant_gesamt"].values
+        # Subtract existing from planned where both exist
+        for inst, plan in [("onshore", "onshore_geplant"), ("offshore", "offshore_geplant")]:
+            mask = gesamt[inst].notna() & gesamt[plan].notna()
+            gesamt.loc[mask, plan] -= gesamt.loc[mask, inst]
         results[f"gesamt_{label}"] = gesamt
 
         # Zubau: Summe der Periode (MW)
-        zubau = pd.DataFrame({"datum": df_onshore.set_index("_datum").resample(freq).sum(numeric_only=True).index})
+        zubau = pd.DataFrame({"datum": df_onshore.set_index("_datum").resample(freq).sum(numeric_only=True, min_count=1).index})
         zubau["datum"] = zubau["datum"].dt.strftime("%Y-%m-%d")
 
-        on_sum = df_onshore.set_index("_datum").resample(freq).sum(numeric_only=True)
-        off_sum = df_offshore.set_index("_datum").resample(freq).sum(numeric_only=True)
+        on_sum = df_onshore.set_index("_datum").resample(freq).sum(numeric_only=True, min_count=1)
+        off_sum = df_offshore.set_index("_datum").resample(freq).sum(numeric_only=True, min_count=1)
         zubau["onshore"] = on_sum["installiert_taeglich"].values
         zubau["onshore_geplant"] = on_sum["geplant_taeglich"].values
         zubau["offshore"] = off_sum["installiert_taeglich"].values
         zubau["offshore_geplant"] = off_sum["geplant_taeglich"].values
+        # Subtract existing from planned where both exist
+        for inst, plan in [("onshore", "onshore_geplant"), ("offshore", "offshore_geplant")]:
+            mask = zubau[inst].notna() & zubau[plan].notna()
+            zubau.loc[mask, plan] -= zubau.loc[mask, inst]
         results[f"zubau_{label}"] = zubau
 
     # Temporäre Spalte entfernen

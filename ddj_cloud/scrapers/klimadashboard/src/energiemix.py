@@ -142,9 +142,9 @@ def build_csv_from_index(df):
 
 
 def dw_authenticate():
-    token = os.environ.get("DATAWRAPPER_API_KEY")
+    token = os.environ.get("DW_API_KEY_JE")
     if not token:
-        raise RuntimeError("Bitte DATAWRAPPER_API_KEY als Umgebungsvariable setzen.")
+        raise RuntimeError("Bitte DW_API_KEY_JE für Datawrapper als Umgebungsvariable setzen.")
     client = dw.Datawrapper(access_token = token)
     return client
 
@@ -201,8 +201,9 @@ def update_energiemix():
     df_combined = pd.merge(df_monthly, df_yearly, on="Datum", how="left")
     csv_data = build_csv(df_combined)
     print("CSV erstellt.")
-    metadata = {
+    metadata = { "annotate": {
         "notes": f"{MIX_NOTES}<br><br><i>Zuletzt aktualisiert: {datetime.now().strftime('%d.%m.%Y, %H:%M')}</i>",
+        }
     }
     upload_to_datawrapper(dw_client, MIX_ID, csv_data, metadata)
 
@@ -223,8 +224,9 @@ def update_energiemix():
         "Solar AC",
     ]]
     kapa_csv = build_csv_from_index(kapa_df)
-    metadata = {
+    metadata = { "annotate": {
         "notes": f"{POWER_NOTES}<br><br><i>Zuletzt aktualisiert: {datetime.now().strftime('%d.%m.%Y, %H:%M')}</i>",
+        }
     }
     upload_to_datawrapper(dw_client, POWER_ID, kapa_csv, metadata)
 

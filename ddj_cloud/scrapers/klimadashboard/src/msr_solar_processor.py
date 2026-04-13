@@ -149,10 +149,19 @@ def _iterate_date_range(  # noqa: PLR0913
             geplant_gesamt = round(cumulative_gw + cumulative_planned_gw, 2)
             geplant_taeglich = round(planned_kw / 1_000, 1)
 
+        installiert_gesamt = cumulative_gw if day_str <= heute else None
+        installiert_taeglich = daily_mw if day_str <= heute else None
+
+        # Subtract existing from planned where both exist (avoid double-counting)
+        if installiert_gesamt is not None and geplant_gesamt is not None:
+            geplant_gesamt = round(geplant_gesamt - installiert_gesamt, 2)
+        if installiert_taeglich is not None and geplant_taeglich is not None:
+            geplant_taeglich = round(geplant_taeglich - installiert_taeglich, 1)
+
         row = {
             "datum": day_str,
-            "installiert_gesamt": cumulative_gw if day_str <= heute else None,
-            "installiert_taeglich": daily_mw if day_str <= heute else None,
+            "installiert_gesamt": installiert_gesamt,
+            "installiert_taeglich": installiert_taeglich,
             "geplant_gesamt": geplant_gesamt,
             "geplant_taeglich": geplant_taeglich,
             "noetig_gesamt": noetig_gesamt,
@@ -176,13 +185,19 @@ def _aggregate_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
         last = resampled.last()
         gesamt["installiert"] = last["installiert_gesamt"].values
         gesamt["geplant"] = last["geplant_gesamt"].values
+        # Subtract existing from planned where both exist
+        mask = gesamt["installiert"].notna() & gesamt["geplant"].notna()
+        gesamt.loc[mask, "geplant"] -= gesamt.loc[mask, "installiert"]
         results[f"gesamt_{label}"] = gesamt
 
-        zubau = pd.DataFrame({"datum": resampled.sum(numeric_only=True).index})
+        zubau = pd.DataFrame({"datum": resampled.sum(numeric_only=True, min_count=1).index})
         zubau["datum"] = zubau["datum"].dt.strftime("%Y-%m-%d")
-        summed = resampled.sum(numeric_only=True)
+        summed = resampled.sum(numeric_only=True, min_count=1)
         zubau["installiert"] = summed["installiert_taeglich"].values
         zubau["geplant"] = summed["geplant_taeglich"].values
+        # Subtract existing from planned where both exist
+        mask = zubau["installiert"].notna() & zubau["geplant"].notna()
+        zubau.loc[mask, "geplant"] -= zubau.loc[mask, "installiert"]
         results[f"zubau_{label}"] = zubau
 
     df.drop(columns=["_datum"], inplace=True)

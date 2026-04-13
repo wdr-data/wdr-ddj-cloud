@@ -98,6 +98,8 @@ jobs:
           TALSPERREN_DATAWRAPPER_TOKEN: ${{ secrets.NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN }}
           DB_CLIENT_ID: ${{ secrets.DB_CLIENT_ID }}
           DB_API_KEY: ${{ secrets.DB_API_KEY }}
+          # Datawrapper key for Jan Eggers' account
+          DW_API_KEY_JE: ${{ secrets.DW_API_KEY_JE }}
 
       - name: Log artifact sizes
         run: |

@@ -34,9 +34,9 @@ CHART_SOLAR_ZUBAU = "kPzGf"  # Solar-Zubau
 
 
 def _get_dw_client() -> Datawrapper:
-    token = os.environ.get("DATAWRAPPER_API_KEY")
+    token = os.environ.get("DW_API_KEY_JE")
     if not token:
-        msg = "Bitte DATAWRAPPER_API_KEY als Umgebungsvariable setzen."
+        msg = "Bitte DW_API_KEY_JE als Umgebungsvariable mit Datawrapper-Key setzen."
         raise RuntimeError(msg)
     return Datawrapper(access_token=token)
 

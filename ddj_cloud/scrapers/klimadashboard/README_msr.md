@@ -45,8 +45,6 @@ Berechnet tägliche Ausbaudaten (2010-2030) für Onshore und Offshore Wind:
 | `DATAWRAPPER_API_KEY` | API-Token für Datawrapper-Charts | [Datawrapper Account Settings](https://app.datawrapper.de/account/api-tokens) |
 | `BUCKET_NAME` | S3-Bucket für mastr.db | AWS-Konfiguration |
 
-**Nicht mehr nötig:** `MASTR_API_KEY`, `MASTR_AKTEUR_NR` (open-mastr nutzt öffentliche Bulk-Daten).
-
 ## Datenbank
 
 Die SQLite-Datenbank `mastr.db` wird auf S3 gespeichert und bei jedem Lauf heruntergeladen/hochgeladen.
@@ -72,4 +70,5 @@ Die SQLite-Datenbank `mastr.db` wird auf S3 gespeichert und bei jedem Lauf herun
 
 Weitere Prozessoren können hinzugefügt werden, die auf denselben Daten in `mastr.db` arbeiten:
 - `msr_solar_processor.py` (Ausbauziel: 215 GW, EEG 2023)
-- `msr_biomasse_processor.py`
+# - `msr_biomasse_processor.py`
+- `energiemix_processor.py` (ersetzt energiemix.py mit den Fraunhofer-Daten; erzeugt aktuelle Verlaufsdaten zum Energiemix)

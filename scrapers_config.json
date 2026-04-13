@@ -259,5 +259,29 @@
         ],
         "extra_env": [],
         "deploy": true
+    },
+    {
+        "display_name": "klimadashboard",
+        "module_name": "klimadashboard",
+        "description": "Automation für Quarks.de: Ausbau von Wind- und Solarenergie, Energiemix in D und mehr\n",
+        "contact_name": "Jan Eggers",
+        "contact_email": "jan.eggers@fm.wdr.de",
+        "memory_size": "1024",
+        "ephemeral_storage": "512",
+        "preset": "pandas",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "daily",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": [
+            DATAWRAPPER_API_KEY=IAsyPKQfQXwmjb1TvIfXvHdMSZIv3uWr6IJXEq80G9KJERMBxcZa3dEfLL73PbMw
+        ],
+        "deploy": true
     }
 ]

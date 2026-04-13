@@ -20,13 +20,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Jährliche statt monatliche Aggregation
-YEARLY_AGGREGATES = False
+YEARLY_AGGREGATES = True
+
+# String für die Anmerkungen
+NOTES_STR = '<br><b style="float:left; margin: 5px; width: 45px; height: 45px; background: url(https://www.quarks.de/wp-content/uploads/Quarks-Icon-Profilbild-1x1-1.png); background-size: 45px 45px;"><em style="opacity:0.0;">quarks.de</em></b>'
 
 # Datawrapper Chart-IDs (TODO: eintragen nach Erstellung)
-CHART_WIND = ""  # Wind-Ausbau Gesamtleistung
-CHART_SOLAR = ""  # Solar-Ausbau Gesamtleistung
-CHART_WIND_ZUBAU = ""  # Wind-Zubau
-CHART_SOLAR_ZUBAU = ""  # Solar-Zubau
+CHART_WIND = "EgOti"  # Wind-Ausbau Gesamtleistung
+CHART_SOLAR = "1rxLQ"  # Solar-Ausbau Gesamtleistung
+CHART_WIND_ZUBAU = "7yMTK"  # Wind-Zubau
+CHART_SOLAR_ZUBAU = "kPzGf"  # Solar-Zubau
 
 
 def _get_dw_client() -> Datawrapper:
@@ -42,9 +45,11 @@ def _upload_chart(client: Datawrapper, chart_id: str, df: pd.DataFrame, title: s
     if not chart_id:
         print(f"  Überspringe '{title}' (keine Chart-ID konfiguriert)")
         return
+    # String mit der letzten Aktualisierung
+    notes_str = f"{NOTES_STR} Letzte Aktualisierung: {}"
     csv_data = df.to_csv(index=False)
     client.add_data(chart_id=chart_id, data=csv_data)
-    client.update_metadata(chart_id=chart_id, metadata={"title": title})
+    client.update_metadata(chart_id=chart_id, metadata={"title": title, "notes": notes_str})
     client.publish_chart(chart_id=chart_id)
     print(f"  Chart '{title}' aktualisiert ({chart_id})")
 

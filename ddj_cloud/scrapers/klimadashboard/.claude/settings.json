@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Read(//Users/janeggers/Code/wdr-ddj-cloud/ddj_cloud/scrapers/talsperren/**)",
+      "WebFetch(domain:open-mastr.readthedocs.io)",
+      "WebFetch(domain:api.github.com)",
+      "Read(//Users/janeggers/miniconda3/lib/python3.12/site-packages/open_mastr/**)",
+      "Read(//Users/janeggers/Code/wdr-ddj-cloud/**)"
+    ]
+  }
+}

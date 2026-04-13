@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 
 from ddj_cloud.scrapers.klimadashboard.src.energiemix import update_energiemix
+from ddj_cloud.scrapers.klimadashboard.src.msr_dw_display import upload_all as upload_dw_charts
 from ddj_cloud.scrapers.klimadashboard.src.msr_solar_processor import process_solar
 from ddj_cloud.scrapers.klimadashboard.src.msr_wind_processor import process_wind
 from ddj_cloud.utils.storage import (
@@ -89,8 +90,6 @@ def run():
     for name, df_summary in wind_summaries.items():
         upload_dataframe(df_summary, f"klimadashboard/wind_{name}.csv")
 
-    # Ausbau-Grafik für Wind aktualisieren
-
     # Solar
     print("Solar-Daten verarbeiten...")
     df_solar, solar_summaries = process_solar(DB_LOCAL_PATH)
@@ -98,7 +97,15 @@ def run():
     for name, df_summary in solar_summaries.items():
         upload_dataframe(df_summary, f"klimadashboard/solar_{name}.csv")
 
-    # Ausbau-Grafik für Solar aktualisieren
+    # Datawrapper-Charts aktualisieren
+    print("Datawrapper-Charts aktualisieren...")
+    upload_dw_charts(
+        df_onshore=df_onshore,
+        df_offshore=df_offshore,
+        df_solar=df_solar,
+        wind_zubau_jahr=wind_summaries["zubau_jaehrlich"],
+        solar_zubau_jahr=solar_summaries["zubau_jaehrlich"],
+    )
 
     # DB auf S3 hochladen
     _upload_db()

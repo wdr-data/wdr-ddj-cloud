@@ -141,7 +141,7 @@ class MapExporter(Exporter):
             df_res.groupby(
                 ["id"],
             )
-            .resample("M", closed="right", label="left")
+            .resample("ME", closed="right", label="left")
             .aggregate(
                 {
                     "fill_percent": "median",
@@ -221,15 +221,13 @@ class MapExporter(Exporter):
         df_map = df_map.round(5)
 
         # Rename federation names
-        df_map["federation_name"].replace(
+        df_map["federation_name"] = df_map["federation_name"].replace(
             FEDERATION_RENAMES,
-            inplace=True,
         )
 
         if do_reservoir_rename:
-            df_map["name"].replace(
+            df_map["name"] = df_map["name"].replace(
                 RESERVOIR_RENAMES,
-                inplace=True,
             )
 
         return df_map
@@ -286,9 +284,8 @@ def _make_filtered_map_exporter(federation_names: Sequence[str]) -> MapExporter:
                 ],
             )
 
-            df_filtered["name"].replace(
+            df_filtered["name"] = df_filtered["name"].replace(
                 RESERVOIR_RENAMES_BREAKS,
-                inplace=True,
             )
 
             return df_filtered.reset_index(drop=True)

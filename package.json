@@ -18,10 +18,8 @@
   },
   "homepage": "https://github.com/wdr-data/wdr-ddj-cloud#readme",
   "dependencies": {
+    "patch-package": "^8.0.0",
     "serverless": "^3.40.0",
     "serverless-python-requirements": "^6.0.0"
-  },
-  "devDependencies": {
-    "patch-package": "^8.0.0"
   }
 }

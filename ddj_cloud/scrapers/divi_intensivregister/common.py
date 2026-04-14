@@ -96,15 +96,9 @@ def add_rows_for_missing_dates(
         new_row: pd.DataFrame = previous_row.copy()
         new_row["datum"] = date_iso
 
-        # NAs for columns that are not in the copy_columns list
-        na_columns = [
-            col for col in new_row.columns if col not in copy_columns_set and col != "datum"
-        ]
-        new_row[na_columns] = pd.NA
-
-        # Preserve original dtypes to avoid FutureWarning about all-NA column inference
-        for col in na_columns:
-            new_row[col] = new_row[col].astype(df[col].dtype)
+        # Drop columns that are not in the copy_columns list;
+        # concat will fill them with NA automatically
+        new_row = new_row[[col for col in new_row.columns if col in copy_columns_set or col == "datum"]]
 
         # Insert the new row
         missing_date_dfs.append(new_row)

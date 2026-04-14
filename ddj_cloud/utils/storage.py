@@ -70,6 +70,9 @@ def describe_events(*, clear: bool = True) -> list[str]:
         elif fs_event["type"] == "existed":
             return f'Attempted to upload a file "{fs_event["filename"]}" that was identical to the file in storage'
 
+        elif fs_event["type"] == "delete":
+            return f'Deleted file "{fs_event["filename"]}" from storage'
+
         elif fs_event["type"] == "invalidation":
             return f'Created CloudFront invalidation for "{fs_event["path"]}"'
 
@@ -182,6 +185,81 @@ def download_file(filename: str, fileobj: BinaryIO | None = None) -> BytesIO | N
     STORAGE_EVENTS.append({"type": "download", "filename": filename, "success": True})
 
     return result
+
+
+def list_files(prefix: str) -> list[str]:
+    """List files in storage under a given prefix.
+
+    The returned filenames match the keys you'd pass to ``download_file`` or
+    ``delete_file``. The local-storage metadata registry (``_metadata.json``) is
+    excluded.
+
+    ``prefix`` is required to reduce the likelihood of accidentally listing the whole
+    bucket (which includes a potentially large archive). Pass an empty-ish prefix
+    deliberately (e.g., ``"archive/"``) if that's really what you want.
+
+    Args:
+        prefix (str): Only return filenames that start with this prefix. A leading
+            ``/`` is stripped. Must be non-empty.
+
+    Returns:
+        list[str]: Sorted list of filenames.
+    """
+    prefix = prefix.lstrip("/")
+    if not prefix:
+        msg = "list_files requires a non-empty prefix"
+        raise ValueError(msg)
+
+    if USE_LOCAL_STORAGE:
+        prefix_path = LOCAL_STORAGE_ROOT / prefix
+        # Narrow the rglob root to the deepest existing directory along the prefix so we
+        # don't walk unrelated trees (e.g., the whole archive) when filtering a small slice.
+        if prefix_path.is_dir():
+            base = prefix_path
+        elif prefix_path.parent.is_dir():
+            base = prefix_path.parent
+        else:
+            return []
+
+        files: list[str] = []
+        for path in base.rglob("*"):
+            if not path.is_file():
+                continue
+            rel = path.relative_to(LOCAL_STORAGE_ROOT).as_posix()
+            if rel == _LOCAL_METADATA_REGISTRY_NAME:
+                continue
+            if rel.startswith(prefix):
+                files.append(rel)
+        return sorted(files)
+
+    assert s3 is not None
+    paginator = s3.get_paginator("list_objects_v2")
+    keys: list[str] = []
+    for page in paginator.paginate(Bucket=BUCKET_NAME, Prefix=prefix):
+        for obj in page.get("Contents", []):
+            keys.append(obj["Key"])
+    return keys
+
+
+def delete_file(filename: str) -> None:
+    """Delete a file from storage.
+
+    The operation is idempotent — if the file doesn't exist, nothing happens. In
+    local-storage mode, any associated metadata registry entry is also removed.
+
+    Args:
+        filename (str): Filename to delete.
+    """
+    filename = filename.lstrip("/")
+
+    if USE_LOCAL_STORAGE:
+        (LOCAL_STORAGE_ROOT / filename).unlink(missing_ok=True)
+        _delete_local_metadata(filename)
+    else:
+        assert s3 is not None
+        s3.delete_object(Bucket=BUCKET_NAME, Key=filename)
+
+    STORAGE_EVENTS.append({"type": "delete", "filename": filename})
 
 
 def _rewind_if_seekable(fileobj: BinaryIO) -> None:

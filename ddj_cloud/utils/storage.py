@@ -422,8 +422,13 @@ def _fetch_metadata(filename: str) -> StorageMetadata | None:
         return None
     try:
         response = s3.head_object(Bucket=BUCKET_NAME, Key=filename)
-    except ClientError:
-        return None
+    except ClientError as exc:
+        error = exc.response.get("Error", {})
+        error_code = error.get("Code")
+        status_code = exc.response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+        if error_code in {"404", "NoSuchKey", "NotFound"} or status_code == 404:
+            return None
+        raise
 
     metadata = response.get("Metadata")
     if not isinstance(metadata, dict):

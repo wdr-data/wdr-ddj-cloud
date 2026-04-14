@@ -10,6 +10,7 @@ URL = (
     "apis/fasta/v2/facilities?type=ESCALATOR,ELEVATOR&state=ACTIVE,INACTIVE,UNKNOWN"
 )
 
+
 def run():
     """
     Ruft den aktuellen Status aller Aufzüge/Rolltreppen ab

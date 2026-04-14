@@ -98,7 +98,9 @@ def add_rows_for_missing_dates(
 
         # Drop columns that are not in the copy_columns list;
         # concat will fill them with NA automatically
-        new_row = new_row[[col for col in new_row.columns if col in copy_columns_set or col == "datum"]]
+        new_row = new_row[
+            [col for col in new_row.columns if col in copy_columns_set or col == "datum"]
+        ]
 
         # Insert the new row
         missing_date_dfs.append(new_row)

@@ -58,7 +58,7 @@ Before we can start, we need to install the dependencies for the project. Open a
 
     uv sync --dev
 
-If this is your first time running this command, `uv` will download Python 3.11 if necessary, create a virtual environment for the project, and install all dependencies. This may take a while. After completion, it is recommended to restart Visual Studio Code.
+If this is your first time running this command, `uv` will download Python 3.13 if necessary, create a virtual environment for the project, and install all dependencies. This may take a while. After completion, it is recommended to restart Visual Studio Code.
 
 ## Creating a scraper
 

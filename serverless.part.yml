@@ -45,7 +45,7 @@ custom:
       name: ${self:service}-${self:provider.stage}-scraper-requirements
       description: Python requirements lambda layer
       compatibleRuntimes:
-        - python3.11
+        - python3.13
 
   customDomainBaseWdrDe: scrapers.data.wdr.de
   acmCertificateId: b24fb4c7-2b4d-45b5-a58e-7f18953fbffa
@@ -215,7 +215,7 @@ resources:
 provider:
   name: aws
   region: eu-central-1
-  runtime: python3.11
+  runtime: python3.13
   stage: ${self:custom.stage}
   tags:
     PRODUCT: ${self:service}

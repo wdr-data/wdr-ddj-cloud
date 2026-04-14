@@ -1,19 +1,23 @@
 import csv
+import json
 import os
+import shutil
 from collections.abc import Callable
-from io import BytesIO
+from io import BytesIO, UnsupportedOperation
 from os.path import commonprefix as common_prefix
 from pathlib import Path
-from typing import Any
+from typing import Any, BinaryIO, overload
 from uuid import uuid4
 
 import pandas as pd
 import sentry_sdk
 from boto3 import client
+from botocore.exceptions import ClientError
+from pydantic import BaseModel, ConfigDict, ValidationError
 
 from ddj_cloud.utils.date_and_time import local_today
 
-USE_LOCAL_STORAGE = os.environ.get("USE_LOCAL_STORAGE", False)
+USE_LOCAL_STORAGE = os.environ.get("USE_LOCAL_STORAGE", None)
 STORAGE_EVENTS = []
 
 CLOUDFRONT_INVALIDATIONS_TO_CREATE = []
@@ -66,6 +70,9 @@ def describe_events(*, clear: bool = True) -> list[str]:
         elif fs_event["type"] == "existed":
             return f'Attempted to upload a file "{fs_event["filename"]}" that was identical to the file in storage'
 
+        elif fs_event["type"] == "delete":
+            return f'Deleted file "{fs_event["filename"]}" from storage'
+
         elif fs_event["type"] == "invalidation":
             return f'Created CloudFront invalidation for "{fs_event["path"]}"'
 
@@ -116,105 +123,381 @@ class DownloadFailedException(Exception):
     pass
 
 
-def _download_file(filename: str) -> BytesIO:
-    """Internal file download function"""
+class StorageMetadata(BaseModel):
+    model_config = ConfigDict(strict=True, extra="ignore")
+
+    ident: str
+
+
+def _normalize_storage_key(filename: str) -> str:
+    """Normalize a storage key to a POSIX-style relative path."""
+    return filename.replace("\\", "/").lstrip("/")
+
+
+def _resolve_local_storage_path(filename: str) -> Path:
+    """Resolve a local-storage key to a path rooted under ``LOCAL_STORAGE_ROOT``."""
+    normalized_filename = _normalize_storage_key(filename)
+    key_path = Path(normalized_filename)
+
+    root = LOCAL_STORAGE_ROOT.resolve()
+    resolved_path = (root / key_path).resolve()
+
+    if os.path.commonpath([str(root), str(resolved_path)]) != str(root):
+        msg = f"Invalid storage key: {filename}"
+        raise ValueError(msg)
+
+    return resolved_path
+
+
+def _download_into(filename: str, fileobj: BinaryIO) -> None:
+    """Stream a file from storage into a caller-provided file-like object."""
     try:
         if USE_LOCAL_STORAGE:
-            with open(LOCAL_STORAGE_ROOT / filename, "rb") as fp:
-                bio = BytesIO(fp.read())
+            with open(_resolve_local_storage_path(filename), "rb") as fp:
+                shutil.copyfileobj(fp, fileobj)
         else:
             assert s3 is not None
-            bio = BytesIO()
-            s3.download_fileobj(BUCKET_NAME, filename, bio)
-
+            s3.download_fileobj(BUCKET_NAME, filename, fileobj)
     except Exception as err:
         msg = f"Failed to download file {filename}"
         raise DownloadFailedException(msg) from err
 
+
+def _download_file(filename: str) -> BytesIO:
+    """Internal file download function"""
+    bio = BytesIO()
+    _download_into(filename, bio)
     bio.seek(0)
     return bio
 
 
-def download_file(filename: str) -> BytesIO:
+@overload
+def download_file(filename: str) -> BytesIO: ...
+@overload
+def download_file(filename: str, fileobj: BinaryIO) -> None: ...
+
+
+def download_file(filename: str, fileobj: BinaryIO | None = None) -> BytesIO | None:
     """Download a file from storage.
 
-    If the file was not found or some other error occured, a ``DownloadFailedException`` will be raised.
+    If the file was not found or some other error occurred, a ``DownloadFailedException`` will be raised.
 
     Args:
         filename (str): Filename to download
+        fileobj (BinaryIO, optional): If provided, the file contents are streamed directly
+            into this file-like object. Use this for large files to avoid loading the full
+            payload into memory. The caller owns the stream's position afterward.
 
     Returns:
-        BytesIO: ``BytesIO`` object containing the file contents
+        BytesIO | None: When ``fileobj`` is not provided, returns a ``BytesIO`` with the
+        file contents (seek position 0). When ``fileobj`` is provided, returns ``None``.
     """
     try:
-        bio = _download_file(filename)
+        if fileobj is not None:
+            _download_into(filename, fileobj)
+            result = None
+        else:
+            result = _download_file(filename)
     except DownloadFailedException:
         STORAGE_EVENTS.append({"type": "download", "filename": filename, "success": False})
         raise
 
     STORAGE_EVENTS.append({"type": "download", "filename": filename, "success": True})
 
-    return bio
+    return result
 
 
-def __upload_file(
-    content: bytes,
+def list_files(prefix: str) -> list[str]:
+    """List files in storage under a given prefix.
+
+    The returned filenames match the keys you'd pass to ``download_file`` or
+    ``delete_file``. The local-storage metadata registry (``_metadata.json``) is
+    excluded.
+
+    ``prefix`` is required to reduce the likelihood of accidentally listing the whole
+    bucket (which includes a potentially large archive). Pass an empty-ish prefix
+    deliberately (e.g., ``"archive/"``) if that's really what you want.
+
+    Args:
+        prefix (str): Only return filenames that start with this prefix. A leading
+            ``/`` is stripped. Must be non-empty.
+
+    Returns:
+        list[str]: Sorted list of filenames.
+    """
+    prefix = _normalize_storage_key(prefix)
+    if not prefix:
+        msg = "list_files requires a non-empty prefix"
+        raise ValueError(msg)
+
+    if USE_LOCAL_STORAGE:
+        prefix_path = _resolve_local_storage_path(prefix)
+        # Narrow the rglob root to the deepest existing directory along the prefix so we
+        # don't walk unrelated trees (e.g., the whole archive) when filtering a small slice.
+        if prefix_path.is_dir():
+            base = prefix_path
+        elif prefix_path.parent.is_dir():
+            base = prefix_path.parent
+        else:
+            return []
+
+        files: list[str] = []
+        for path in base.rglob("*"):
+            if not path.is_file():
+                continue
+            rel = path.relative_to(LOCAL_STORAGE_ROOT).as_posix()
+            if rel == _LOCAL_METADATA_REGISTRY_NAME:
+                continue
+            if rel.startswith(prefix):
+                files.append(rel)
+        return sorted(files)
+
+    assert s3 is not None
+    paginator = s3.get_paginator("list_objects_v2")
+    keys: list[str] = []
+    for page in paginator.paginate(Bucket=BUCKET_NAME, Prefix=prefix):
+        for obj in page.get("Contents", []):
+            keys.append(obj["Key"])
+    return sorted(keys)
+
+
+def delete_file(filename: str) -> None:
+    """Delete a file from storage.
+
+    The operation is idempotent — if the file doesn't exist, nothing happens. In
+    local-storage mode, any associated metadata registry entry is also removed.
+
+    Args:
+        filename (str): Filename to delete.
+    """
+    filename = _normalize_storage_key(filename)
+
+    if USE_LOCAL_STORAGE:
+        _resolve_local_storage_path(filename).unlink(missing_ok=True)
+        _delete_local_metadata(filename)
+    else:
+        assert s3 is not None
+        s3.delete_object(Bucket=BUCKET_NAME, Key=filename)
+
+    STORAGE_EVENTS.append({"type": "delete", "filename": filename})
+
+
+def _rewind_if_seekable(fileobj: BinaryIO) -> None:
+    """Rewind seekable streams so uploads read the full payload by default."""
+    try:
+        if fileobj.seekable():
+            fileobj.seek(0)
+    except (AttributeError, OSError, UnsupportedOperation):
+        pass
+
+
+def _upload_file(  # noqa: PLR0913
+    content: bytes | BinaryIO,
     filename: str,
     *,
     acl: str | None = None,
     content_type: str | None = None,
+    metadata: StorageMetadata | None = None,
+    rewind: bool = True,
 ):
-    bio = BytesIO(content)
-
     """Internal file upload function"""
+    is_bytes = isinstance(content, (bytes, bytearray))
+    source: BinaryIO = BytesIO(content) if is_bytes else content
+    if rewind:
+        _rewind_if_seekable(source)
+
+    try:
+        if USE_LOCAL_STORAGE:
+            # Ensure path exists
+            file_path = _resolve_local_storage_path(filename)
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+
+            with open(file_path, "wb") as fp:
+                shutil.copyfileobj(source, fp)
+
+            # Persist object metadata in local storage so skip-if-unchanged works in dev.
+            if metadata:
+                _save_local_metadata(filename, metadata)
+            else:
+                _delete_local_metadata(filename)
+
+        else:
+            # Upload file with ACL, content type, and user metadata
+            extra_args: dict[str, Any] = {}
+
+            if acl is not None:
+                extra_args["ACL"] = acl
+
+            if content_type is not None:
+                extra_args["ContentType"] = content_type
+
+            if metadata:
+                extra_args["Metadata"] = metadata.model_dump()
+
+            assert s3 is not None
+            s3.upload_fileobj(
+                source,
+                BUCKET_NAME,
+                filename,
+                ExtraArgs=extra_args,
+            )
+    finally:
+        if is_bytes:
+            source.close()
+
+
+def _archive_file(source: str, dest: str, acl: str | None) -> None:
+    """Copy an already-uploaded object to an archive location without re-reading the payload."""
     if USE_LOCAL_STORAGE:
-        # Ensure path exists
-        (LOCAL_STORAGE_ROOT / filename).parent.mkdir(parents=True, exist_ok=True)
+        src_path = _resolve_local_storage_path(source)
+        dest_path = _resolve_local_storage_path(dest)
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src_path, dest_path)
 
-        with open(LOCAL_STORAGE_ROOT / filename, "wb") as fp:
-            fp.write(bio.getbuffer())
+        metadata = _fetch_local_metadata(source)
+        if metadata:
+            _save_local_metadata(dest, metadata)
+        else:
+            _delete_local_metadata(dest)
+        return
 
-        bio.close()
-
-    else:
-        # Upload file with ACL and content type
-        extra_args = {}
-
-        if acl is not None:
-            extra_args["ACL"] = acl
-
-        if content_type is not None:
-            extra_args["ContentType"] = content_type
-
-        assert s3 is not None
-        s3.upload_fileobj(
-            bio,
-            BUCKET_NAME,
-            filename,
-            ExtraArgs=extra_args,
-        )
+    assert s3 is not None
+    extra_args: dict[str, Any] = {}
+    if acl is not None:
+        extra_args["ACL"] = acl
+    # boto3's high-level s3.copy() handles multipart copy for objects >5GB automatically
+    # and preserves user metadata (including ident) by default.
+    s3.copy(
+        CopySource={"Bucket": BUCKET_NAME, "Key": source},
+        Bucket=BUCKET_NAME,
+        Key=dest,
+        ExtraArgs=extra_args,
+    )
 
 
-def _upload_file(
-    content: bytes,
+_LOCAL_METADATA_REGISTRY_NAME = "_metadata.json"
+
+
+def _load_local_metadata() -> dict[str, StorageMetadata]:
+    path = LOCAL_STORAGE_ROOT / _LOCAL_METADATA_REGISTRY_NAME
+    try:
+        raw_data: Any = json.loads(path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+    if not isinstance(raw_data, dict):
+        return {}
+
+    metadata_by_filename: dict[str, StorageMetadata] = {}
+    for filename, metadata in raw_data.items():
+        if not isinstance(filename, str):
+            continue
+
+        try:
+            metadata_by_filename[filename] = StorageMetadata.model_validate(metadata, strict=True)
+        except ValidationError:
+            continue
+
+    return metadata_by_filename
+
+
+def _write_local_metadata_store(data: dict[str, StorageMetadata]) -> None:
+    LOCAL_STORAGE_ROOT.mkdir(parents=True, exist_ok=True)
+    path = LOCAL_STORAGE_ROOT / _LOCAL_METADATA_REGISTRY_NAME
+    serialized_data = {filename: metadata.model_dump() for filename, metadata in data.items()}
+    path.write_text(json.dumps(serialized_data, indent=2, sort_keys=True))
+
+
+def _save_local_metadata(filename: str, metadata: StorageMetadata) -> None:
+    data = _load_local_metadata()
+    data[filename] = metadata
+    _write_local_metadata_store(data)
+
+
+def _delete_local_metadata(filename: str) -> None:
+    data = _load_local_metadata()
+    if filename not in data:
+        return
+
+    del data[filename]
+    _write_local_metadata_store(data)
+
+
+def _fetch_local_metadata(filename: str) -> StorageMetadata | None:
+    if not _resolve_local_storage_path(filename).exists():
+        _delete_local_metadata(filename)
+        return None
+
+    return _load_local_metadata().get(filename)
+
+
+def _fetch_metadata(filename: str) -> StorageMetadata | None:
+    """Return the user metadata stored on an existing object, or None.
+
+    For S3, reads user metadata via ``head_object``. For local storage, reads from a
+    JSON registry at ``local_storage/_metadata.json`` and drops stale entries whose
+    underlying file no longer exists.
+    """
+    if USE_LOCAL_STORAGE:
+        return _fetch_local_metadata(filename)
+    if s3 is None:
+        return None
+    try:
+        response = s3.head_object(Bucket=BUCKET_NAME, Key=filename)
+    except ClientError as exc:
+        error = exc.response.get("Error", {})
+        error_code = error.get("Code")
+        status_code = exc.response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+        if error_code in {"404", "NoSuchKey", "NotFound"} or status_code == 404:
+            return None
+        raise
+
+    metadata = response.get("Metadata")
+    if not isinstance(metadata, dict):
+        return None
+
+    try:
+        return StorageMetadata.model_validate(metadata, strict=True)
+    except ValidationError:
+        return None
+
+
+def _fetch_ident(filename: str) -> str | None:
+    metadata = _fetch_metadata(filename)
+    if metadata is None:
+        return None
+    return metadata.ident
+
+
+def _upload_and_archive_file(  # noqa: PLR0913
+    content: bytes | BinaryIO,
     filename: str,
     *,
     acl: str | None = None,
     content_type: str | None = None,
     archive: bool = True,
+    metadata: StorageMetadata | None = None,
+    rewind: bool = True,
 ) -> list[str]:
-    """Internal file upload function that performs optional achiving and storage event tracking"""
+    """Internal file upload function that performs optional archiving and storage event tracking."""
     filenames = [filename]
 
     # Upload file normally
-    __upload_file(content, filename, acl=acl, content_type=content_type)
+    _upload_file(
+        content,
+        filename,
+        acl=acl,
+        content_type=content_type,
+        metadata=metadata,
+        rewind=rewind,
+    )
     STORAGE_EVENTS.append({"type": "upload", "filename": filename})
 
-    # Upload archived version
+    # Archive via server-side copy (S3) or filesystem copy (local)
     if archive:
         timestamp = local_today().isoformat()
         filename_archive = f"archive/{timestamp}/{filename}"
-        __upload_file(content, filename_archive, acl=acl, content_type=content_type)
+        _archive_file(filename, filename_archive, acl=acl)
         STORAGE_EVENTS.append(
             {
                 "type": "archive",
@@ -227,7 +510,8 @@ def _upload_file(
     return filenames
 
 
-def upload_file(  # noqa: PLR0913
+@overload
+def upload_file(
     content: bytes,
     filename: str,
     *,
@@ -237,55 +521,107 @@ def upload_file(  # noqa: PLR0913
     acl: str | None = "public-read",
     create_cloudfront_invalidation: bool = False,
     archive: bool = True,
+) -> None: ...
+
+
+@overload
+def upload_file(
+    content: BinaryIO,
+    filename: str,
+    *,
+    content_type: str | None = None,
+    change_notification: str | None = None,
+    ident: str | None = None,
+    acl: str | None = "public-read",
+    create_cloudfront_invalidation: bool = False,
+    archive: bool = True,
+    rewind: bool = True,
+) -> None: ...
+
+
+def upload_file(  # noqa: PLR0913
+    content: bytes | BinaryIO,
+    filename: str,
+    *,
+    content_type: str | None = None,
+    change_notification: str | None = None,
+    compare_fn: Callable[[bytes, bytes], bool] = simple_compare,
+    ident: str | None = None,
+    acl: str | None = "public-read",
+    create_cloudfront_invalidation: bool = False,
+    archive: bool = True,
+    rewind: bool = True,
 ):
     """Upload a file to storage.
 
     This function does a number of things:
 
-    - Checks if the file already exists in storage and if so, compares the contents of the file with the new content.
+    - Checks if the file already exists in storage and if so, compares against the new content.
         - If the file does not exist in storage, it is uploaded.
-        - If the file exists in storage, but the contents are different, the file is uploaded.
-        - If the file exists in storage, but the contents are the same, the file is not uploaded.
-    - If the file is uploaded, an optional CloudFront invalidation is created.
+        - If the file exists in storage, but differs, the new version is uploaded.
+        - If the file exists in storage and matches, the upload is skipped.
+    - If the file is uploaded, an optional CloudFront invalidation is queued.
     - Optionally sends a change notification via Sentry if the file was uploaded.
 
-    By default, the comparison between the old and new file is done using simple_compare, which simply tests equality.
-    This can be overridden by passing in a custom comparison function.
-    The comparison function must take two arguments, the old and new file contents, and return a boolean indicating whether the files are equal.
+    Two modes are supported:
+
+    - **Bytes** (default): ``content`` is ``bytes``. Comparison uses ``compare_fn``
+      (``simple_compare`` equality by default), which can be customized.
+    - **Streaming**: ``content`` is a binary file-like object. Use this for large files
+      (multi-GB) to avoid loading the payload into memory. Seekable streams are rewound
+      to position 0 before upload (override with ``rewind=False`` if the caller has
+      deliberately positioned the stream). Comparison uses an optional caller-provided
+      ``ident`` string stored as S3 user metadata (``x-amz-meta-ident``): if the existing
+      object's ``ident`` matches, the upload is skipped. If ``ident`` is not provided,
+      the file is always uploaded. Local-storage mode tracks metadata in
+      ``local_storage/_metadata.json`` so skip-if-unchanged works in dev.
 
     Args:
-        content (bytes): File content
-        filename (str): Filename to upload
+        content (bytes | BinaryIO): File content as bytes, or a readable binary stream.
+        filename (str): Filename to upload.
         content_type (str, optional): Content type to use when uploading. Defaults to None.
-        change_notification (str, optional): Notification text that should be sent to Sentry if the file was updated. Defaults to None.
-        compare_fn (Callable[[bytes, bytes], bool], optional): Function to use to compare existing file with new file. Defaults to ``simple_compare``.
+        change_notification (str, optional): Notification text sent to Sentry if the file was updated.
+        compare_fn (Callable[[bytes, bytes], bool], optional): Bytes-mode only — function to compare
+            existing file with new file. Defaults to ``simple_compare``.
+        ident (str, optional): Streaming-mode only — caller-provided identifier used to skip
+            re-uploads. Stored as S3 user metadata. Defaults to None (always upload).
         acl (str, optional): ACL to use when uploading. Defaults to ``"public-read"``.
-        create_cloudfront_invalidation (bool, optional): Whether to create a CloudFront invalidation. Defaults to False.
+        create_cloudfront_invalidation (bool, optional): Whether to queue a CloudFront invalidation.
+        archive (bool, optional): Whether to archive the file under ``archive/<date>/<filename>``.
+            The archive is created via server-side copy (S3) or filesystem copy (local) —
+            the payload is never re-uploaded. Defaults to True.
+        rewind (bool, optional): Streaming-mode only — rewind seekable streams to position
+            0 before upload. Set to False to upload from the stream's current position
+            (e.g., to skip a header). Defaults to True.
     """
     # Parameter validation
-    filename = filename.lstrip("/")
+    filename = _normalize_storage_key(filename)
+    is_bytes = isinstance(content, (bytes, bytearray))
 
-    # Read old file-like object to check for differences
-    try:
-        bio_old = _download_file(filename)
-        bio_old.seek(0)
-        file_exists = True
-    except DownloadFailedException:
-        bio_old = BytesIO()
-        file_exists = False
-
-    # Compare if file exists and if it has changed
-    if file_exists and compare_fn(bio_old.read(), content):
+    # Skip-if-unchanged check
+    if is_bytes:
+        try:
+            bio_old = _download_file(filename)
+            if compare_fn(bio_old.read(), content):
+                STORAGE_EVENTS.append({"type": "existed", "filename": filename})
+                return
+        except DownloadFailedException:
+            pass
+    elif ident is not None and _fetch_ident(filename) == ident:
         STORAGE_EVENTS.append({"type": "existed", "filename": filename})
         return
 
-    # Upload file with ACL and content type
-    _upload_file(
+    metadata = StorageMetadata(ident=ident) if (not is_bytes and ident is not None) else None
+
+    # Upload file with ACL, content type, and optional ident metadata
+    _upload_and_archive_file(
         content,
         filename,
         acl=acl,
         content_type=content_type,
         archive=archive,
+        metadata=metadata,
+        rewind=rewind,
     )
 
     # Create CloudFront invalidation

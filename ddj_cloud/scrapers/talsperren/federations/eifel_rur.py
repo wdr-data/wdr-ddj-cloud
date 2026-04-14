@@ -120,7 +120,7 @@ class EifelRurFederation(Federation):
         **kwargs,  # noqa: ARG002
     ) -> Iterable[ReservoirRecord]:
         for records in apply_guarded(
-            lambda name: self._get_reservoir_records(name),
+            self._get_reservoir_records,
             self.reservoirs.keys(),
         ):
             yield from records

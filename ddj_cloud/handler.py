@@ -18,7 +18,7 @@ from ddj_cloud.utils.date_and_time import local_now  # noqa: E402
 def scrape(event, context):  # noqa: ARG001
     module_name = event["module_name"]
 
-    with sentry_sdk.configure_scope() as scope:
+    with sentry_sdk.new_scope() as scope:
         scope.set_tag("scraper", module_name)
         try:
             scraper = importlib.import_module(f"ddj_cloud.scrapers.{module_name}.{module_name}")

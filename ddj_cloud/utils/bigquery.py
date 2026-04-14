@@ -59,7 +59,7 @@ def iter_results(
     query: str,
     job_config: QueryJobConfig,
     df_cleaner: Callable[[pd.DataFrame], pd.DataFrame] | None = None,
-) -> Generator[pd.Series, None, None]:
+) -> Generator[pd.Series]:
     """
     Page through the results of a query and yield each row as a pandas Series
 
@@ -81,9 +81,10 @@ def iter_results(
 
     rows = client.list_rows(destination, page_size=10000)
 
-    # HACK: To avoid having to ship `pyarrow` (too big for Lambda), disable the
-    # import check in google-cloud-bigquery
-    from google.cloud.bigquery import _pandas_helpers
+    # HACK: We avoid having to ship `db-dtypes`
+    # (too big for Lambda — it pulls in `pyarrow`)
+    # by disabling the import check in google-cloud-bigquery
+    from google.cloud.bigquery import _pandas_helpers  # noqa: PLC0415
 
     imports_verifier_orig = _pandas_helpers.verify_pandas_imports
     _pandas_helpers.verify_pandas_imports = lambda: None

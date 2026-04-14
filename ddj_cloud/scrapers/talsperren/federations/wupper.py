@@ -149,9 +149,9 @@ class WupperFederation(Federation):
             return []
 
         columns: list[str] = content_data["lines"]
-        assert all(
-            [column in columns for column in ["time", "Speicherinhalt"]]
-        ), f"Unexpected column names: '{columns}' does not contain 'time' and 'Speicherinhalt'"
+        assert all([column in columns for column in ["time", "Speicherinhalt"]]), (
+            f"Unexpected column names: '{columns}' does not contain 'time' and 'Speicherinhalt'"
+        )
 
         timestamp_idx = columns.index("time")
         value_idx = columns.index("Speicherinhalt")

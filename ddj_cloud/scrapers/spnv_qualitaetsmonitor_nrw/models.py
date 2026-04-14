@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import Annotated, Any, Literal, Never, TypeAlias
+from typing import Annotated, Any, Literal, Never
 
 from annotated_types import Len  # noqa: TCH002
 from pydantic import BaseModel, Field
@@ -52,7 +52,7 @@ class Filters:
         target: Literal["complexity"]
         items: list[Filters.ItemInt]
 
-    Target: TypeAlias = (
+    type Target = (
         TargetYear
         | TargetQuarter
         | TargetRegion
@@ -117,7 +117,7 @@ class Results:
     class ColumnPassengers(ColumnBase):
         quarters: list[int]
 
-    Column: TypeAlias = (
+    type Column = (
         ColumnOverallRanking
         | ColumnComplexity
         | ColumnPunctuality

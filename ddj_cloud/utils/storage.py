@@ -129,11 +129,26 @@ class StorageMetadata(BaseModel):
     ident: str
 
 
+def _resolve_local_storage_path(filename: str) -> Path:
+    """Resolve a local-storage key to a path rooted under ``LOCAL_STORAGE_ROOT``."""
+    normalized_filename = filename.lstrip(R"\/")
+    key_path = Path(normalized_filename)
+
+    root = LOCAL_STORAGE_ROOT.resolve()
+    resolved_path = (root / key_path).resolve()
+
+    if os.path.commonpath([str(root), str(resolved_path)]) != str(root):
+        msg = f"Invalid storage key: {filename}"
+        raise ValueError(msg)
+
+    return resolved_path
+
+
 def _download_into(filename: str, fileobj: BinaryIO) -> None:
     """Stream a file from storage into a caller-provided file-like object."""
     try:
         if USE_LOCAL_STORAGE:
-            with open(LOCAL_STORAGE_ROOT / filename, "rb") as fp:
+            with open(_resolve_local_storage_path(filename), "rb") as fp:
                 shutil.copyfileobj(fp, fileobj)
         else:
             assert s3 is not None
@@ -211,7 +226,7 @@ def list_files(prefix: str) -> list[str]:
         raise ValueError(msg)
 
     if USE_LOCAL_STORAGE:
-        prefix_path = LOCAL_STORAGE_ROOT / prefix
+        prefix_path = _resolve_local_storage_path(prefix)
         # Narrow the rglob root to the deepest existing directory along the prefix so we
         # don't walk unrelated trees (e.g., the whole archive) when filtering a small slice.
         if prefix_path.is_dir():
@@ -253,7 +268,7 @@ def delete_file(filename: str) -> None:
     filename = filename.lstrip("/")
 
     if USE_LOCAL_STORAGE:
-        (LOCAL_STORAGE_ROOT / filename).unlink(missing_ok=True)
+        _resolve_local_storage_path(filename).unlink(missing_ok=True)
         _delete_local_metadata(filename)
     else:
         assert s3 is not None
@@ -289,9 +304,10 @@ def _upload_file(  # noqa: PLR0913
     try:
         if USE_LOCAL_STORAGE:
             # Ensure path exists
-            (LOCAL_STORAGE_ROOT / filename).parent.mkdir(parents=True, exist_ok=True)
+            file_path = _resolve_local_storage_path(filename)
+            file_path.parent.mkdir(parents=True, exist_ok=True)
 
-            with open(LOCAL_STORAGE_ROOT / filename, "wb") as fp:
+            with open(file_path, "wb") as fp:
                 shutil.copyfileobj(source, fp)
 
             # Persist object metadata in local storage so skip-if-unchanged works in dev.
@@ -328,8 +344,8 @@ def _upload_file(  # noqa: PLR0913
 def _archive_file(source: str, dest: str, acl: str | None) -> None:
     """Copy an already-uploaded object to an archive location without re-reading the payload."""
     if USE_LOCAL_STORAGE:
-        src_path = LOCAL_STORAGE_ROOT / source
-        dest_path = LOCAL_STORAGE_ROOT / dest
+        src_path = _resolve_local_storage_path(source)
+        dest_path = _resolve_local_storage_path(dest)
         dest_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src_path, dest_path)
 
@@ -403,7 +419,7 @@ def _delete_local_metadata(filename: str) -> None:
 
 
 def _fetch_local_metadata(filename: str) -> StorageMetadata | None:
-    if not (LOCAL_STORAGE_ROOT / filename).exists():
+    if not _resolve_local_storage_path(filename).exists():
         _delete_local_metadata(filename)
         return None
 

@@ -129,9 +129,14 @@ class StorageMetadata(BaseModel):
     ident: str
 
 
+def _normalize_storage_key(filename: str) -> str:
+    """Normalize a storage key to a POSIX-style relative path."""
+    return filename.replace("\\", "/").lstrip("/")
+
+
 def _resolve_local_storage_path(filename: str) -> Path:
     """Resolve a local-storage key to a path rooted under ``LOCAL_STORAGE_ROOT``."""
-    normalized_filename = filename.lstrip(R"\/")
+    normalized_filename = _normalize_storage_key(filename)
     key_path = Path(normalized_filename)
 
     root = LOCAL_STORAGE_ROOT.resolve()
@@ -220,7 +225,7 @@ def list_files(prefix: str) -> list[str]:
     Returns:
         list[str]: Sorted list of filenames.
     """
-    prefix = prefix.lstrip("/")
+    prefix = _normalize_storage_key(prefix)
     if not prefix:
         msg = "list_files requires a non-empty prefix"
         raise ValueError(msg)
@@ -265,7 +270,7 @@ def delete_file(filename: str) -> None:
     Args:
         filename (str): Filename to delete.
     """
-    filename = filename.lstrip("/")
+    filename = _normalize_storage_key(filename)
 
     if USE_LOCAL_STORAGE:
         _resolve_local_storage_path(filename).unlink(missing_ok=True)
@@ -590,7 +595,7 @@ def upload_file(  # noqa: PLR0913
             (e.g., to skip a header). Defaults to True.
     """
     # Parameter validation
-    filename = filename.lstrip("/")
+    filename = _normalize_storage_key(filename)
     is_bytes = isinstance(content, (bytes, bytearray))
 
     # Skip-if-unchanged check

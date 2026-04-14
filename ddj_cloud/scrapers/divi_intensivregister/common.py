@@ -7,7 +7,7 @@ import requests
 
 
 def load_data(url: str) -> pd.DataFrame:
-    cached_file = Path(__file__).parent / "cache" / url.split("/")[-1]
+    cached_file = Path(__file__).parent / "cache" / url.rsplit("/", maxsplit=1)[-1]
 
     if cached_file.exists():
         print("Using cached file:", cached_file)
@@ -47,18 +47,16 @@ def make_latest_date_single(
     return df
 
 
-def filter_by_id_column(
-    df: pd.DataFrame, column_name: str
-) -> Generator[tuple[int, pd.DataFrame], None, None]:
+def filter_by_id_column(df: pd.DataFrame, column_name: str) -> Generator[tuple[int, pd.DataFrame]]:
     for id_value in sorted(df[column_name].unique()):
         yield int(id_value), df[df[column_name] == id_value]
 
 
-def filter_by_bundesland(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame], None, None]:
+def filter_by_bundesland(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame]]:
     yield from filter_by_id_column(df, "bundesland_id")
 
 
-def filter_by_landkreis(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame], None, None]:
+def filter_by_landkreis(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame]]:
     yield from filter_by_id_column(df, "landkreis_id")
 
 

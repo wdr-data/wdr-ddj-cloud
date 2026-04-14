@@ -94,10 +94,10 @@ T1 = TypeVar("T1")
 T2 = TypeVar("T2")
 
 
-def apply_guarded(
+def apply_guarded[T1, T2](
     func: Callable[[T2], T1 | None],
     data: Iterable[T2],
-) -> Generator[T1, None, None]:
+) -> Generator[T1]:
     for item in data:
         try:
             result = func(item)

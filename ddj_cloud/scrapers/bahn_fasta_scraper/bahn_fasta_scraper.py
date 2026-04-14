@@ -1,6 +1,7 @@
-import os
 import gzip
-from datetime import datetime, timezone
+import os
+from datetime import UTC, datetime
+
 import requests
 
 from ddj_cloud.utils.storage import upload_file
@@ -24,7 +25,8 @@ def run():
     client_id = os.environ.get("DB_CLIENT_ID")
     api_key = os.environ.get("DB_API_KEY")
     if not client_id or not api_key:
-        raise RuntimeError("Umgebungsvariablen fehlen.")
+        msg = "Umgebungsvariablen fehlen."
+        raise RuntimeError(msg)
 
     headers = {
         "Accept": "application/json",
@@ -35,7 +37,7 @@ def run():
     resp = requests.get(URL, headers=headers, timeout=60)
     resp.raise_for_status()  # wirft Exception bei HTTP-Fehlern
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%SZ")
+    timestamp = datetime.now(UTC).strftime("%Y-%m-%dT%H-%M-%SZ")
     filename = f"bahn-fasta-scraper/raw_{timestamp}.json.gz"
 
     # Gzip-Komprimierung des Inhalts

@@ -13,7 +13,7 @@ from boto3 import client
 
 from ddj_cloud.utils.date_and_time import local_today
 
-USE_LOCAL_STORAGE = os.environ.get("USE_LOCAL_STORAGE", False)
+USE_LOCAL_STORAGE = os.environ.get("USE_LOCAL_STORAGE", None)
 STORAGE_EVENTS = []
 
 CLOUDFRONT_INVALIDATIONS_TO_CREATE = []

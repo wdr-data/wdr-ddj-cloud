@@ -1,14 +1,13 @@
-import os
-from pathlib import Path
 import datetime as dt
 import json
-from typing import Union
+import os
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pandas as pd
 
-from ddj_cloud.utils.storage import upload_dataframe
 from ddj_cloud.utils.datawrapper_patched import Datawrapper
+from ddj_cloud.utils.storage import upload_dataframe
 
 MAP_KEY = os.environ.get("NASA_WALDBRANDDATEN_RHODOS_MAP_KEY")
 DATAWRAPPER_TOKEN = os.environ.get("NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN")
@@ -29,7 +28,7 @@ MAP_EXTENT = [
 ]  # West, South, East, North
 
 
-def make_nasa_data_url(date: Union[dt.date, str]):
+def make_nasa_data_url(date: dt.date | str):
     if isinstance(date, str):
         date = dt.date.fromisoformat(date)
 
@@ -54,7 +53,8 @@ def run():
     print(f"Got data for {latest_data_day}!")
 
     if df is None:
-        raise Exception("Borked.")
+        msg = "Borked."
+        raise Exception(msg)
 
     # Filter by confidence (nominal and high)
     df = df.loc[df["confidence"].isin(["n", "h"])]

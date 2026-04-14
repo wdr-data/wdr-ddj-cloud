@@ -210,7 +210,7 @@ def _build_pegel_url(station_id: str, station_name: str) -> str:
     )
 
 
-def run(session: requests.Session) -> list[StationRow]:
+def run(session: requests.Session) -> list[StationRow]:  # noqa: PLR0912
     now = local_now()
 
     logger.info("Fetching LANUK station list...")

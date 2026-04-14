@@ -59,6 +59,8 @@ src = ["ddj_cloud", "scraper_template"]
 indent-width = 4
 line-length = 100
 exclude = []
+
+[tool.ruff.lint]
 select = [
     "ARG", # unused-arguments
     "B",   # bugbear

@@ -1,16 +1,14 @@
-import os
-from pathlib import Path
 import datetime as dt
 import json
-from typing import Union
+import os
+from pathlib import Path
 from uuid import uuid4
 from zoneinfo import ZoneInfo
-import dateparser
 
 import pandas as pd
 
-from ddj_cloud.utils.storage import upload_dataframe
 from ddj_cloud.utils.datawrapper_patched import Datawrapper
+from ddj_cloud.utils.storage import upload_dataframe
 
 MAP_KEY = os.environ.get("NASA_WALDBRANDDATEN_RHODOS_MAP_KEY")
 DATAWRAPPER_TOKEN = os.environ.get("NASA_WALDBRANDDATEN_TENERIFFA_DATAWRAPPER_TOKEN")
@@ -52,12 +50,13 @@ def run():
         dtype={"acq_time": str, "acq_date": str},
     )
 
-    print(f"Got data!")
+    print("Got data!")
     print(df.head())
     print(df.info())
 
     if df is None:
-        raise Exception("Borked.")
+        msg = "Borked."
+        raise Exception(msg)
 
     # Filter by confidence (nominal and high)
     df = df.loc[df["confidence"].isin(["n", "h"])]

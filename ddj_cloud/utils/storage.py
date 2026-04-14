@@ -160,7 +160,7 @@ def download_file(filename: str, fileobj: BinaryIO) -> None: ...
 def download_file(filename: str, fileobj: BinaryIO | None = None) -> BytesIO | None:
     """Download a file from storage.
 
-    If the file was not found or some other error occured, a ``DownloadFailedException`` will be raised.
+    If the file was not found or some other error occurred, a ``DownloadFailedException`` will be raised.
 
     Args:
         filename (str): Filename to download

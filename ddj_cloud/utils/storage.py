@@ -193,18 +193,20 @@ def _rewind_if_seekable(fileobj: BinaryIO) -> None:
         pass
 
 
-def _upload_file(
+def _upload_file(  # noqa: PLR0913
     content: bytes | BinaryIO,
     filename: str,
     *,
     acl: str | None = None,
     content_type: str | None = None,
     metadata: StorageMetadata | None = None,
+    rewind: bool = True,
 ):
     """Internal file upload function"""
     is_bytes = isinstance(content, (bytes, bytearray))
     source: BinaryIO = BytesIO(content) if is_bytes else content
-    _rewind_if_seekable(source)
+    if rewind:
+        _rewind_if_seekable(source)
 
     if USE_LOCAL_STORAGE:
         # Ensure path exists
@@ -370,12 +372,20 @@ def _upload_and_archive_file(  # noqa: PLR0913
     content_type: str | None = None,
     archive: bool = True,
     metadata: StorageMetadata | None = None,
+    rewind: bool = True,
 ) -> list[str]:
     """Internal file upload function that performs optional archiving and storage event tracking."""
     filenames = [filename]
 
     # Upload file normally
-    _upload_file(content, filename, acl=acl, content_type=content_type, metadata=metadata)
+    _upload_file(
+        content,
+        filename,
+        acl=acl,
+        content_type=content_type,
+        metadata=metadata,
+        rewind=rewind,
+    )
     STORAGE_EVENTS.append({"type": "upload", "filename": filename})
 
     # Archive via server-side copy (S3) or filesystem copy (local)
@@ -420,6 +430,7 @@ def upload_file(
     acl: str | None = "public-read",
     create_cloudfront_invalidation: bool = False,
     archive: bool = True,
+    rewind: bool = True,
 ) -> None: ...
 
 
@@ -434,6 +445,7 @@ def upload_file(  # noqa: PLR0913
     acl: str | None = "public-read",
     create_cloudfront_invalidation: bool = False,
     archive: bool = True,
+    rewind: bool = True,
 ):
     """Upload a file to storage.
 
@@ -451,10 +463,12 @@ def upload_file(  # noqa: PLR0913
     - **Bytes** (default): ``content`` is ``bytes``. Comparison uses ``compare_fn``
       (``simple_compare`` equality by default), which can be customized.
     - **Streaming**: ``content`` is a binary file-like object. Use this for large files
-      (multi-GB) to avoid loading the payload into memory. Comparison uses an optional
-      caller-provided ``ident`` string stored as S3 user metadata (``x-amz-meta-ident``):
-      if the existing object's ``ident`` matches, the upload is skipped. If ``ident`` is
-      not provided, the file is always uploaded. Local-storage mode tracks metadata in
+      (multi-GB) to avoid loading the payload into memory. Seekable streams are rewound
+      to position 0 before upload (override with ``rewind=False`` if the caller has
+      deliberately positioned the stream). Comparison uses an optional caller-provided
+      ``ident`` string stored as S3 user metadata (``x-amz-meta-ident``): if the existing
+      object's ``ident`` matches, the upload is skipped. If ``ident`` is not provided,
+      the file is always uploaded. Local-storage mode tracks metadata in
       ``local_storage/_metadata.json`` so skip-if-unchanged works in dev.
 
     Args:
@@ -471,6 +485,9 @@ def upload_file(  # noqa: PLR0913
         archive (bool, optional): Whether to archive the file under ``archive/<date>/<filename>``.
             The archive is created via server-side copy (S3) or filesystem copy (local) —
             the payload is never re-uploaded. Defaults to True.
+        rewind (bool, optional): Streaming-mode only — rewind seekable streams to position
+            0 before upload. Set to False to upload from the stream's current position
+            (e.g., to skip a header). Defaults to True.
     """
     # Parameter validation
     filename = filename.lstrip("/")
@@ -499,6 +516,7 @@ def upload_file(  # noqa: PLR0913
         content_type=content_type,
         archive=archive,
         metadata=metadata,
+        rewind=rewind,
     )
 
     # Create CloudFront invalidation

@@ -286,42 +286,43 @@ def _upload_file(  # noqa: PLR0913
     if rewind:
         _rewind_if_seekable(source)
 
-    if USE_LOCAL_STORAGE:
-        # Ensure path exists
-        (LOCAL_STORAGE_ROOT / filename).parent.mkdir(parents=True, exist_ok=True)
+    try:
+        if USE_LOCAL_STORAGE:
+            # Ensure path exists
+            (LOCAL_STORAGE_ROOT / filename).parent.mkdir(parents=True, exist_ok=True)
 
-        with open(LOCAL_STORAGE_ROOT / filename, "wb") as fp:
-            shutil.copyfileobj(source, fp)
+            with open(LOCAL_STORAGE_ROOT / filename, "wb") as fp:
+                shutil.copyfileobj(source, fp)
 
+            # Persist object metadata in local storage so skip-if-unchanged works in dev.
+            if metadata:
+                _save_local_metadata(filename, metadata)
+            else:
+                _delete_local_metadata(filename)
+
+        else:
+            # Upload file with ACL, content type, and user metadata
+            extra_args: dict[str, Any] = {}
+
+            if acl is not None:
+                extra_args["ACL"] = acl
+
+            if content_type is not None:
+                extra_args["ContentType"] = content_type
+
+            if metadata:
+                extra_args["Metadata"] = metadata.model_dump()
+
+            assert s3 is not None
+            s3.upload_fileobj(
+                source,
+                BUCKET_NAME,
+                filename,
+                ExtraArgs=extra_args,
+            )
+    finally:
         if is_bytes:
             source.close()
-
-        # Persist object metadata in local storage so skip-if-unchanged works in dev.
-        if metadata:
-            _save_local_metadata(filename, metadata)
-        else:
-            _delete_local_metadata(filename)
-
-    else:
-        # Upload file with ACL, content type, and user metadata
-        extra_args: dict[str, Any] = {}
-
-        if acl is not None:
-            extra_args["ACL"] = acl
-
-        if content_type is not None:
-            extra_args["ContentType"] = content_type
-
-        if metadata:
-            extra_args["Metadata"] = metadata.model_dump()
-
-        assert s3 is not None
-        s3.upload_fileobj(
-            source,
-            BUCKET_NAME,
-            filename,
-            ExtraArgs=extra_args,
-        )
 
 
 def _archive_file(source: str, dest: str, acl: str | None) -> None:

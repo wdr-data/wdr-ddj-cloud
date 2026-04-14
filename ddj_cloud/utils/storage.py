@@ -238,7 +238,7 @@ def list_files(prefix: str) -> list[str]:
     for page in paginator.paginate(Bucket=BUCKET_NAME, Prefix=prefix):
         for obj in page.get("Contents", []):
             keys.append(obj["Key"])
-    return keys
+    return sorted(keys)
 
 
 def delete_file(filename: str) -> None:

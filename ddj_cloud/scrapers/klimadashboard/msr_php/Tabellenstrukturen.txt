@@ -1,0 +1,85 @@
+--
+-- Tabellenstruktur für Tabelle `ee_wind`
+-- (Tabelle mit allen WKA-Anlagen)
+--
+
+CREATE TABLE `ee_wind` (
+  `mastrnr_einheit` varchar(32) NOT NULL,
+  `name_einheit` text DEFAULT NULL,
+  `betriebsstatus` text DEFAULT NULL,
+  `bruttoleistung` decimal(10,1) DEFAULT NULL,
+  `nettonennleistung` decimal(10,1) DEFAULT NULL,
+  `datum_inbetriebnahme` date DEFAULT NULL,
+  `datum_registrierung` date DEFAULT NULL,
+  `bundesland` text DEFAULT NULL,
+  `landkreis` mediumtext DEFAULT NULL,
+  `gemeinde` mediumtext DEFAULT NULL,
+  `plz` mediumtext DEFAULT NULL,
+  `ort` mediumtext DEFAULT NULL,
+  `strasse` mediumtext DEFAULT NULL,
+  `hausnummer` mediumtext DEFAULT NULL,
+  `gemarkung` mediumtext DEFAULT NULL,
+  `flurstueck` mediumtext DEFAULT NULL,
+  `gemeindeschluessel` int(11) DEFAULT NULL,
+  `breitengrad` decimal(10,6) DEFAULT NULL,
+  `laengengrad` decimal(10,6) DEFAULT NULL,
+  `name_windpark` mediumtext DEFAULT NULL,
+  `nabenhoehe` decimal(10,2) DEFAULT NULL,
+  `rotordurchmesser` decimal(10,2) DEFAULT NULL,
+  `hersteller_windanlage` mediumtext DEFAULT NULL,
+  `typenbezeichnung` mediumtext DEFAULT NULL,
+  `technologie` mediumtext DEFAULT NULL,
+  `lage_einheit` mediumtext DEFAULT NULL,
+  `letzte_aktualisierung` date DEFAULT NULL,
+  `datum_stilllegung` date DEFAULT NULL,
+  `datum_geplante_inbetriebnahme` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Indizes für die Tabelle `ee_wind`
+--
+ALTER TABLE `ee_wind`
+  ADD KEY `idx_lage_einheit` (`lage_einheit`(17)),
+  ADD KEY `idx_betriebsstatus` (`betriebsstatus`(25)),
+  ADD KEY `idx_datum_inbetriebnahme` (`datum_inbetriebnahme`),
+  ADD KEY `idx_datum_stilllegung` (`datum_stilllegung`),
+  ADD KEY `idx_datum_geplante_inbetriebnahme` (`datum_geplante_inbetriebnahme`),
+  ADD KEY `idx_lage_status_datum_inbetriebnahme` (`lage_einheit`(17),`betriebsstatus`(25),`datum_inbetriebnahme`),
+  ADD KEY `idx_lage_status_datum_stilllegung` (`lage_einheit`(17),`betriebsstatus`(25),`datum_stilllegung`),
+  ADD KEY `idx_lage_status_datum_geplante_inbetriebnahme` (`lage_einheit`(17),`betriebsstatus`(25),`datum_geplante_inbetriebnahme`),
+  ADD KEY `idx_mastrnr` (`mastrnr_einheit`);
+COMMIT;
+
+
+-------------------------------------------------------------------------------
+
+
+--
+-- Tabellenstruktur für Tabelle `ee_wind_taeglich`
+-- (Tabelle, aus denen ich meine Ausgaben an die Diagramme generiere: Zeitliche Verläufe etc.)
+--
+
+CREATE TABLE `ee_wind_taeglich` (
+  `datum` date NOT NULL,
+  `lage_einheit` text NOT NULL,
+  `installiert_gesamt` text NOT NULL,
+  `installiert_taeglich` text NOT NULL,
+  `geplant_gesamt` text NOT NULL,
+  `geplant_taeglich` text NOT NULL,
+  `noetig_gesamt` text NOT NULL,
+  `noetig_taeglich` text NOT NULL,
+  `stand` date NOT NULL,
+  `installiert_taeglich_wert` float NOT NULL,
+  `geplant_taeglich_wert` float NOT NULL,
+  `noetig_taeglich_wert` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+
+
+--
+-- Indizes für die Tabelle `ee_wind_taeglich`
+--
+ALTER TABLE `ee_wind_taeglich`
+  ADD KEY `idx_datum` (`datum`),
+  ADD KEY `idx_lage_einheit` (`lage_einheit`(17));
+COMMIT;
+

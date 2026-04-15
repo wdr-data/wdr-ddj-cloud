@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: /Users/janeggers/Code/wdr-ddj-cloud/scraper_template
+contact_email: jan.eggers@fm.wdr.de
+contact_name: Jan Eggers
+description: 'Automation für Quarks.de: Ausbau von Wind- und Solarenergie, Energiemix
+    in D und mehr
+
+    '
+display_name: klimadashboard
+ephemeral_storage: '512'
+interval: daily
+memory_size: '1024'
+preset: pandas
+

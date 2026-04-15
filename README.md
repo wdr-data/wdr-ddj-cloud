@@ -87,7 +87,7 @@ Find the scraper you created in the `ddj_cloud/scrapers` folder and open the `.p
 You can run the following command to test your scraper:
 
     uv run manage test <scraper_name>
-
+ 
 where `<scraper_name>` is the Python module name of your scraper.
 
 If a local `.env` file exists in the repository root, `manage test` will load it automatically before importing the scraper.

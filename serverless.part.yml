@@ -23,7 +23,7 @@ custom:
       # We only want to take what we need here
       - "googleapiclient/discovery_cache/documents/!(bigquery.v2.json)"
       # babel includes ~28MB of locale data; we only need German and English
-      - "babel/locale-data/!(en*|de*)"
+      - "babel/locale-data/!(en*|de*|root*)"
 
     # These are available on the default Python Lambda image
     noDeploy:

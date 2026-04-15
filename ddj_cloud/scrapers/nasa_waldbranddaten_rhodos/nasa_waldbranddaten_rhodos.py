@@ -1,17 +1,16 @@
-import os
-from pathlib import Path
-import datetime as dt
 import json
-from zoneinfo import ZoneInfo
+import os
 from io import StringIO
+from pathlib import Path
 from uuid import uuid4
+from zoneinfo import ZoneInfo
 
 import dateparser
 import pandas as pd
 import requests as r
 
-from ddj_cloud.utils.storage import upload_dataframe
 from ddj_cloud.utils.datawrapper_patched import Datawrapper
+from ddj_cloud.utils.storage import upload_dataframe
 
 DATAWRAPPER_TOKEN = os.environ.get("NASA_WALDBRANDDATEN_RHODOS_DATAWRAPPER_TOKEN")
 CHART_ID = os.environ.get("NASA_WALDBRANDDATEN_RHODOS_CHART_ID")
@@ -39,7 +38,7 @@ def run():
         dtype={"acq_time": str, "acq_date": str},
     )
 
-    print(f"Got data!")
+    print("Got data!")
 
     # Filter by confidence (nominal and high)
     df = df.loc[df["confidence"].isin(["nominal", "high"])]

@@ -61,9 +61,8 @@ class CurrentFederationsExporter(Exporter):
         df_map = df_map.round(5)
 
         # Rename federation names
-        df_map["federation_name"].replace(
+        df_map["federation_name"] = df_map["federation_name"].replace(
             FEDERATION_RENAMES_BREAKS,
-            inplace=True,
         )
 
         # Sort by capacity

@@ -7,7 +7,7 @@ import requests
 
 
 def load_data(url: str) -> pd.DataFrame:
-    cached_file = Path(__file__).parent / "cache" / url.split("/")[-1]
+    cached_file = Path(__file__).parent / "cache" / url.rsplit("/", maxsplit=1)[-1]
 
     if cached_file.exists():
         print("Using cached file:", cached_file)
@@ -47,18 +47,16 @@ def make_latest_date_single(
     return df
 
 
-def filter_by_id_column(
-    df: pd.DataFrame, column_name: str
-) -> Generator[tuple[int, pd.DataFrame], None, None]:
+def filter_by_id_column(df: pd.DataFrame, column_name: str) -> Generator[tuple[int, pd.DataFrame]]:
     for id_value in sorted(df[column_name].unique()):
         yield int(id_value), df[df[column_name] == id_value]
 
 
-def filter_by_bundesland(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame], None, None]:
+def filter_by_bundesland(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame]]:
     yield from filter_by_id_column(df, "bundesland_id")
 
 
-def filter_by_landkreis(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame], None, None]:
+def filter_by_landkreis(df: pd.DataFrame) -> Generator[tuple[int, pd.DataFrame]]:
     yield from filter_by_id_column(df, "landkreis_id")
 
 
@@ -96,15 +94,15 @@ def add_rows_for_missing_dates(
         new_row: pd.DataFrame = previous_row.copy()
         new_row["datum"] = date_iso
 
-        # NAs for columns that are not in the copy_columns list
-        for column in new_row.columns:
-            if column not in copy_columns_set and column != "datum":
-                new_row[column] = pd.NA
+        # Drop columns that are not in the copy_columns list;
+        # concat will fill them with NA automatically
+        new_row = new_row[
+            [col for col in new_row.columns if col in copy_columns_set or col == "datum"]
+        ]
 
         # Insert the new row
         missing_date_dfs.append(new_row)
-        print(f"Added row for {date_iso}")
-        print(new_row)
 
-    df = pd.concat([df, *missing_date_dfs])
+    if missing_date_dfs:
+        df = pd.concat([df, *missing_date_dfs])
     return df.sort_values(by=["datum"])

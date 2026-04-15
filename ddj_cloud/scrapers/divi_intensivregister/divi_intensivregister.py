@@ -1,3 +1,5 @@
+from traceback import print_exc
+
 import sentry_sdk
 
 from ddj_cloud.scrapers.divi_intensivregister import (
@@ -20,4 +22,4 @@ def run():
         except Exception as e:
             sentry_sdk.capture_exception(e)
             print("Error in scraper", scraper.__name__)
-            print(e)
+            print_exc()

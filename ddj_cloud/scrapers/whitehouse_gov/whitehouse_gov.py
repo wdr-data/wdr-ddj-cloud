@@ -1,7 +1,7 @@
 import datetime as dt
 from collections.abc import Generator, Iterable
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 import bs4
 import requests
@@ -11,7 +11,7 @@ from ddj_cloud.utils.storage import upload_file
 BASE_URL = "https://www.whitehouse.gov"
 
 
-class ListPage(str, Enum):
+class ListPage(StrEnum):
     ARTICLES = "articles"
     BRIEFINGS_AND_STATEMENTS = "briefings-statements"
     PRESIDENTIAL_ACTIONS = "presidential-actions"
@@ -50,7 +50,7 @@ def get_soup(url: str) -> bs4.BeautifulSoup:
     return bs4.BeautifulSoup(r.text, features="lxml")
 
 
-def get_article_hrefs_from_list(soup: bs4.BeautifulSoup) -> Generator[str, None, None]:
+def get_article_hrefs_from_list(soup: bs4.BeautifulSoup) -> Generator[str]:
     selector = ".wp-block-post-title > a"
 
     for link in soup.select(selector):
@@ -60,7 +60,7 @@ def get_article_hrefs_from_list(soup: bs4.BeautifulSoup) -> Generator[str, None,
         yield href
 
 
-def _get_all_article_hrefs(url: str) -> Generator[str, None, None]:
+def _get_all_article_hrefs(url: str) -> Generator[str]:
     soup = get_soup(url)
     yield from get_article_hrefs_from_list(soup)
 
@@ -73,7 +73,7 @@ def _get_all_article_hrefs(url: str) -> Generator[str, None, None]:
         yield from _get_all_article_hrefs(next_href)
 
 
-def get_all_article_hrefs(page: ListPage) -> Generator[str, None, None]:
+def get_all_article_hrefs(page: ListPage) -> Generator[str]:
     yield from _get_all_article_hrefs(f"{BASE_URL}/{page.value}/")
 
 
@@ -117,7 +117,7 @@ def extract_article_data(soup: bs4.BeautifulSoup) -> Article:
     )
 
 
-def get_all_articles(page: ListPage) -> Generator[Article, None, None]:
+def get_all_articles(page: ListPage) -> Generator[Article]:
     for href in get_all_article_hrefs(page):
         try:
             soup = get_soup(href)

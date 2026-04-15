@@ -47,9 +47,9 @@ class AggerFederation(Federation):
         data = requests.get(self.reservoirs[name]["url"]).json()
         columns: list[str] = data[0]["columns"].split(",")
         assert len(data) == 1, "Expected exactly one data set"
-        assert all(
-            [column in columns for column in ["Timestamp", "Value"]]
-        ), f"Unexpected column names: '{data[0]['columns']}' does not contain 'Timestamp' and 'Value'"
+        assert all([column in columns for column in ["Timestamp", "Value"]]), (
+            f"Unexpected column names: '{data[0]['columns']}' does not contain 'Timestamp' and 'Value'"
+        )
 
         timestamp_idx = columns.index("Timestamp")
         value_idx = columns.index("Value")

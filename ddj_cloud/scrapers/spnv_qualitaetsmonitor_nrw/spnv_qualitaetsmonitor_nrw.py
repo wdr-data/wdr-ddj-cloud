@@ -69,7 +69,7 @@ def _to_quarter_rows(data: Results.Data, year: int):
             **data.model_dump(),
         }
         quarterly_data = {
-            column: cast(Results.Column, getattr(data, column)).quarters[quarter]
+            column: cast("Results.Column", getattr(data, column)).quarters[quarter]
             for column in quarterly_columns
         }
 

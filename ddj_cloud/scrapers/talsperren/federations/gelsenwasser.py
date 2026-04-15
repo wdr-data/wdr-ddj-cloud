@@ -63,7 +63,7 @@ class GelsenwasserFederation(Federation):
     def _get_reservoir_records(
         self,
         name: str,
-    ) -> Generator[ReservoirRecord, None, None]:
+    ) -> Generator[ReservoirRecord]:
         url = self.reservoirs[name]["url"]
         html = _get_html(url)
         soup = bs4.BeautifulSoup(html, "lxml")

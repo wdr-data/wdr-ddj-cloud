@@ -36,6 +36,7 @@ CACHE_DIR = Path(__file__).parent / "cache"
 KNOWN_BAD_STATIONS = {
     "437628332",  # Siedlingsheide1
     "28403",  # Gloertalsperre_Zulauf (Ennepe-Ruhr Kreis)
+    "28289",  # Bettrather_Dyck
 }
 
 # -- Pydantic model (ported from pegelstaende-pipeline-nrw) --
@@ -209,7 +210,7 @@ def _build_pegel_url(station_id: str, station_name: str) -> str:
     )
 
 
-def run(session: requests.Session) -> list[StationRow]:
+def run(session: requests.Session) -> list[StationRow]:  # noqa: PLR0912
     now = local_now()
 
     logger.info("Fetching LANUK station list...")

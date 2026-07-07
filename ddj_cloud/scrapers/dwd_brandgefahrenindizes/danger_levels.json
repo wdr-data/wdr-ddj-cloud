@@ -1,0 +1,7 @@
+{
+    "1": {"color": "#ffffcd", "label": "sehr gering"},
+    "2": {"color": "#ffd879", "label": "gering"},
+    "3": {"color": "#ff8c39", "label": "mittel"},
+    "4": {"color": "#e9161d", "label": "hoch"},
+    "5": {"color": "#7f0126", "label": "sehr hoch"}
+}

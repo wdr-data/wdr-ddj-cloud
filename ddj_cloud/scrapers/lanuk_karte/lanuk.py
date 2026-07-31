@@ -68,9 +68,11 @@ class Station(BaseModel):
         mode="before",
     )
     @classmethod
-    def convert_empty_or_zero_strings_to_none(cls, v: Any) -> float | None:
+    def normalize_string_floats(cls, v: Any) -> float | None:
         if v in ("", "0.0"):
             return None
+        if "," in v and "." not in v:
+            return v.replace(",", ".")
         return v
 
     @field_validator("station_name", mode="after")

@@ -1,0 +1,44 @@
+<!--
+  Datawrapper symbol-map tooltips for the DWD fire-danger maps.
+  Put {{ stationsname }} in the tooltip *Title* field; paste one of the blocks
+  below into the tooltip *Body* (HTML) field.
+
+  The colored swatch uses the {{ *_farbe_tagN }} columns (hex from danger_levels.json),
+  the label uses the short {{ *_stufe_tagN }} columns ("sehr gering" ... "sehr hoch").
+-->
+
+
+<!-- ============================ Wald ============================ -->
+<span style="color:#888;font-size:11px">{{ bundesland }}</span>
+<table style="width:100%;border-collapse:collapse;margin-top:6px;font-size:12px">
+  <tr style="color:#888;font-size:11px"><th style="text-align:left;font-weight:normal;padding:2px 8px 4px 0">Vorhersage</th><th style="text-align:left;font-weight:normal;padding:2px 0 4px 0">Gefahrenstufe</th></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0"><b>{{ FORMAT(datum_tag0, "dd., DD. MMM") }}</b></td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag0 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span><b>{{ wald_stufe_tag0 }}</b></td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag1, "dd., DD. MMM") }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag1 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ wald_stufe_tag1 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag2, "dd., DD. MMM") }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag2 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ wald_stufe_tag2 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag3, "dd., DD. MMM") }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag3 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ wald_stufe_tag3 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag4, "dd., DD. MMM") }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag4 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ wald_stufe_tag4 }}</td></tr>
+</table>
+
+
+<!-- ========================== Grasland ========================== -->
+<span style="color:#888;font-size:11px">{{ bundesland }}</span>
+<table style="width:100%;border-collapse:collapse;margin-top:6px;font-size:12px">
+  <tr style="color:#888;font-size:11px"><th style="text-align:left;font-weight:normal;padding:2px 8px 4px 0">Vorhersage</th><th style="text-align:left;font-weight:normal;padding:2px 0 4px 0">Gefahrenstufe</th></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0"><b>{{ FORMAT(datum_tag0, "dd., DD. MMM") }}</b></td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag0 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span><b>{{ grasland_stufe_tag0 }}</b></td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag1, "dd., DD. MMM") }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag1 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ grasland_stufe_tag1 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag2, "dd., DD. MMM") }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag2 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ grasland_stufe_tag2 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag3, "dd., DD. MMM") }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag3 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ grasland_stufe_tag3 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag4, "dd., DD. MMM") }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag4 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ grasland_stufe_tag4 }}</td></tr>
+</table>
+
+
+<!-- ====================== Wald + Grasland ======================= -->
+<span style="color:#888;font-size:11px">{{ bundesland }}</span>
+<table style="width:100%;border-collapse:collapse;margin-top:6px;font-size:12px">
+  <tr style="color:#888;font-size:11px"><th style="text-align:left;font-weight:normal;padding:2px 8px 4px 0">Vorhersage</th><th style="text-align:left;font-weight:normal;padding:2px 8px 4px 0">Wald</th><th style="text-align:left;font-weight:normal;padding:2px 0 4px 0">Grasland</th></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0"><b>{{ FORMAT(datum_tag0, "dd., DD. MMM") }}</b></td><td style="padding:3px 8px 3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag0 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ wald_stufe_tag0 }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag0 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ grasland_stufe_tag0 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag1, "dd., DD. MMM") }}</td><td style="padding:3px 8px 3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag1 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ wald_stufe_tag1 }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag1 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ grasland_stufe_tag1 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag2, "dd., DD. MMM") }}</td><td style="padding:3px 8px 3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag2 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ wald_stufe_tag2 }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag2 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ grasland_stufe_tag2 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ FORMAT(datum_tag3, "dd., DD. MMM") }}</td><td style="padding:3px 8px 3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag3 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ wald_stufe_tag3 }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag3 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ grasland_stufe_tag3 }}</td></tr>
+  <tr style="border-top:1px solid #eee"><td style="padding:3px 8px 3px 0">{{ wochentag_tag4 }}, {{ FORMAT(datum_tag4, "DD. MMM") }}</td><td style="padding:3px 8px 3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ wald_farbe_tag4 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ wald_stufe_tag4 }}</td><td style="padding:3px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:{{ grasland_farbe_tag4 }};border:1px solid #bbb;margin-right:5px;vertical-align:middle"></span>{{ grasland_stufe_tag4 }}</td></tr>
+</table>

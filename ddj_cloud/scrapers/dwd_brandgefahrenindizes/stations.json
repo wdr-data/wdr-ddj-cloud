@@ -1,0 +1,2832 @@
+{
+  "Aachen-Orsbach": {
+    "stationskennung": "10505",
+    "latitude": 50.798281,
+    "longitude": 6.02439
+  },
+  "Ahaus": {
+    "stationskennung": "10309",
+    "latitude": 52.0813,
+    "longitude": 6.940893
+  },
+  "Aldersbach-Kramersepp": {
+    "stationskennung": "P681",
+    "latitude": 48.618,
+    "longitude": 13.062
+  },
+  "Alfeld": {
+    "stationskennung": "10442",
+    "latitude": 51.964331,
+    "longitude": 9.80717
+  },
+  "Alfhausen": {
+    "stationskennung": "E626",
+    "latitude": 52.485,
+    "longitude": 7.913
+  },
+  "Algermissen-Groß Lobke": {
+    "stationskennung": "Y004",
+    "latitude": 52.273,
+    "longitude": 10.016
+  },
+  "Alsfeld-Eifa": {
+    "stationskennung": "L464",
+    "latitude": 50.745,
+    "longitude": 9.345
+  },
+  "Altenstadt": {
+    "stationskennung": "10954",
+    "latitude": 47.834163,
+    "longitude": 10.866744
+  },
+  "Altheim (Kreis Biberach)": {
+    "stationskennung": "Q771",
+    "latitude": 48.148,
+    "longitude": 9.46
+  },
+  "Altomünster-Maisbrunn": {
+    "stationskennung": "P629",
+    "latitude": 48.406,
+    "longitude": 11.312
+  },
+  "Alzey": {
+    "stationskennung": "K685",
+    "latitude": 49.727,
+    "longitude": 8.116
+  },
+  "Amberg-Unterammersricht": {
+    "stationskennung": "P354",
+    "latitude": 49.469,
+    "longitude": 11.855
+  },
+  "Amerang-Pfaffing": {
+    "stationskennung": "P874",
+    "latitude": 48.02,
+    "longitude": 12.292
+  },
+  "Andernach": {
+    "stationskennung": "10520",
+    "latitude": 50.423665,
+    "longitude": 7.420171
+  },
+  "Angermünde": {
+    "stationskennung": "10291",
+    "latitude": 53.031558,
+    "longitude": 13.99082
+  },
+  "Anklam": {
+    "stationskennung": "B488",
+    "latitude": 53.841,
+    "longitude": 13.685
+  },
+  "Arkona": {
+    "stationskennung": "10091",
+    "latitude": 54.679109,
+    "longitude": 13.434416
+  },
+  "Arnsberg-Neheim": {
+    "stationskennung": "H572",
+    "latitude": 51.463,
+    "longitude": 7.978
+  },
+  "Arnstein-Müdesheim": {
+    "stationskennung": "P125",
+    "latitude": 49.969,
+    "longitude": 9.911
+  },
+  "Artern": {
+    "stationskennung": "10460",
+    "latitude": 51.374433,
+    "longitude": 11.29196
+  },
+  "Arzberg/Elbe-Köllitsch": {
+    "stationskennung": "O062",
+    "latitude": 51.503,
+    "longitude": 13.122
+  },
+  "Aschersleben-Mehringen": {
+    "stationskennung": "N632",
+    "latitude": 51.726,
+    "longitude": 11.511
+  },
+  "Attenkam": {
+    "stationskennung": "P804",
+    "latitude": 47.877,
+    "longitude": 11.364
+  },
+  "Aue": {
+    "stationskennung": "O863",
+    "latitude": 50.591,
+    "longitude": 12.714
+  },
+  "Augsburg": {
+    "stationskennung": "10852",
+    "latitude": 48.425292,
+    "longitude": 10.941681
+  },
+  "Bad Bergzabern": {
+    "stationskennung": "K988",
+    "latitude": 49.107,
+    "longitude": 7.997
+  },
+  "Bad Berka (Flugplatz)": {
+    "stationskennung": "M439",
+    "latitude": 50.907,
+    "longitude": 11.266
+  },
+  "Bad Berleburg-Stünzel": {
+    "stationskennung": "H795",
+    "latitude": 50.984,
+    "longitude": 8.368
+  },
+  "Bad Dürkheim": {
+    "stationskennung": "K881",
+    "latitude": 49.472,
+    "longitude": 8.193
+  },
+  "Bad Elster-Sohl": {
+    "stationskennung": "O980",
+    "latitude": 50.27,
+    "longitude": 12.274
+  },
+  "Bad Harzburg": {
+    "stationskennung": "E897",
+    "latitude": 51.9,
+    "longitude": 10.57
+  },
+  "Bad Hersfeld": {
+    "stationskennung": "10542",
+    "latitude": 50.851957,
+    "longitude": 9.737694
+  },
+  "Bad Kissingen": {
+    "stationskennung": "10658",
+    "latitude": 50.223991,
+    "longitude": 10.079245
+  },
+  "Bad Kohlgrub": {
+    "stationskennung": "P942",
+    "latitude": 47.665,
+    "longitude": 11.08
+  },
+  "Bad Kreuznach": {
+    "stationskennung": "K568",
+    "latitude": 49.85,
+    "longitude": 7.871
+  },
+  "Bad Königshofen": {
+    "stationskennung": "P033",
+    "latitude": 50.284,
+    "longitude": 10.446
+  },
+  "Bad Lauchstädt": {
+    "stationskennung": "N769",
+    "latitude": 51.391,
+    "longitude": 11.879
+  },
+  "Bad Lippspringe": {
+    "stationskennung": "10430",
+    "latitude": 51.785416,
+    "longitude": 8.838795
+  },
+  "Bad Lobenstein": {
+    "stationskennung": "M965",
+    "latitude": 50.45,
+    "longitude": 11.635
+  },
+  "Bad Marienberg": {
+    "stationskennung": "10526",
+    "latitude": 50.662061,
+    "longitude": 7.960264
+  },
+  "Bad Mergentheim": {
+    "stationskennung": "Q076",
+    "latitude": 49.48,
+    "longitude": 9.783
+  },
+  "Bad Muskau": {
+    "stationskennung": "O025",
+    "latitude": 51.566,
+    "longitude": 14.701
+  },
+  "Bad Nauheim": {
+    "stationskennung": "L635",
+    "latitude": 50.357,
+    "longitude": 8.751
+  },
+  "Bad Neuenahr-Ahrweiler": {
+    "stationskennung": "K038",
+    "latitude": 50.535,
+    "longitude": 7.085
+  },
+  "Bad Salzuflen": {
+    "stationskennung": "10325",
+    "latitude": 52.104207,
+    "longitude": 8.752053
+  },
+  "Baden-Baden-Geroldsau": {
+    "stationskennung": "Q411",
+    "latitude": 48.727,
+    "longitude": 8.246
+  },
+  "Balingen-Bronnhaupten": {
+    "stationskennung": "Q740",
+    "latitude": 48.264,
+    "longitude": 8.813
+  },
+  "Bamberg": {
+    "stationskennung": "10675",
+    "latitude": 49.874252,
+    "longitude": 10.920558
+  },
+  "Barsinghausen-Hohenbostel": {
+    "stationskennung": "E744",
+    "latitude": 52.32,
+    "longitude": 9.43
+  },
+  "Barth": {
+    "stationskennung": "10180",
+    "latitude": 54.340527,
+    "longitude": 12.710848
+  },
+  "Baruth": {
+    "stationskennung": "10376",
+    "latitude": 52.061303,
+    "longitude": 13.499731
+  },
+  "Bassum": {
+    "stationskennung": "E438",
+    "latitude": 52.863,
+    "longitude": 8.699
+  },
+  "Bautzen-Salzenforst": {
+    "stationskennung": "O472",
+    "latitude": 51.188,
+    "longitude": 14.309
+  },
+  "Beetzendorf/Altmark": {
+    "stationskennung": "G443",
+    "latitude": 52.688,
+    "longitude": 11.062
+  },
+  "Belm": {
+    "stationskennung": "10312",
+    "latitude": 52.317043,
+    "longitude": 8.16943
+  },
+  "Bergen": {
+    "stationskennung": "10238",
+    "latitude": 52.815233,
+    "longitude": 9.924809
+  },
+  "Berlin Brandenburg (Flughafen)": {
+    "stationskennung": "10385",
+    "latitude": 52.380702,
+    "longitude": 13.530576
+  },
+  "Berlin-Buch": {
+    "stationskennung": "G002",
+    "latitude": 52.631,
+    "longitude": 13.502
+  },
+  "Berlin-Dahlem": {
+    "stationskennung": "10381",
+    "latitude": 52.453711,
+    "longitude": 13.301731
+  },
+  "Berlin-Marzahn": {
+    "stationskennung": "G005",
+    "latitude": 52.545,
+    "longitude": 13.56
+  },
+  "Berlin-Tempelhof": {
+    "stationskennung": "10384",
+    "latitude": 52.467551,
+    "longitude": 13.401981
+  },
+  "Bernburg/Saale": {
+    "stationskennung": "N548",
+    "latitude": 51.822,
+    "longitude": 11.711
+  },
+  "Bertsdorf-Hörnitz": {
+    "stationskennung": "O598",
+    "latitude": 50.899,
+    "longitude": 14.746
+  },
+  "Berus": {
+    "stationskennung": "10704",
+    "latitude": 49.264058,
+    "longitude": 6.686776
+  },
+  "Bevern (Kreis Holzminden)": {
+    "stationskennung": "E818",
+    "latitude": 51.853,
+    "longitude": 9.495
+  },
+  "Bielefeld-Deppendorf": {
+    "stationskennung": "H174",
+    "latitude": 52.071,
+    "longitude": 8.456
+  },
+  "Birx/Rhön": {
+    "stationskennung": "M805",
+    "latitude": 50.531,
+    "longitude": 10.048
+  },
+  "Bismark/Altmark": {
+    "stationskennung": "G444",
+    "latitude": 52.669,
+    "longitude": 11.555
+  },
+  "Blankenrath": {
+    "stationskennung": "K463",
+    "latitude": 50.037,
+    "longitude": 7.308
+  },
+  "Bochum": {
+    "stationskennung": "H432",
+    "latitude": 51.503,
+    "longitude": 7.229
+  },
+  "Boizenburg": {
+    "stationskennung": "10249",
+    "latitude": 53.391093,
+    "longitude": 10.68781
+  },
+  "Bollberg": {
+    "stationskennung": "G401",
+    "latitude": 50.887,
+    "longitude": 11.723
+  },
+  "Boltenhagen": {
+    "stationskennung": "10161",
+    "latitude": 54.002724,
+    "longitude": 11.19082
+  },
+  "Borken in Westfalen": {
+    "stationskennung": "H411",
+    "latitude": 51.873,
+    "longitude": 6.886
+  },
+  "Borkum": {
+    "stationskennung": "E008",
+    "latitude": 53.598,
+    "longitude": 6.702
+  },
+  "Boxberg/O.L.-Reichwalde": {
+    "stationskennung": "O290",
+    "latitude": 51.376,
+    "longitude": 14.661
+  },
+  "Brandis/Nordsachsen": {
+    "stationskennung": "O317",
+    "latitude": 51.327,
+    "longitude": 12.596
+  },
+  "Braunlage": {
+    "stationskennung": "10452",
+    "latitude": 51.723383,
+    "longitude": 10.602109
+  },
+  "Braunschweig": {
+    "stationskennung": "10348",
+    "latitude": 52.291469,
+    "longitude": 10.446448
+  },
+  "Bremen (Flughafen)": {
+    "stationskennung": "10224",
+    "latitude": 53.04507,
+    "longitude": 8.798084
+  },
+  "Bremerhaven": {
+    "stationskennung": "10129",
+    "latitude": 53.53321,
+    "longitude": 8.576089
+  },
+  "Bremervörde": {
+    "stationskennung": "10139",
+    "latitude": 53.445118,
+    "longitude": 9.13903
+  },
+  "Brilon-Thülen": {
+    "stationskennung": "H591",
+    "latitude": 51.414,
+    "longitude": 8.65
+  },
+  "Brodersby-Schönhagen": {
+    "stationskennung": "10042",
+    "latitude": 54.640986,
+    "longitude": 10.02377
+  },
+  "Buchen (Kreis Neckar-Odenwald)": {
+    "stationskennung": "Q055",
+    "latitude": 49.518,
+    "longitude": 9.321
+  },
+  "Buchenbach": {
+    "stationskennung": "Q811",
+    "latitude": 47.962,
+    "longitude": 7.998
+  },
+  "Burgwald-Bottendorf": {
+    "stationskennung": "L217",
+    "latitude": 51.031,
+    "longitude": 8.815
+  },
+  "Burkersdorf": {
+    "stationskennung": "G403",
+    "latitude": 50.65,
+    "longitude": 11.881
+  },
+  "Buttelstedt": {
+    "stationskennung": "G404",
+    "latitude": 51.062,
+    "longitude": 11.321
+  },
+  "Bösleben": {
+    "stationskennung": "G402",
+    "latitude": 50.833,
+    "longitude": 11.061
+  },
+  "Büchel": {
+    "stationskennung": "10613",
+    "latitude": 50.174545,
+    "longitude": 7.05952
+  },
+  "Bückeburg": {
+    "stationskennung": "10335",
+    "latitude": 52.281691,
+    "longitude": 9.08895
+  },
+  "Carlsfeld": {
+    "stationskennung": "10574",
+    "latitude": 50.431251,
+    "longitude": 12.611421
+  },
+  "Celle": {
+    "stationskennung": "10343",
+    "latitude": 52.59591,
+    "longitude": 10.029585
+  },
+  "Chemnitz": {
+    "stationskennung": "10577",
+    "latitude": 50.791284,
+    "longitude": 12.871975
+  },
+  "Chemnitz (Nordost)": {
+    "stationskennung": "O721",
+    "latitude": 50.856,
+    "longitude": 12.961
+  },
+  "Chieming": {
+    "stationskennung": "10982",
+    "latitude": 47.884257,
+    "longitude": 12.540368
+  },
+  "Coswig/Elbe Sachs.": {
+    "stationskennung": "O250",
+    "latitude": 51.139,
+    "longitude": 13.536
+  },
+  "Cottbus": {
+    "stationskennung": "10496",
+    "latitude": 51.775938,
+    "longitude": 14.316799
+  },
+  "Crimmitschau-Blankenhain/Koberbach": {
+    "stationskennung": "O703",
+    "latitude": 50.803,
+    "longitude": 12.286
+  },
+  "Cuxhaven": {
+    "stationskennung": "10131",
+    "latitude": 53.871236,
+    "longitude": 8.705766
+  },
+  "Cölbe": {
+    "stationskennung": "L319",
+    "latitude": 50.849,
+    "longitude": 8.775
+  },
+  "Dachsberg-Wolpadingen": {
+    "stationskennung": "Q824",
+    "latitude": 47.7,
+    "longitude": 8.106
+  },
+  "Dachwig": {
+    "stationskennung": "M348",
+    "latitude": 51.078,
+    "longitude": 10.862
+  },
+  "Darmstadt": {
+    "stationskennung": "L886",
+    "latitude": 49.881,
+    "longitude": 8.678
+  },
+  "Delitzsch/Nordsachs.-Spröda": {
+    "stationskennung": "O015",
+    "latitude": 51.547,
+    "longitude": 12.433
+  },
+  "Demker": {
+    "stationskennung": "N272",
+    "latitude": 52.507,
+    "longitude": 11.855
+  },
+  "Deuselbach": {
+    "stationskennung": "10615",
+    "latitude": 49.761881,
+    "longitude": 7.054245
+  },
+  "Deutschneudorf-Brüderwiese": {
+    "stationskennung": "O842",
+    "latitude": 50.62,
+    "longitude": 13.482
+  },
+  "Diepholz": {
+    "stationskennung": "10321",
+    "latitude": 52.588112,
+    "longitude": 8.342405
+  },
+  "Dillingen/Donau-Fristingen": {
+    "stationskennung": "P602",
+    "latitude": 48.556,
+    "longitude": 10.56
+  },
+  "Dippoldiswalde-Reinberg": {
+    "stationskennung": "O660",
+    "latitude": 50.912,
+    "longitude": 13.709
+  },
+  "Doberlug-Kirchhain": {
+    "stationskennung": "10490",
+    "latitude": 51.645071,
+    "longitude": 13.574714
+  },
+  "Dobitschen": {
+    "stationskennung": "G406",
+    "latitude": 50.928,
+    "longitude": 12.32
+  },
+  "Donauwörth-Osterweiler": {
+    "stationskennung": "P515",
+    "latitude": 48.737,
+    "longitude": 10.739
+  },
+  "Dornburg": {
+    "stationskennung": "G407",
+    "latitude": 51.007,
+    "longitude": 11.66
+  },
+  "Dresden-Hosterwitz": {
+    "stationskennung": "O458",
+    "latitude": 51.022,
+    "longitude": 13.847
+  },
+  "Dresden-Klotzsche (Flughafen)": {
+    "stationskennung": "10488",
+    "latitude": 51.127797,
+    "longitude": 13.754251
+  },
+  "Dresden/Elbe-Pillnitz": {
+    "stationskennung": "O447",
+    "latitude": 51.013,
+    "longitude": 13.885
+  },
+  "Duisburg-Baerl": {
+    "stationskennung": "H419",
+    "latitude": 51.509,
+    "longitude": 6.702
+  },
+  "Dörnick": {
+    "stationskennung": "10150",
+    "latitude": 54.165444,
+    "longitude": 10.351887
+  },
+  "Dörpen": {
+    "stationskennung": "E402",
+    "latitude": 52.954,
+    "longitude": 7.32
+  },
+  "Düsseldorf (Flughafen)": {
+    "stationskennung": "10400",
+    "latitude": 51.295968,
+    "longitude": 6.768626
+  },
+  "Ebersberg-Halbing": {
+    "stationskennung": "P768",
+    "latitude": 48.1,
+    "longitude": 11.987
+  },
+  "Ebrach": {
+    "stationskennung": "P148",
+    "latitude": 49.852,
+    "longitude": 10.499
+  },
+  "Ehrenberg/Rhön-Wüstensachsen": {
+    "stationskennung": "G433",
+    "latitude": 50.486,
+    "longitude": 10.008
+  },
+  "Ehrenhain": {
+    "stationskennung": "G408",
+    "latitude": 50.945,
+    "longitude": 12.519
+  },
+  "Eichstätt-Landershofen": {
+    "stationskennung": "P522",
+    "latitude": 48.878,
+    "longitude": 11.235
+  },
+  "Eisenach": {
+    "stationskennung": "10540",
+    "latitude": 51.000736,
+    "longitude": 10.36211
+  },
+  "Ellwangen-Rindelbach": {
+    "stationskennung": "Q382",
+    "latitude": 48.989,
+    "longitude": 10.131
+  },
+  "Elpersbüttel": {
+    "stationskennung": "10130",
+    "latitude": 54.069146,
+    "longitude": 9.010547
+  },
+  "Elsendorf-Horneck": {
+    "stationskennung": "P548",
+    "latitude": 48.702,
+    "longitude": 11.849
+  },
+  "Elsterheide-Bergen/Oberlausitz": {
+    "stationskennung": "O074",
+    "latitude": 51.463,
+    "longitude": 14.232
+  },
+  "Elzach-Fisnacht": {
+    "stationskennung": "Q712",
+    "latitude": 48.201,
+    "longitude": 8.109
+  },
+  "Emden": {
+    "stationskennung": "10200",
+    "latitude": 53.388122,
+    "longitude": 7.228716
+  },
+  "Emmendingen-Mundingen": {
+    "stationskennung": "Q702",
+    "latitude": 48.138,
+    "longitude": 7.835
+  },
+  "Ennigerloh-Ostenfelde": {
+    "stationskennung": "H361",
+    "latitude": 51.842,
+    "longitude": 8.061
+  },
+  "Eppingen-Elsenz": {
+    "stationskennung": "Q221",
+    "latitude": 49.166,
+    "longitude": 8.848
+  },
+  "Erfde": {
+    "stationskennung": "A351",
+    "latitude": 54.299,
+    "longitude": 9.316
+  },
+  "Erfurt": {
+    "stationskennung": "G409",
+    "latitude": 50.992,
+    "longitude": 11.057
+  },
+  "Erfurt-Weimar (Flughafen)": {
+    "stationskennung": "10554",
+    "latitude": 50.982681,
+    "longitude": 10.961292
+  },
+  "Eschwege": {
+    "stationskennung": "L291",
+    "latitude": 51.204,
+    "longitude": 10.014
+  },
+  "Eslohe": {
+    "stationskennung": "H579",
+    "latitude": 51.254,
+    "longitude": 8.157
+  },
+  "Essen-Bredeney": {
+    "stationskennung": "10410",
+    "latitude": 51.404085,
+    "longitude": 6.967741
+  },
+  "Falkenberg (Kreis Rottal-Inn)": {
+    "stationskennung": "P674",
+    "latitude": 48.483,
+    "longitude": 12.724
+  },
+  "Faßberg": {
+    "stationskennung": "10246",
+    "latitude": 52.915651,
+    "longitude": 10.188503
+  },
+  "Fehmarn": {
+    "stationskennung": "10055",
+    "latitude": 54.528292,
+    "longitude": 11.060556
+  },
+  "Feldberg/Mecklenburg": {
+    "stationskennung": "10282",
+    "latitude": 53.317622,
+    "longitude": 13.417485
+  },
+  "Feuchtwangen-Heilbronn": {
+    "stationskennung": "10756",
+    "latitude": 49.162297,
+    "longitude": 10.366126
+  },
+  "Fichtelberg-Hüttstadl/Oberfranken": {
+    "stationskennung": "P182",
+    "latitude": 49.981,
+    "longitude": 11.838
+  },
+  "Frankenhausen": {
+    "stationskennung": "G439",
+    "latitude": 51.413,
+    "longitude": 9.437
+  },
+  "Frankfurt (Flughafen)": {
+    "stationskennung": "10637",
+    "latitude": 50.025911,
+    "longitude": 8.521294
+  },
+  "Frankfurt/Main-Westend": {
+    "stationskennung": "L841",
+    "latitude": 50.127,
+    "longitude": 8.669
+  },
+  "Freiburg": {
+    "stationskennung": "10803",
+    "latitude": 48.023242,
+    "longitude": 7.834292
+  },
+  "Freiburg/Elbe": {
+    "stationskennung": "E082",
+    "latitude": 53.828,
+    "longitude": 9.249
+  },
+  "Freising-Dürnast": {
+    "stationskennung": "10863",
+    "latitude": 48.402404,
+    "longitude": 11.694552
+  },
+  "Freudenberg-Boxtal/Main": {
+    "stationskennung": "Q062",
+    "latitude": 49.764,
+    "longitude": 9.406
+  },
+  "Freudenstadt": {
+    "stationskennung": "10815",
+    "latitude": 48.453828,
+    "longitude": 8.408952
+  },
+  "Friedberg-Ockstadt": {
+    "stationskennung": "G428",
+    "latitude": 50.324,
+    "longitude": 8.72
+  },
+  "Friedrichshafen-Unterraderach": {
+    "stationskennung": "Q978",
+    "latitude": 47.684,
+    "longitude": 9.441
+  },
+  "Friemar": {
+    "stationskennung": "G410",
+    "latitude": 50.977,
+    "longitude": 10.78
+  },
+  "Friesoythe-Altenoythe": {
+    "stationskennung": "10210",
+    "latitude": 53.064301,
+    "longitude": 7.901969
+  },
+  "Fritzlar/Eder": {
+    "stationskennung": "10439",
+    "latitude": 51.119006,
+    "longitude": 9.279894
+  },
+  "Fulda-Horas": {
+    "stationskennung": "L585",
+    "latitude": 50.567,
+    "longitude": 9.653
+  },
+  "Fürstenzell": {
+    "stationskennung": "10895",
+    "latitude": 48.545114,
+    "longitude": 13.353159
+  },
+  "Gardelegen": {
+    "stationskennung": "10359",
+    "latitude": 52.512889,
+    "longitude": 11.394174
+  },
+  "Garmisch-Partenkirchen": {
+    "stationskennung": "10963",
+    "latitude": 47.482989,
+    "longitude": 11.062126
+  },
+  "Geilenkirchen-Neutevern": {
+    "stationskennung": "10500",
+    "latitude": 50.959253,
+    "longitude": 6.039191
+  },
+  "Geisenheim": {
+    "stationskennung": "10628",
+    "latitude": 49.985894,
+    "longitude": 7.95482
+  },
+  "Geisenheim-Marienthal": {
+    "stationskennung": "G493",
+    "latitude": 49.998,
+    "longitude": 7.946
+  },
+  "Geisenheim/Rhein": {
+    "stationskennung": "G425",
+    "latitude": 49.981,
+    "longitude": 7.959
+  },
+  "Geithain-Niedergräfenhain/Eula": {
+    "stationskennung": "O400",
+    "latitude": 51.058,
+    "longitude": 12.634
+  },
+  "Gelbelsee": {
+    "stationskennung": "10777",
+    "latitude": 48.948116,
+    "longitude": 11.428929
+  },
+  "Geldern-Walbeck": {
+    "stationskennung": "H401",
+    "latitude": 51.494,
+    "longitude": 6.246
+  },
+  "Genthin": {
+    "stationskennung": "10365",
+    "latitude": 52.387511,
+    "longitude": 12.160174
+  },
+  "Gera-Leumnitz": {
+    "stationskennung": "10567",
+    "latitude": 50.881208,
+    "longitude": 12.128885
+  },
+  "Geringswalde-Altgeringswalde": {
+    "stationskennung": "O510",
+    "latitude": 51.088,
+    "longitude": 12.933
+  },
+  "Gevelsberg-Oberbröking": {
+    "stationskennung": "H542",
+    "latitude": 51.333,
+    "longitude": 7.341
+  },
+  "Gilserberg-Moischeid": {
+    "stationskennung": "L340",
+    "latitude": 50.966,
+    "longitude": 9.05
+  },
+  "Gleina-Baumersroda": {
+    "stationskennung": "G442",
+    "latitude": 51.26,
+    "longitude": 11.758
+  },
+  "Glücksburg-Meierwik": {
+    "stationskennung": "10033",
+    "latitude": 54.827332,
+    "longitude": 9.505784
+  },
+  "Goldberg": {
+    "stationskennung": "10168",
+    "latitude": 53.605834,
+    "longitude": 12.103404
+  },
+  "Gollhofen": {
+    "stationskennung": "P238",
+    "latitude": 49.568,
+    "longitude": 10.197
+  },
+  "Gottfrieding": {
+    "stationskennung": "10872",
+    "latitude": 48.659461,
+    "longitude": 12.538816
+  },
+  "Grainet-Rehberg": {
+    "stationskennung": "P594",
+    "latitude": 48.789,
+    "longitude": 13.629
+  },
+  "Grambek": {
+    "stationskennung": "A981",
+    "latitude": 53.573,
+    "longitude": 10.68
+  },
+  "Grambow-Schwennenz": {
+    "stationskennung": "B898",
+    "latitude": 53.384,
+    "longitude": 14.373
+  },
+  "Greifswald": {
+    "stationskennung": "10184",
+    "latitude": 54.096704,
+    "longitude": 13.405565
+  },
+  "Greifswalder Oie": {
+    "stationskennung": "10097",
+    "latitude": 54.24367,
+    "longitude": 13.91044
+  },
+  "Griesheim b. Darmstadt": {
+    "stationskennung": "G427",
+    "latitude": 49.843,
+    "longitude": 8.546
+  },
+  "Grimma-Dürrweitzschen": {
+    "stationskennung": "O320",
+    "latitude": 51.203,
+    "longitude": 12.865
+  },
+  "Groß Berßen": {
+    "stationskennung": "E513",
+    "latitude": 52.755,
+    "longitude": 7.481
+  },
+  "Großenkneten": {
+    "stationskennung": "E426",
+    "latitude": 52.934,
+    "longitude": 8.237
+  },
+  "Großenstein": {
+    "stationskennung": "G413",
+    "latitude": 50.91,
+    "longitude": 12.209
+  },
+  "Großerlach-Mannenweiler": {
+    "stationskennung": "Q351",
+    "latitude": 49.021,
+    "longitude": 9.603
+  },
+  "Gräfenberg-Kasberg": {
+    "stationskennung": "P265",
+    "latitude": 49.664,
+    "longitude": 11.224
+  },
+  "Gründau-Breitenborn": {
+    "stationskennung": "L771",
+    "latitude": 50.267,
+    "longitude": 9.185
+  },
+  "Grünow": {
+    "stationskennung": "10289",
+    "latitude": 53.315357,
+    "longitude": 13.933856
+  },
+  "Görlitz": {
+    "stationskennung": "10499",
+    "latitude": 51.162129,
+    "longitude": 14.950606
+  },
+  "Göttingen": {
+    "stationskennung": "10444",
+    "latitude": 51.500248,
+    "longitude": 9.950659
+  },
+  "Gülzow-Prüzen": {
+    "stationskennung": "B547",
+    "latitude": 53.818,
+    "longitude": 12.065
+  },
+  "Günzburg": {
+    "stationskennung": "P606",
+    "latitude": 48.488,
+    "longitude": 10.261
+  },
+  "Hahn": {
+    "stationskennung": "10616",
+    "latitude": 49.946281,
+    "longitude": 7.264495
+  },
+  "Halle-Lettin": {
+    "stationskennung": "G445",
+    "latitude": 51.524,
+    "longitude": 11.902
+  },
+  "Hamburg (Flughafen)": {
+    "stationskennung": "10147",
+    "latitude": 53.633172,
+    "longitude": 9.988102
+  },
+  "Hamburg-Neuwiedenthal": {
+    "stationskennung": "C720",
+    "latitude": 53.478,
+    "longitude": 9.896
+  },
+  "Hameln-Hastenbeck": {
+    "stationskennung": "E739",
+    "latitude": 52.082,
+    "longitude": 9.408
+  },
+  "Hannover (Flughafen)": {
+    "stationskennung": "10338",
+    "latitude": 52.464428,
+    "longitude": 9.677906
+  },
+  "Harburg": {
+    "stationskennung": "10850",
+    "latitude": 48.791834,
+    "longitude": 10.706234
+  },
+  "Harzgerode": {
+    "stationskennung": "10458",
+    "latitude": 51.651967,
+    "longitude": 11.136645
+  },
+  "Hasenkrug-Hardebek": {
+    "stationskennung": "A482",
+    "latitude": 54.004,
+    "longitude": 9.855
+  },
+  "Hattstedt": {
+    "stationskennung": "A226",
+    "latitude": 54.527,
+    "longitude": 9.042
+  },
+  "Haufeld": {
+    "stationskennung": "G414",
+    "latitude": 50.811,
+    "longitude": 11.261
+  },
+  "Hechingen": {
+    "stationskennung": "Q651",
+    "latitude": 48.375,
+    "longitude": 8.98
+  },
+  "Heckelberg-Brunow": {
+    "stationskennung": "F361",
+    "latitude": 52.746,
+    "longitude": 13.843
+  },
+  "Heinersreuth-Vollhof": {
+    "stationskennung": "P175",
+    "latitude": 49.967,
+    "longitude": 11.52
+  },
+  "Helgoland": {
+    "stationskennung": "10015",
+    "latitude": 54.174971,
+    "longitude": 7.891995
+  },
+  "Helmstedt-Emmerstedt": {
+    "stationskennung": "E798",
+    "latitude": 52.247,
+    "longitude": 10.959
+  },
+  "Hermaringen-Allewind": {
+    "stationskennung": "Q485",
+    "latitude": 48.61,
+    "longitude": 10.267
+  },
+  "Hersfeld, Bad (Eichhof)": {
+    "stationskennung": "G432",
+    "latitude": 50.848,
+    "longitude": 9.686
+  },
+  "Herzberg": {
+    "stationskennung": "E944",
+    "latitude": 51.625,
+    "longitude": 10.37
+  },
+  "Hilgenroth": {
+    "stationskennung": "K017",
+    "latitude": 50.737,
+    "longitude": 7.653
+  },
+  "Hochkirch-Pommritz/Oberlausitz": {
+    "stationskennung": "O385",
+    "latitude": 51.16,
+    "longitude": 14.565
+  },
+  "Hof": {
+    "stationskennung": "10685",
+    "latitude": 50.312257,
+    "longitude": 11.876039
+  },
+  "Hofgeismar-Beberbeck/Reinhardswald": {
+    "stationskennung": "G431",
+    "latitude": 51.526,
+    "longitude": 9.473
+  },
+  "Hohenpeißenberg": {
+    "stationskennung": "10962",
+    "latitude": 47.800869,
+    "longitude": 11.010819
+  },
+  "Hohenstein/Untertaunus": {
+    "stationskennung": "G435",
+    "latitude": 50.212,
+    "longitude": 8.105
+  },
+  "Hoherodskopf/Vogelsberg": {
+    "stationskennung": "10534",
+    "latitude": 50.508396,
+    "longitude": 9.224634
+  },
+  "Hohn": {
+    "stationskennung": "10038",
+    "latitude": 54.316169,
+    "longitude": 9.538516
+  },
+  "Hohwacht": {
+    "stationskennung": "A481",
+    "latitude": 54.319,
+    "longitude": 10.673
+  },
+  "Holzdorf-Bernsdorf": {
+    "stationskennung": "10476",
+    "latitude": 51.765737,
+    "longitude": 13.166608
+  },
+  "Holzkirchen": {
+    "stationskennung": "P856",
+    "latitude": 47.882,
+    "longitude": 11.696
+  },
+  "Hoyerswerda": {
+    "stationskennung": "10495",
+    "latitude": 51.449238,
+    "longitude": 14.25327
+  },
+  "Huy-Pabstorf": {
+    "stationskennung": "N520",
+    "latitude": 52.03,
+    "longitude": 10.963
+  },
+  "Hümmerich": {
+    "stationskennung": "K057",
+    "latitude": 50.565,
+    "longitude": 7.484
+  },
+  "Idar-Oberstein": {
+    "stationskennung": "10618",
+    "latitude": 49.692695,
+    "longitude": 7.326328
+  },
+  "Iden": {
+    "stationskennung": "G446",
+    "latitude": 52.783,
+    "longitude": 11.899
+  },
+  "Ingelfingen-Stachenhausen": {
+    "stationskennung": "Q165",
+    "latitude": 49.333,
+    "longitude": 9.704
+  },
+  "Ingolstadt-Manching": {
+    "stationskennung": "10860",
+    "latitude": 48.711147,
+    "longitude": 11.536252
+  },
+  "Insel Hiddensee": {
+    "stationskennung": "B006",
+    "latitude": 54.575,
+    "longitude": 13.104
+  },
+  "Itzehoe": {
+    "stationskennung": "10142",
+    "latitude": 53.989731,
+    "longitude": 9.569692
+  },
+  "Jena": {
+    "stationskennung": "M552",
+    "latitude": 50.925,
+    "longitude": 11.583
+  },
+  "Jeßnitz": {
+    "stationskennung": "N566",
+    "latitude": 51.682,
+    "longitude": 12.305
+  },
+  "Kahl/Main": {
+    "stationskennung": "P100",
+    "latitude": 50.064,
+    "longitude": 8.993
+  },
+  "Kahler Asten": {
+    "stationskennung": "10427",
+    "latitude": 51.180254,
+    "longitude": 8.489068
+  },
+  "Kaisersbach-Cronhütte": {
+    "stationskennung": "10747",
+    "latitude": 48.917038,
+    "longitude": 9.687101
+  },
+  "Kaiserslautern": {
+    "stationskennung": "K863",
+    "latitude": 49.426,
+    "longitude": 7.756
+  },
+  "Kall-Sistig": {
+    "stationskennung": "H981",
+    "latitude": 50.501,
+    "longitude": 6.526
+  },
+  "Kalteneber": {
+    "stationskennung": "G416",
+    "latitude": 51.316,
+    "longitude": 10.179
+  },
+  "Karlshagen": {
+    "stationskennung": "B382",
+    "latitude": 54.105,
+    "longitude": 13.824
+  },
+  "Kaufbeuren-Oberbeuren": {
+    "stationskennung": "P817",
+    "latitude": 47.876,
+    "longitude": 10.585
+  },
+  "Kempten": {
+    "stationskennung": "10946",
+    "latitude": 47.723263,
+    "longitude": 10.334786
+  },
+  "Kiefersfelden-Gach": {
+    "stationskennung": "P975",
+    "latitude": 47.619,
+    "longitude": 12.167
+  },
+  "Kiel-Holtenau": {
+    "stationskennung": "10046",
+    "latitude": 54.377582,
+    "longitude": 10.142375
+  },
+  "Kindelbrück": {
+    "stationskennung": "G417",
+    "latitude": 51.251,
+    "longitude": 11.099
+  },
+  "Kirchberg-Herboldshausen/Jagst": {
+    "stationskennung": "Q292",
+    "latitude": 49.18,
+    "longitude": 9.98
+  },
+  "Kirchdorf/Poel": {
+    "stationskennung": "B308",
+    "latitude": 54.0,
+    "longitude": 11.434
+  },
+  "Kirchengel": {
+    "stationskennung": "G418",
+    "latitude": 51.286,
+    "longitude": 10.916
+  },
+  "Kirchhain/Mittelhessen": {
+    "stationskennung": "G320",
+    "latitude": 50.839,
+    "longitude": 8.928
+  },
+  "Kitzingen": {
+    "stationskennung": "P232",
+    "latitude": 49.736,
+    "longitude": 10.178
+  },
+  "Klein-Zimmern": {
+    "stationskennung": "G494",
+    "latitude": 49.865,
+    "longitude": 8.85
+  },
+  "Kleiner Feldberg/Taunus": {
+    "stationskennung": "10635",
+    "latitude": 50.221797,
+    "longitude": 8.446883
+  },
+  "Kleiner Inselsberg": {
+    "stationskennung": "M620",
+    "latitude": 50.846,
+    "longitude": 10.48
+  },
+  "Kleve": {
+    "stationskennung": "H203",
+    "latitude": 51.761,
+    "longitude": 6.095
+  },
+  "Klippeneck": {
+    "stationskennung": "10818",
+    "latitude": 48.105397,
+    "longitude": 8.754788
+  },
+  "Klipphausen-Garsebach": {
+    "stationskennung": "O348",
+    "latitude": 51.129,
+    "longitude": 13.433
+  },
+  "Klipphausen-Reichenbach/Elbe": {
+    "stationskennung": "O440",
+    "latitude": 51.122,
+    "longitude": 13.497
+  },
+  "Klitzschen bei Torgau": {
+    "stationskennung": "O057",
+    "latitude": 51.519,
+    "longitude": 12.906
+  },
+  "Konstanz": {
+    "stationskennung": "10929",
+    "latitude": 47.695236,
+    "longitude": 9.130708
+  },
+  "Kottmar-Eibau": {
+    "stationskennung": "O590",
+    "latitude": 50.994,
+    "longitude": 14.645
+  },
+  "Kriftel": {
+    "stationskennung": "G495",
+    "latitude": 50.071,
+    "longitude": 8.455
+  },
+  "Kronach": {
+    "stationskennung": "P066",
+    "latitude": 50.252,
+    "longitude": 11.321
+  },
+  "Krölpa-Rockendorf": {
+    "stationskennung": "M765",
+    "latitude": 50.682,
+    "longitude": 11.515
+  },
+  "Kubschütz": {
+    "stationskennung": "O384",
+    "latitude": 51.16,
+    "longitude": 14.504
+  },
+  "Kutzleben": {
+    "stationskennung": "G419",
+    "latitude": 51.2,
+    "longitude": 10.864
+  },
+  "Kyritz": {
+    "stationskennung": "10267",
+    "latitude": 52.936248,
+    "longitude": 12.409335
+  },
+  "Köln/Bonn (Flughafen)": {
+    "stationskennung": "10513",
+    "latitude": 50.864547,
+    "longitude": 7.157524
+  },
+  "Königswartha/Oberlausitz": {
+    "stationskennung": "O379",
+    "latitude": 51.327,
+    "longitude": 14.306
+  },
+  "Königswinter-Heiderhof": {
+    "stationskennung": "10519",
+    "latitude": 50.729285,
+    "longitude": 7.204024
+  },
+  "Kösching": {
+    "stationskennung": "P532",
+    "latitude": 48.83,
+    "longitude": 11.487
+  },
+  "Köthen (Anhalt)": {
+    "stationskennung": "N652",
+    "latitude": 51.751,
+    "longitude": 12.009
+  },
+  "Kümmersbruck": {
+    "stationskennung": "10771",
+    "latitude": 49.428348,
+    "longitude": 11.90159
+  },
+  "Laage-Kronskamp": {
+    "stationskennung": "10172",
+    "latitude": 53.915595,
+    "longitude": 12.279013
+  },
+  "Lahr": {
+    "stationskennung": "10805",
+    "latitude": 48.364742,
+    "longitude": 7.827986
+  },
+  "Lampertheim": {
+    "stationskennung": "G496",
+    "latitude": 49.671,
+    "longitude": 8.434
+  },
+  "Lampertswalde": {
+    "stationskennung": "O241",
+    "latitude": 51.315,
+    "longitude": 13.679
+  },
+  "Langenwetzendorf-Göttendorf": {
+    "stationskennung": "M799",
+    "latitude": 50.661,
+    "longitude": 12.076
+  },
+  "Laupheim": {
+    "stationskennung": "10837",
+    "latitude": 48.217539,
+    "longitude": 9.909736
+  },
+  "Lautertal-Oberlauter": {
+    "stationskennung": "10671",
+    "latitude": 50.306639,
+    "longitude": 10.967938
+  },
+  "Lechfeld": {
+    "stationskennung": "10856",
+    "latitude": 48.184868,
+    "longitude": 10.850695
+  },
+  "Leck": {
+    "stationskennung": "10022",
+    "latitude": 54.790294,
+    "longitude": 8.951446
+  },
+  "Leinefelde": {
+    "stationskennung": "10449",
+    "latitude": 51.393197,
+    "longitude": 10.312349
+  },
+  "Leipzig-Holzhausen": {
+    "stationskennung": "10471",
+    "latitude": 51.31509,
+    "longitude": 12.446226
+  },
+  "Leipzig/Halle (Flughafen)": {
+    "stationskennung": "10469",
+    "latitude": 51.434711,
+    "longitude": 12.239585
+  },
+  "Lennestadt-Theten": {
+    "stationskennung": "H678",
+    "latitude": 51.133,
+    "longitude": 8.035
+  },
+  "Lenzen/Elbe": {
+    "stationskennung": "F105",
+    "latitude": 53.101,
+    "longitude": 11.486
+  },
+  "Lenzkirch-Ruhbühl": {
+    "stationskennung": "Q823",
+    "latitude": 47.86,
+    "longitude": 8.231
+  },
+  "Leutkirch-Herlazhofen": {
+    "stationskennung": "10945",
+    "latitude": 47.795529,
+    "longitude": 10.032457
+  },
+  "Lichtenberg-Weigmannsdorf": {
+    "stationskennung": "O740",
+    "latitude": 50.841,
+    "longitude": 13.383
+  },
+  "Lichtenhain-Mittelndorf": {
+    "stationskennung": "10591",
+    "latitude": 50.938325,
+    "longitude": 14.20938
+  },
+  "Lichtentanne": {
+    "stationskennung": "O805",
+    "latitude": 50.688,
+    "longitude": 12.433
+  },
+  "Lindenberg": {
+    "stationskennung": "10393",
+    "latitude": 52.208489,
+    "longitude": 14.118032
+  },
+  "Lingen-Baccum": {
+    "stationskennung": "10303",
+    "latitude": 52.512631,
+    "longitude": 7.413109
+  },
+  "Lippstadt-Bökenförde": {
+    "stationskennung": "H377",
+    "latitude": 51.634,
+    "longitude": 8.394
+  },
+  "List auf Sylt": {
+    "stationskennung": "10020",
+    "latitude": 55.010989,
+    "longitude": 8.412531
+  },
+  "Lohr-Halsbach/Main": {
+    "stationskennung": "P113",
+    "latitude": 50.013,
+    "longitude": 9.654
+  },
+  "Löhnberg-Obershausen": {
+    "stationskennung": "L511",
+    "latitude": 50.562,
+    "longitude": 8.239
+  },
+  "Lübben-Blumenfelde": {
+    "stationskennung": "F742",
+    "latitude": 51.927,
+    "longitude": 13.88
+  },
+  "Lübeck-Blankensee": {
+    "stationskennung": "10156",
+    "latitude": 53.802512,
+    "longitude": 10.698941
+  },
+  "Lüchow": {
+    "stationskennung": "10253",
+    "latitude": 52.972379,
+    "longitude": 11.137371
+  },
+  "Lüdenscheid": {
+    "stationskennung": "10418",
+    "latitude": 51.245158,
+    "longitude": 7.642497
+  },
+  "Lüdinghausen-Brochtrup": {
+    "stationskennung": "H247",
+    "latitude": 51.766,
+    "longitude": 7.519
+  },
+  "Lügde-Paenbruch": {
+    "stationskennung": "10433",
+    "latitude": 51.866393,
+    "longitude": 9.271007
+  },
+  "Magdeburg": {
+    "stationskennung": "10361",
+    "latitude": 52.102896,
+    "longitude": 11.582674
+  },
+  "Mainz-Lerchenberg": {
+    "stationskennung": "K584",
+    "latitude": 49.966,
+    "longitude": 8.205
+  },
+  "Maisach-Galgen": {
+    "stationskennung": "P741",
+    "latitude": 48.207,
+    "longitude": 11.204
+  },
+  "Mallersdorf-Pfaffenberg-Oberlindhart": {
+    "stationskennung": "P555",
+    "latitude": 48.755,
+    "longitude": 12.212
+  },
+  "Malschwitz-Baruth/Albrechtsbach": {
+    "stationskennung": "O285",
+    "latitude": 51.241,
+    "longitude": 14.605
+  },
+  "Manderscheid": {
+    "stationskennung": "K440",
+    "latitude": 50.102,
+    "longitude": 6.801
+  },
+  "Mannheim": {
+    "stationskennung": "10729",
+    "latitude": 49.506251,
+    "longitude": 8.558439
+  },
+  "Manschnow": {
+    "stationskennung": "10396",
+    "latitude": 52.546778,
+    "longitude": 14.54525
+  },
+  "Mansfeld": {
+    "stationskennung": "G447",
+    "latitude": 51.616,
+    "longitude": 11.458
+  },
+  "Marienberg": {
+    "stationskennung": "10579",
+    "latitude": 50.651055,
+    "longitude": 13.146876
+  },
+  "Markt Erlbach-Hagenhofen": {
+    "stationskennung": "P542",
+    "latitude": 49.488,
+    "longitude": 10.628
+  },
+  "Marnitz": {
+    "stationskennung": "10264",
+    "latitude": 53.32209,
+    "longitude": 11.932382
+  },
+  "Martinroda": {
+    "stationskennung": "M732",
+    "latitude": 50.733,
+    "longitude": 10.882
+  },
+  "Meinerzhagen-Redlendorf": {
+    "stationskennung": "H658",
+    "latitude": 51.09,
+    "longitude": 7.629
+  },
+  "Meiningen": {
+    "stationskennung": "10548",
+    "latitude": 50.561131,
+    "longitude": 10.377137
+  },
+  "Meißen (Weinberg)": {
+    "stationskennung": "O242",
+    "latitude": 51.141,
+    "longitude": 13.505
+  },
+  "Memmingen": {
+    "stationskennung": "P801",
+    "latitude": 47.982,
+    "longitude": 10.138
+  },
+  "Meppen": {
+    "stationskennung": "10304",
+    "latitude": 52.715468,
+    "longitude": 7.317616
+  },
+  "Metten": {
+    "stationskennung": "P572",
+    "latitude": 48.855,
+    "longitude": 12.919
+  },
+  "Metzingen": {
+    "stationskennung": "Q561",
+    "latitude": 48.538,
+    "longitude": 9.273
+  },
+  "Meßstetten-Appental": {
+    "stationskennung": "10827",
+    "latitude": 48.169353,
+    "longitude": 8.943265
+  },
+  "Michelstadt": {
+    "stationskennung": "L947",
+    "latitude": 49.669,
+    "longitude": 9.009
+  },
+  "Michelstadt-Vielbrunn": {
+    "stationskennung": "10648",
+    "latitude": 49.717686,
+    "longitude": 9.099716
+  },
+  "Mittelnkirchen-Hohenfelde": {
+    "stationskennung": "E099",
+    "latitude": 53.553,
+    "longitude": 9.61
+  },
+  "Mittenwald": {
+    "stationskennung": "P948",
+    "latitude": 47.481,
+    "longitude": 11.265
+  },
+  "Montabaur": {
+    "stationskennung": "K282",
+    "latitude": 50.438,
+    "longitude": 7.806
+  },
+  "Moringen-Lutterbeck": {
+    "stationskennung": "E839",
+    "latitude": 51.721,
+    "longitude": 9.835
+  },
+  "Möckern-Drewitz": {
+    "stationskennung": "N398",
+    "latitude": 52.217,
+    "longitude": 12.164
+  },
+  "Möhrendorf-Kleinseebach": {
+    "stationskennung": "P257",
+    "latitude": 49.65,
+    "longitude": 11.007
+  },
+  "Mönchengladbach-Hilderath": {
+    "stationskennung": "H768",
+    "latitude": 51.131,
+    "longitude": 6.361
+  },
+  "Mönchpfiffel": {
+    "stationskennung": "G420",
+    "latitude": 51.377,
+    "longitude": 11.378
+  },
+  "Mügeln-Niedergoseln/Döllnitz": {
+    "stationskennung": "O327",
+    "latitude": 51.234,
+    "longitude": 13.065
+  },
+  "Mühlacker": {
+    "stationskennung": "10736",
+    "latitude": 48.972073,
+    "longitude": 8.873462
+  },
+  "Mühldorf": {
+    "stationskennung": "10875",
+    "latitude": 48.278982,
+    "longitude": 12.502407
+  },
+  "Mühlhausen-Görmar/Thüringen": {
+    "stationskennung": "M225",
+    "latitude": 51.206,
+    "longitude": 10.498
+  },
+  "Müllheim": {
+    "stationskennung": "Q887",
+    "latitude": 47.806,
+    "longitude": 7.639
+  },
+  "Müncheberg": {
+    "stationskennung": "F475",
+    "latitude": 52.518,
+    "longitude": 14.123
+  },
+  "München (Flughafen)": {
+    "stationskennung": "10870",
+    "latitude": 48.347741,
+    "longitude": 11.813385
+  },
+  "München-Stadt": {
+    "stationskennung": "10865",
+    "latitude": 48.163202,
+    "longitude": 11.542893
+  },
+  "Münsingen-Apfelstetten": {
+    "stationskennung": "Q671",
+    "latitude": 48.385,
+    "longitude": 9.484
+  },
+  "Münster/Osnabrück (Flughafen)": {
+    "stationskennung": "10315",
+    "latitude": 52.134375,
+    "longitude": 7.696859
+  },
+  "Münzenberg": {
+    "stationskennung": "G497",
+    "latitude": 50.438,
+    "longitude": 8.766
+  },
+  "Nauen-Berge": {
+    "stationskennung": "F431",
+    "latitude": 52.62,
+    "longitude": 12.787
+  },
+  "Naumburg-Kreipitzsch/Saale": {
+    "stationskennung": "N924",
+    "latitude": 51.104,
+    "longitude": 11.711
+  },
+  "Naundorf-Salbitz": {
+    "stationskennung": "O243",
+    "latitude": 51.236,
+    "longitude": 13.171
+  },
+  "Neißemünde-Coschen": {
+    "stationskennung": "F695",
+    "latitude": 52.019,
+    "longitude": 14.725
+  },
+  "Neu-Ulrichstein": {
+    "stationskennung": "10537",
+    "latitude": 50.751337,
+    "longitude": 9.022428
+  },
+  "Neubulach-Oberhaugstett": {
+    "stationskennung": "Q437",
+    "latitude": 48.652,
+    "longitude": 8.68
+  },
+  "Neuburg an der Donau": {
+    "stationskennung": "10853",
+    "latitude": 48.708492,
+    "longitude": 11.214669
+  },
+  "Neuburg/Kammel-Langenhaslach": {
+    "stationskennung": "P308",
+    "latitude": 48.311,
+    "longitude": 10.377
+  },
+  "Neuhaus am Rennweg": {
+    "stationskennung": "10557",
+    "latitude": 50.500253,
+    "longitude": 11.13446
+  },
+  "Neuhütten/Spessart": {
+    "stationskennung": "10646",
+    "latitude": 50.008293,
+    "longitude": 9.423765
+  },
+  "Neukirchen-Hauptschwenda": {
+    "stationskennung": "L355",
+    "latitude": 50.892,
+    "longitude": 9.405
+  },
+  "Neukyhna-Pohritzsch": {
+    "stationskennung": "O029",
+    "latitude": 51.537,
+    "longitude": 12.227
+  },
+  "Neunkirchen-Seelscheid-Krawinkel": {
+    "stationskennung": "H862",
+    "latitude": 50.845,
+    "longitude": 7.372
+  },
+  "Neunkirchen-Wellesweiler": {
+    "stationskennung": "J815",
+    "latitude": 49.344,
+    "longitude": 7.23
+  },
+  "Neuruppin-Alt Ruppin": {
+    "stationskennung": "10271",
+    "latitude": 52.943711,
+    "longitude": 12.851826
+  },
+  "Neustadt-Filchendorf am Kulm": {
+    "stationskennung": "P280",
+    "latitude": 49.817,
+    "longitude": 11.864
+  },
+  "Nideggen-Schmidt": {
+    "stationskennung": "H827",
+    "latitude": 50.674,
+    "longitude": 6.424
+  },
+  "Niedergörsdorf-Langenlipsdorf": {
+    "stationskennung": "F707",
+    "latitude": 51.917,
+    "longitude": 13.088
+  },
+  "Niederstetten": {
+    "stationskennung": "10743",
+    "latitude": 49.389529,
+    "longitude": 9.966633
+  },
+  "Norderney": {
+    "stationskennung": "10113",
+    "latitude": 53.712304,
+    "longitude": 7.151923
+  },
+  "Nordholz-Wanhöden": {
+    "stationskennung": "10136",
+    "latitude": 53.764714,
+    "longitude": 8.658362
+  },
+  "Nossen": {
+    "stationskennung": "O536",
+    "latitude": 51.051,
+    "longitude": 13.3
+  },
+  "Nossen/Freiberger Mulde": {
+    "stationskennung": "O439",
+    "latitude": 51.056,
+    "longitude": 13.274
+  },
+  "Notzingen": {
+    "stationskennung": "Q061",
+    "latitude": 48.67,
+    "longitude": 9.463
+  },
+  "Nörvenich-Niederbolheim": {
+    "stationskennung": "10502",
+    "latitude": 50.829354,
+    "longitude": 6.660063
+  },
+  "Nürburg-Barweiler": {
+    "stationskennung": "10506",
+    "latitude": 50.360174,
+    "longitude": 6.869659
+  },
+  "Nürnberg (Flughafen)": {
+    "stationskennung": "10763",
+    "latitude": 49.503031,
+    "longitude": 11.054923
+  },
+  "Nürnberg-Netzstall": {
+    "stationskennung": "P333",
+    "latitude": 49.426,
+    "longitude": 11.254
+  },
+  "Ober-Erlenbach": {
+    "stationskennung": "G424",
+    "latitude": 50.236,
+    "longitude": 8.676
+  },
+  "Oberhaching-Laufzorn": {
+    "stationskennung": "P830",
+    "latitude": 48.013,
+    "longitude": 11.552
+  },
+  "Oberharz am Brocken-Stiege": {
+    "stationskennung": "N616",
+    "latitude": 51.665,
+    "longitude": 10.881
+  },
+  "Oberstdorf": {
+    "stationskennung": "10948",
+    "latitude": 47.398429,
+    "longitude": 10.275881
+  },
+  "Obersulm-Willsbach": {
+    "stationskennung": "Q242",
+    "latitude": 49.128,
+    "longitude": 9.352
+  },
+  "Oberviechtach": {
+    "stationskennung": "P372",
+    "latitude": 49.452,
+    "longitude": 12.437
+  },
+  "Oberweißbach": {
+    "stationskennung": "G421",
+    "latitude": 50.589,
+    "longitude": 11.137
+  },
+  "Oberzent-Beerfelden": {
+    "stationskennung": "L988",
+    "latitude": 49.562,
+    "longitude": 8.967
+  },
+  "Offenbach-Wetterpark": {
+    "stationskennung": "10641",
+    "latitude": 50.08995,
+    "longitude": 8.786165
+  },
+  "Ohlsbach": {
+    "stationskennung": "Q518",
+    "latitude": 48.433,
+    "longitude": 7.993
+  },
+  "Olbersleben": {
+    "stationskennung": "M299",
+    "latitude": 51.151,
+    "longitude": 11.332
+  },
+  "Olsdorf": {
+    "stationskennung": "K419",
+    "latitude": 49.944,
+    "longitude": 6.382
+  },
+  "Oschatz": {
+    "stationskennung": "10480",
+    "latitude": 51.29597,
+    "longitude": 13.092827
+  },
+  "Oschersleben Lkrs. Börde": {
+    "stationskennung": "G448",
+    "latitude": 52.014,
+    "longitude": 11.329
+  },
+  "Ostenfeld (Rendsburg)": {
+    "stationskennung": "A443",
+    "latitude": 54.319,
+    "longitude": 9.805
+  },
+  "Osterfeld": {
+    "stationskennung": "10565",
+    "latitude": 51.08716,
+    "longitude": 11.929265
+  },
+  "Ostheim vor der Rhön": {
+    "stationskennung": "P022",
+    "latitude": 50.454,
+    "longitude": 10.221
+  },
+  "Oy-Mittelberg-Petersthal": {
+    "stationskennung": "P924",
+    "latitude": 47.636,
+    "longitude": 10.389
+  },
+  "Padenstedt": {
+    "stationskennung": "A653",
+    "latitude": 54.019,
+    "longitude": 9.926
+  },
+  "Panschwitz-Kuckau-Kaschwitz": {
+    "stationskennung": "O273",
+    "latitude": 51.222,
+    "longitude": 14.155
+  },
+  "Parsberg-Eglwang/Oberpfalz": {
+    "stationskennung": "P441",
+    "latitude": 49.151,
+    "longitude": 11.69
+  },
+  "Pelzerhaken": {
+    "stationskennung": "10152",
+    "latitude": 54.08933,
+    "longitude": 10.877341
+  },
+  "Perl-Nennig": {
+    "stationskennung": "J702",
+    "latitude": 49.535,
+    "longitude": 6.379
+  },
+  "Pforzheim-Ispringen": {
+    "stationskennung": "Q332",
+    "latitude": 48.933,
+    "longitude": 8.697
+  },
+  "Pfullendorf": {
+    "stationskennung": "Q864",
+    "latitude": 47.934,
+    "longitude": 9.287
+  },
+  "Piding": {
+    "stationskennung": "P991",
+    "latitude": 47.772,
+    "longitude": 12.907
+  },
+  "Pirmasens": {
+    "stationskennung": "K925",
+    "latitude": 49.191,
+    "longitude": 7.588
+  },
+  "Plauen": {
+    "stationskennung": "10569",
+    "latitude": 50.481832,
+    "longitude": 12.130043
+  },
+  "Pockau-Lengefeld-Forchheim": {
+    "stationskennung": "O831",
+    "latitude": 50.71,
+    "longitude": 13.273
+  },
+  "Pommelsbrunn-Mittelburg": {
+    "stationskennung": "P343",
+    "latitude": 49.478,
+    "longitude": 11.536
+  },
+  "Potsdam": {
+    "stationskennung": "10379",
+    "latitude": 52.381247,
+    "longitude": 13.06223
+  },
+  "Putbus": {
+    "stationskennung": "10093",
+    "latitude": 54.364277,
+    "longitude": 13.477079
+  },
+  "Pöhl-Christgrün/Vogtland": {
+    "stationskennung": "O856",
+    "latitude": 50.578,
+    "longitude": 12.213
+  },
+  "Quedlinburg": {
+    "stationskennung": "N620",
+    "latitude": 51.795,
+    "longitude": 11.132
+  },
+  "Querfurt-Lodersleben": {
+    "stationskennung": "N748",
+    "latitude": 51.389,
+    "longitude": 11.541
+  },
+  "Quickborn": {
+    "stationskennung": "10146",
+    "latitude": 53.733089,
+    "longitude": 9.87757
+  },
+  "Rahden-Kleinendorf": {
+    "stationskennung": "H012",
+    "latitude": 52.446,
+    "longitude": 8.591
+  },
+  "Regensburg": {
+    "stationskennung": "10776",
+    "latitude": 49.042482,
+    "longitude": 12.101943
+  },
+  "Reichshof-Eckenhagen": {
+    "stationskennung": "H612",
+    "latitude": 50.991,
+    "longitude": 7.696
+  },
+  "Reimlingen": {
+    "stationskennung": "P501",
+    "latitude": 48.825,
+    "longitude": 10.507
+  },
+  "Renningen": {
+    "stationskennung": "Q440",
+    "latitude": 48.743,
+    "longitude": 8.924
+  },
+  "Rheinau-Memprechtshofen": {
+    "stationskennung": "Q404",
+    "latitude": 48.67,
+    "longitude": 7.994
+  },
+  "Rheinfelden": {
+    "stationskennung": "Q909",
+    "latitude": 47.559,
+    "longitude": 7.772
+  },
+  "Rheinstetten": {
+    "stationskennung": "10731",
+    "latitude": 48.972627,
+    "longitude": 8.330081
+  },
+  "Riedstadt": {
+    "stationskennung": "G429",
+    "latitude": 49.854,
+    "longitude": 8.454
+  },
+  "Rosengarten-Klecken": {
+    "stationskennung": "E273",
+    "latitude": 53.363,
+    "longitude": 9.944
+  },
+  "Rostock-Warnemünde": {
+    "stationskennung": "10170",
+    "latitude": 54.180279,
+    "longitude": 12.080806
+  },
+  "Rotenburg/Wümme": {
+    "stationskennung": "E355",
+    "latitude": 53.129,
+    "longitude": 9.34
+  },
+  "Roth": {
+    "stationskennung": "10765",
+    "latitude": 49.216232,
+    "longitude": 11.103514
+  },
+  "Rothenburg ob der Tauber": {
+    "stationskennung": "P305",
+    "latitude": 49.385,
+    "longitude": 10.173
+  },
+  "Rottweil": {
+    "stationskennung": "Q733",
+    "latitude": 48.181,
+    "longitude": 8.636
+  },
+  "Runkel-Ennerich": {
+    "stationskennung": "L602",
+    "latitude": 50.394,
+    "longitude": 8.142
+  },
+  "Ruppertsecken": {
+    "stationskennung": "K762",
+    "latitude": 49.647,
+    "longitude": 7.884
+  },
+  "Röhrsdorf-Borthen": {
+    "stationskennung": "O561",
+    "latitude": 50.959,
+    "longitude": 13.821
+  },
+  "Röllbach": {
+    "stationskennung": "P355",
+    "latitude": 49.764,
+    "longitude": 9.253
+  },
+  "Saarbrücken (Flughafen)": {
+    "stationskennung": "10708",
+    "latitude": 49.212782,
+    "longitude": 7.107653
+  },
+  "Saarbrücken-Burbach": {
+    "stationskennung": "J908",
+    "latitude": 49.241,
+    "longitude": 6.935
+  },
+  "Sachsenheim": {
+    "stationskennung": "Q341",
+    "latitude": 48.957,
+    "longitude": 9.071
+  },
+  "Saldenburg-Entschenreuth": {
+    "stationskennung": "P586",
+    "latitude": 48.783,
+    "longitude": 13.315
+  },
+  "Salzungen, Bad-Gräfen-Nitzendorf": {
+    "stationskennung": "M405",
+    "latitude": 50.843,
+    "longitude": 10.252
+  },
+  "Sandberg": {
+    "stationskennung": "P013",
+    "latitude": 50.352,
+    "longitude": 10.003
+  },
+  "Sanitz-Groß Lüsewitz": {
+    "stationskennung": "B334",
+    "latitude": 54.071,
+    "longitude": 12.324
+  },
+  "Sankt Peter-Ording": {
+    "stationskennung": "10028",
+    "latitude": 54.327907,
+    "longitude": 8.603056
+  },
+  "Schaafheim-Schlierbach": {
+    "stationskennung": "L894",
+    "latitude": 49.92,
+    "longitude": 8.967
+  },
+  "Schauenburg-Elgershausen": {
+    "stationskennung": "10441",
+    "latitude": 51.283452,
+    "longitude": 9.358959
+  },
+  "Schipkau-Klettwitz": {
+    "stationskennung": "F951",
+    "latitude": 51.555,
+    "longitude": 13.885
+  },
+  "Schleiz": {
+    "stationskennung": "10564",
+    "latitude": 50.567882,
+    "longitude": 11.80412
+  },
+  "Schleswig": {
+    "stationskennung": "10035",
+    "latitude": 54.527539,
+    "longitude": 9.548666
+  },
+  "Schleswig-Jagel": {
+    "stationskennung": "10037",
+    "latitude": 54.456985,
+    "longitude": 9.520317
+  },
+  "Schloßvippach, Kreis Sömmerda": {
+    "stationskennung": "G422",
+    "latitude": 51.1,
+    "longitude": 11.15
+  },
+  "Schlüchtern-Herolz": {
+    "stationskennung": "L678",
+    "latitude": 50.345,
+    "longitude": 9.553
+  },
+  "Schmieritz-Weltwitz": {
+    "stationskennung": "M772",
+    "latitude": 50.728,
+    "longitude": 11.784
+  },
+  "Schmücke": {
+    "stationskennung": "10552",
+    "latitude": 50.654518,
+    "longitude": 10.769601
+  },
+  "Schneifelforsthaus": {
+    "stationskennung": "K210",
+    "latitude": 50.297,
+    "longitude": 6.419
+  },
+  "Schonungen-Mainberg": {
+    "stationskennung": "P131",
+    "latitude": 50.058,
+    "longitude": 10.297
+  },
+  "Schorndorf-Knöbling": {
+    "stationskennung": "P463",
+    "latitude": 49.164,
+    "longitude": 12.617
+  },
+  "Schwandorf": {
+    "stationskennung": "P366",
+    "latitude": 49.328,
+    "longitude": 12.087
+  },
+  "Schwarzburg": {
+    "stationskennung": "M756",
+    "latitude": 50.644,
+    "longitude": 11.194
+  },
+  "Schwerin": {
+    "stationskennung": "10162",
+    "latitude": 53.642425,
+    "longitude": 11.387095
+  },
+  "Schwäbisch Gmünd-Weiler": {
+    "stationskennung": "Q378",
+    "latitude": 48.769,
+    "longitude": 9.874
+  },
+  "Schönau am Königssee": {
+    "stationskennung": "Y007",
+    "latitude": 47.613,
+    "longitude": 12.982
+  },
+  "Schönwald/Ofr.-Brunn": {
+    "stationskennung": "P098",
+    "latitude": 50.185,
+    "longitude": 12.079
+  },
+  "Seebach (Nationalpark Schwarzwald)": {
+    "stationskennung": "Y010",
+    "latitude": 48.565,
+    "longitude": 8.228
+  },
+  "Seehausen": {
+    "stationskennung": "10261",
+    "latitude": 52.891079,
+    "longitude": 11.729661
+  },
+  "Seelitz/Mittelsachsen": {
+    "stationskennung": "O501",
+    "latitude": 51.03,
+    "longitude": 12.822
+  },
+  "Seesen": {
+    "stationskennung": "E864",
+    "latitude": 51.904,
+    "longitude": 10.188
+  },
+  "Siegsdorf-Höll": {
+    "stationskennung": "P904",
+    "latitude": 47.835,
+    "longitude": 12.655
+  },
+  "Sigmaringen-Laiz": {
+    "stationskennung": "Q788",
+    "latitude": 48.072,
+    "longitude": 9.194
+  },
+  "Sigmarszell": {
+    "stationskennung": "P887",
+    "latitude": 47.578,
+    "longitude": 9.74
+  },
+  "Simbach/Inn": {
+    "stationskennung": "P794",
+    "latitude": 48.272,
+    "longitude": 13.027
+  },
+  "Singen": {
+    "stationskennung": "Q942",
+    "latitude": 47.774,
+    "longitude": 8.822
+  },
+  "Sohland/Spree": {
+    "stationskennung": "O484",
+    "latitude": 51.059,
+    "longitude": 14.427
+  },
+  "Soltau": {
+    "stationskennung": "10235",
+    "latitude": 52.960408,
+    "longitude": 9.793049
+  },
+  "Sondershausen": {
+    "stationskennung": "M161",
+    "latitude": 51.369,
+    "longitude": 10.88
+  },
+  "Sontra": {
+    "stationskennung": "L286",
+    "latitude": 51.061,
+    "longitude": 9.927
+  },
+  "Staffelstein, Bad-Stublang": {
+    "stationskennung": "P050",
+    "latitude": 50.081,
+    "longitude": 11.047
+  },
+  "Starkenberg-Tegkwitz": {
+    "stationskennung": "M488",
+    "latitude": 50.977,
+    "longitude": 12.342
+  },
+  "Stechlin-Menz": {
+    "stationskennung": "F151",
+    "latitude": 53.102,
+    "longitude": 13.042
+  },
+  "Steinau (Kreis Cuxhaven)": {
+    "stationskennung": "E078",
+    "latitude": 53.695,
+    "longitude": 8.874
+  },
+  "Steinhagen-Negast": {
+    "stationskennung": "B158",
+    "latitude": 54.248,
+    "longitude": 13.042
+  },
+  "Stolpen-Helmsdorf": {
+    "stationskennung": "O571",
+    "latitude": 51.039,
+    "longitude": 14.048
+  },
+  "Straubing": {
+    "stationskennung": "10788",
+    "latitude": 48.827504,
+    "longitude": 12.559695
+  },
+  "Straußfurt, Kreis Sömmerda": {
+    "stationskennung": "G423",
+    "latitude": 51.165,
+    "longitude": 10.974
+  },
+  "Struppen-Ebenheit": {
+    "stationskennung": "O671",
+    "latitude": 50.948,
+    "longitude": 13.98
+  },
+  "Stuttgart (Flughafen)": {
+    "stationskennung": "10738",
+    "latitude": 48.688265,
+    "longitude": 9.223548
+  },
+  "Stuttgart (Schnarrenberg)": {
+    "stationskennung": "10739",
+    "latitude": 48.828085,
+    "longitude": 9.200028
+  },
+  "Stötten": {
+    "stationskennung": "10836",
+    "latitude": 48.665587,
+    "longitude": 9.864791
+  },
+  "Tann/Rhön": {
+    "stationskennung": "L592",
+    "latitude": 50.639,
+    "longitude": 10.023
+  },
+  "Teterow": {
+    "stationskennung": "B556",
+    "latitude": 53.761,
+    "longitude": 12.557
+  },
+  "Teuschnitz": {
+    "stationskennung": "P071",
+    "latitude": 50.4,
+    "longitude": 11.389
+  },
+  "Tholey": {
+    "stationskennung": "10706",
+    "latitude": 49.473721,
+    "longitude": 7.038522
+  },
+  "Tirschenreuth-Lodermühl": {
+    "stationskennung": "P198",
+    "latitude": 49.858,
+    "longitude": 12.354
+  },
+  "Treuen": {
+    "stationskennung": "O868",
+    "latitude": 50.547,
+    "longitude": 12.286
+  },
+  "Tribsees": {
+    "stationskennung": "B258",
+    "latitude": 54.065,
+    "longitude": 12.765
+  },
+  "Trier": {
+    "stationskennung": "K611",
+    "latitude": 49.733,
+    "longitude": 6.613
+  },
+  "Trier-Petrisberg": {
+    "stationskennung": "10609",
+    "latitude": 49.747891,
+    "longitude": 6.658305
+  },
+  "Trollenhagen": {
+    "stationskennung": "10281",
+    "latitude": 53.599793,
+    "longitude": 13.303907
+  },
+  "Trostberg": {
+    "stationskennung": "P881",
+    "latitude": 48.031,
+    "longitude": 12.54
+  },
+  "Twistetal-Mühlhausen": {
+    "stationskennung": "L121",
+    "latitude": 51.334,
+    "longitude": 8.913
+  },
+  "Tönisvorst": {
+    "stationskennung": "H522",
+    "latitude": 51.29,
+    "longitude": 6.444
+  },
+  "Ueckermünde": {
+    "stationskennung": "10193",
+    "latitude": 53.744455,
+    "longitude": 14.069809
+  },
+  "Uelzen": {
+    "stationskennung": "E475",
+    "latitude": 52.941,
+    "longitude": 10.529
+  },
+  "Ulm-Mähringen": {
+    "stationskennung": "10840",
+    "latitude": 48.441768,
+    "longitude": 9.921613
+  },
+  "Ummendorf": {
+    "stationskennung": "10356",
+    "latitude": 52.160107,
+    "longitude": 11.17586
+  },
+  "Veilsdorf": {
+    "stationskennung": "M927",
+    "latitude": 50.417,
+    "longitude": 10.816
+  },
+  "Villingen-Schwenningen": {
+    "stationskennung": "Q738",
+    "latitude": 48.045,
+    "longitude": 8.461
+  },
+  "Vogelsburg": {
+    "stationskennung": "G430",
+    "latitude": 51.163,
+    "longitude": 10.026
+  },
+  "Vöhl-Hof Lauterbach": {
+    "stationskennung": "G434",
+    "latitude": 51.231,
+    "longitude": 8.932
+  },
+  "Wacken": {
+    "stationskennung": "A483",
+    "latitude": 54.025,
+    "longitude": 9.388
+  },
+  "Waghäusel-Kirrlach": {
+    "stationskennung": "Q104",
+    "latitude": 49.244,
+    "longitude": 8.537
+  },
+  "Wahlbach bei Simmern": {
+    "stationskennung": "K471",
+    "latitude": 50.0,
+    "longitude": 7.598
+  },
+  "Waibstadt": {
+    "stationskennung": "10733",
+    "latitude": 49.294262,
+    "longitude": 8.905286
+  },
+  "Waldems-Reinborn": {
+    "stationskennung": "L722",
+    "latitude": 50.26,
+    "longitude": 8.361
+  },
+  "Waldmünchen": {
+    "stationskennung": "10782",
+    "latitude": 49.390952,
+    "longitude": 12.683802
+  },
+  "Waltershausen": {
+    "stationskennung": "M520",
+    "latitude": 50.896,
+    "longitude": 10.548
+  },
+  "Waltrop-Abdinghof": {
+    "stationskennung": "H443",
+    "latitude": 51.597,
+    "longitude": 7.405
+  },
+  "Wangerland-Hooksiel": {
+    "stationskennung": "E043",
+    "latitude": 53.641,
+    "longitude": 8.081
+  },
+  "Warburg": {
+    "stationskennung": "10435",
+    "latitude": 51.50392,
+    "longitude": 9.111774
+  },
+  "Waren (Müritz)": {
+    "stationskennung": "10268",
+    "latitude": 53.519622,
+    "longitude": 12.665404
+  },
+  "Wasenberg": {
+    "stationskennung": "G498",
+    "latitude": 50.88,
+    "longitude": 9.191
+  },
+  "Wasserkuppe": {
+    "stationskennung": "10544",
+    "latitude": 50.497265,
+    "longitude": 9.942732
+  },
+  "Weiden": {
+    "stationskennung": "10688",
+    "latitude": 49.666221,
+    "longitude": 12.184448
+  },
+  "Weidenbach-Weiherschneidbach": {
+    "stationskennung": "P319",
+    "latitude": 49.225,
+    "longitude": 10.608
+  },
+  "Weilerswist-Lommersum": {
+    "stationskennung": "H932",
+    "latitude": 50.712,
+    "longitude": 6.79
+  },
+  "Weimar-Schöndorf": {
+    "stationskennung": "M448",
+    "latitude": 51.018,
+    "longitude": 11.354
+  },
+  "Weinbiet": {
+    "stationskennung": "10724",
+    "latitude": 49.375801,
+    "longitude": 8.121233
+  },
+  "Weingarten (Kreis Ravensburg)": {
+    "stationskennung": "Q879",
+    "latitude": 47.806,
+    "longitude": 9.621
+  },
+  "Weiskirchen/Saar": {
+    "stationskennung": "J728",
+    "latitude": 49.553,
+    "longitude": 6.812
+  },
+  "Weißenburg-Emetzheim": {
+    "stationskennung": "10761",
+    "latitude": 49.01153,
+    "longitude": 10.930837
+  },
+  "Wendisch Evern": {
+    "stationskennung": "E298",
+    "latitude": 53.214,
+    "longitude": 10.47
+  },
+  "Werl": {
+    "stationskennung": "10424",
+    "latitude": 51.576347,
+    "longitude": 7.887922
+  },
+  "Wernigerode": {
+    "stationskennung": "10454",
+    "latitude": 51.84544,
+    "longitude": 10.768627
+  },
+  "Wernigerode-Schierke": {
+    "stationskennung": "N601",
+    "latitude": 51.766,
+    "longitude": 10.653
+  },
+  "Wesertal-Lippoldsberg": {
+    "stationskennung": "L031",
+    "latitude": 51.619,
+    "longitude": 9.575
+  },
+  "Wettenberg bei Gießen": {
+    "stationskennung": "10532",
+    "latitude": 50.601715,
+    "longitude": 8.643898
+  },
+  "Wielenbach": {
+    "stationskennung": "P831",
+    "latitude": 47.883,
+    "longitude": 11.158
+  },
+  "Wiesbaden-Auringen": {
+    "stationskennung": "L821",
+    "latitude": 50.132,
+    "longitude": 8.317
+  },
+  "Wiesbaden-Frauenstein": {
+    "stationskennung": "G440",
+    "latitude": 50.069,
+    "longitude": 8.171
+  },
+  "Wiesbaden-Nordenstadt": {
+    "stationskennung": "G499",
+    "latitude": 50.072,
+    "longitude": 8.33
+  },
+  "Wiesenburg": {
+    "stationskennung": "10368",
+    "latitude": 52.120644,
+    "longitude": 12.458559
+  },
+  "Wilsdruff-Grumbach": {
+    "stationskennung": "O449",
+    "latitude": 51.039,
+    "longitude": 13.549
+  },
+  "Wittenberg": {
+    "stationskennung": "10474",
+    "latitude": 51.889124,
+    "longitude": 12.644598
+  },
+  "Wittenborn": {
+    "stationskennung": "A762",
+    "latitude": 53.922,
+    "longitude": 10.227
+  },
+  "Wittingen-Vorhop": {
+    "stationskennung": "E691",
+    "latitude": 52.642,
+    "longitude": 10.663
+  },
+  "Wittmundhafen": {
+    "stationskennung": "10126",
+    "latitude": 53.544444,
+    "longitude": 7.6625
+  },
+  "Wittstock-Rote Mühle": {
+    "stationskennung": "F143",
+    "latitude": 53.186,
+    "longitude": 12.495
+  },
+  "Witzenhausen-Wendershausen": {
+    "stationskennung": "G426",
+    "latitude": 51.319,
+    "longitude": 9.872
+  },
+  "Wolfach": {
+    "stationskennung": "Q622",
+    "latitude": 48.295,
+    "longitude": 8.239
+  },
+  "Worms": {
+    "stationskennung": "K699",
+    "latitude": 49.605,
+    "longitude": 8.366
+  },
+  "Worpswede-Hüttenbusch": {
+    "stationskennung": "E254",
+    "latitude": 53.276,
+    "longitude": 8.986
+  },
+  "Wunsiedel-Schönbrunn": {
+    "stationskennung": "10686",
+    "latitude": 50.031507,
+    "longitude": 11.974501
+  },
+  "Wunstorf": {
+    "stationskennung": "10334",
+    "latitude": 52.462608,
+    "longitude": 9.424454
+  },
+  "Wuppertal-Buchenhofen": {
+    "stationskennung": "H547",
+    "latitude": 51.226,
+    "longitude": 7.105
+  },
+  "Wusterwitz": {
+    "stationskennung": "F419",
+    "latitude": 52.361,
+    "longitude": 12.387
+  },
+  "Wutöschingen-Ofteringen": {
+    "stationskennung": "Q926",
+    "latitude": 47.678,
+    "longitude": 8.38
+  },
+  "Würzburg": {
+    "stationskennung": "10655",
+    "latitude": 49.770378,
+    "longitude": 9.957627
+  },
+  "Zehdenick": {
+    "stationskennung": "F263",
+    "latitude": 52.966,
+    "longitude": 13.327
+  },
+  "Zeitz": {
+    "stationskennung": "N977",
+    "latitude": 51.031,
+    "longitude": 12.149
+  },
+  "Zerbst/Sachs.-Anhalt": {
+    "stationskennung": "G449",
+    "latitude": 51.995,
+    "longitude": 12.029
+  },
+  "Zettlitz-Methau/Zwickauer Mulde": {
+    "stationskennung": "O423",
+    "latitude": 51.083,
+    "longitude": 12.852
+  },
+  "Zinnwald-Georgenfeld": {
+    "stationskennung": "10582",
+    "latitude": 50.731347,
+    "longitude": 13.751612
+  },
+  "Zwiesel": {
+    "stationskennung": "10796",
+    "latitude": 49.028013,
+    "longitude": 13.238509
+  },
+  "Öhringen": {
+    "stationskennung": "10742",
+    "latitude": 49.207016,
+    "longitude": 9.517582
+  }
+}

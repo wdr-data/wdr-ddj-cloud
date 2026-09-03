@@ -259,5 +259,27 @@
         ],
         "extra_env": [],
         "deploy": true
+    },
+    {
+        "display_name": "DWD Waldbrand- & Graslandfeuerindex",
+        "module_name": "dwd_brandgefahrenindizes",
+        "description": "Generiert Quelldaten für Datawrapper-Karten des Waldbrand- und Graslandfeuerindexes (NRW und bundesweit) aus https://www.wettergefahren.de/warnungen/indizes/waldbrand.html",
+        "contact_name": "Jannes Höke",
+        "contact_email": "mail@jhoeke.de",
+        "memory_size": "1024",
+        "ephemeral_storage": "512",
+        "preset": "minimal",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "hourly",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": [],
+        "deploy": true
     }
 ]

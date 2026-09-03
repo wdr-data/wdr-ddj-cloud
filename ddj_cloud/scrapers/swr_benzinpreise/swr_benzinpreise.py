@@ -8,19 +8,42 @@ import pandas as pd
 from google.cloud import bigquery
 
 from ddj_cloud.utils import bigquery as bigquery_utils
-from ddj_cloud.utils.date_and_time import UTC, local_now, local_today
+from ddj_cloud.utils.date_and_time import BERLIN, UTC, local_now, local_today
 from ddj_cloud.utils.storage import upload_dataframe
 
 PROJECT = "swr-datalab-prod"
-DATASET_BUNDESKARTELLAMT = bigquery.DatasetReference(PROJECT, "bundeskartellamt_trusted")
-TABLE_TAGESWERTE = "markttransparenzstelle_tageswerte"
-TABLE_AUFLOESUNG = "markttransparenzstelle_aufloesung"
+DATASET_BUNDESKARTELLAMT = bigquery.DatasetReference(PROJECT, "spritpreise_refined")
+TABLE_TAGESWERTE = "stats_daily_by_fuel_type"
+TABLE_AUFLOESUNG = "resolution_by_fuel_type"
 
-DATASET_BOERSE = bigquery.DatasetReference(PROJECT, "boerse_ard_trusted")
-# Schema: ['openPrice:FLOAT', 'closePrice:FLOAT', 'lowPrice:FLOAT', 'highPrice:FLOAT', 'cumulativeVolumeUnit:FLOAT', 'meldedatum:DATE', 'datenstand:TIMESTAMP', 'abrufdatum:TIMESTAMP']
-TABLE_ROHOEL = "boerse_ard_rohoel_zeitreihe_int"
+DATASET_SPRITPREISE_TRUSTED = bigquery.DatasetReference(PROJECT, "spritpreise_trusted")
+# Schema: ['openPrice:FLOAT', 'closePrice:FLOAT', 'lowPrice:FLOAT', 'highPrice:FLOAT', 'cumulativeVolumeUnit:FLOAT', 'meldedatum:DATE', 'datenstand:DATETIME', 'abrufdatum:TIMESTAMP']
+TABLE_ROHOEL = "crude_oil_time_series"
 
 LABELS = {"cost_category": "wdr", "triggered_by": "wdr-ddj-cloud"}
+
+FUEL_TYPES = {1: "octane95", 2: "e10", 3: "diesel"}
+STATS = ["min", "max", "mittel", "median", "percentil_10", "percentil_90"]
+# Source suffix -> our suffix (backwards compatibility)
+STATS_RENAME = {"mean": "mittel"}
+# Source delivers full float precision, exports keep 5 decimals
+DECIMALS = 5
+
+
+def _rename_stats(df: pd.DataFrame, source_prefix: str, target_prefix: str) -> pd.DataFrame:
+    """Rename `{source_prefix}_{stat}` to `{target_prefix}_{stat}`, drop other stats columns, round."""
+    rename_map = {}
+    for column in df.columns:
+        if not column.startswith(f"{source_prefix}_"):
+            continue
+        stat = column.removeprefix(f"{source_prefix}_")
+        stat = STATS_RENAME.get(stat, stat)
+        if stat in STATS:
+            rename_map[column] = f"{target_prefix}_{stat}"
+    df = df[[*rename_map, *(c for c in df.columns if not c.startswith(f"{source_prefix}_"))]]
+    df = df.rename(columns=rename_map)
+    df[list(rename_map.values())] = df[list(rename_map.values())].round(DECIMALS)
+    return df
 
 
 def load_tageswerte(client: bigquery.Client):
@@ -36,33 +59,18 @@ def load_tageswerte(client: bigquery.Client):
     )
 
     def df_cleaner(df: pd.DataFrame) -> pd.DataFrame:
-        # Convert to date
-        df.drop(
-            columns=[
-                "tages_mittel_min_10",
-                "tages_mittel_min_25",
-                "tages_mittel_min_50",
-                "tages_mittel_min_75",
-                "tages_mittel_max_10",
-                "tages_mittel_max_25",
-                "tages_mittel_max_50",
-                "tages_mittel_max_75",
-                "n_unique_dates",
-                "n_preise",
-                "ags",
-            ],
-            inplace=True,
-        )
-        df["type"] = df["type"].map({1: "octane95", 2: "e10", 3: "diesel"})
-        df.drop_duplicates(subset=["type", "meldedatum"], inplace=True, ignore_index=True)
-        df.reset_index(drop=True)
+        df = _rename_stats(df, "daily", "tages")
+        df["type"] = df["type"].map(FUEL_TYPES)
+        df = df.drop_duplicates(subset=["type", "meldedatum"], ignore_index=True)
 
         # Backwards compatibility
-        df.rename(columns={"meldedatum": "day"}, inplace=True)
+        df = df.rename(columns={"meldedatum": "day"})
+        df["datenstand"] = df["datenstand"].dt.date
 
         # Tag datetimes
-        df["abrufdatum"] = df["abrufdatum"].dt.tz_localize(UTC)
+        df["abrufdatum"] = df["abrufdatum"].dt.floor("s").dt.tz_localize(UTC)
 
+        df = df[["type", "day", *(f"tages_{stat}" for stat in STATS), "abrufdatum", "datenstand"]]
         return df.replace({np.nan: None})
 
     yield from bigquery_utils.iter_results(
@@ -91,29 +99,14 @@ def load_aufloesung(client: bigquery.Client):
     )
 
     def df_cleaner(df: pd.DataFrame) -> pd.DataFrame:
-        df.drop(
-            columns=[
-                "auflsg_mittel_min_10",
-                "auflsg_mittel_min_25",
-                "auflsg_mittel_min_50",
-                "auflsg_mittel_min_75",
-                "auflsg_mittel_max_10",
-                "auflsg_mittel_max_25",
-                "auflsg_mittel_max_50",
-                "auflsg_mittel_max_75",
-                "n_unique_dates",
-                "n_preise",
-                "ags",
-                "meldedatum",
-            ],
-            inplace=True,
-        )
-        df["type"] = df["type"].map({1: "octane95", 2: "e10", 3: "diesel"})
-        df.reset_index(drop=True)
+        df = _rename_stats(df, "resolution", "auflsg")
+        df["type"] = df["type"].map(FUEL_TYPES)
+        df = df.drop_duplicates(subset=["type", "datenstand"], ignore_index=True)
 
         # Tag datetimes
-        df["abrufdatum"] = df["abrufdatum"].dt.tz_localize(UTC)
+        df["abrufdatum"] = df["abrufdatum"].dt.floor("s").dt.tz_localize(UTC)
 
+        df = df[["type", "datenstand", *(f"auflsg_{stat}" for stat in STATS), "abrufdatum"]]
         return df.replace({np.nan: None})
 
     yield from bigquery_utils.iter_results(
@@ -144,13 +137,15 @@ def load_rohoel(client: bigquery.Client):
     query = bigquery_utils.insert_table_name(query, TABLE_ROHOEL, "@table_name")
 
     job_config = bigquery.QueryJobConfig(
-        default_dataset=DATASET_BOERSE,
+        default_dataset=DATASET_SPRITPREISE_TRUSTED,
         labels=LABELS,
     )
 
     def df_cleaner(df: pd.DataFrame) -> pd.DataFrame:
         rohoel_datenstand_tz = df["datenstand"].dt.tz
         rohoel_abrufdatum_tz = df["abrufdatum"].dt.tz
+        df["datenstand"] = df["datenstand"].dt.floor("s")
+        df["abrufdatum"] = df["abrufdatum"].dt.floor("s")
 
         df.rename(
             columns={
@@ -162,8 +157,9 @@ def load_rohoel(client: bigquery.Client):
             inplace=True,
         )
 
+        # Naive `datenstand` is a plain date (midnight) since the source moved to `spritpreise_trusted`
         if rohoel_datenstand_tz is None:
-            df["rohoel_datenstand"] = df["rohoel_datenstand"].dt.tz_localize(UTC)
+            df["rohoel_datenstand"] = df["rohoel_datenstand"].dt.tz_localize(BERLIN)
         else:
             df["rohoel_datenstand"] = df["rohoel_datenstand"].dt.tz_convert(UTC)
 

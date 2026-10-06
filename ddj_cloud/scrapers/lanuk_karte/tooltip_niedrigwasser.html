@@ -1,0 +1,31 @@
+<span style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+  <span style="background-color: {{ aktuell == 'False' or niedrigwasser_label == 'keine Einstufung' ? '#BDBDBD' : (niedrigwasser_label == 'Minimum' ? '#8C4A1C' : (niedrigwasser_label == 'sehr niedrig' ? '#D99A3C' : (niedrigwasser_label == 'niedrig' ? '#F5D78E' : '#168FC6'))) }}; color: {{ aktuell == 'True' and (niedrigwasser_label == 'Minimum' or niedrigwasser_label == 'kein Niedrigwasser') ? 'white' : 'black' }}; border: 2px solid #333; padding: 3px 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; font-size: 1.2em; line-height: 1;">{{ display_wasserstand }}</span>
+  <span style="font-size: 1.2em; font-weight: bold; line-height: 1;">Wasserhöhe</span>
+</span>
+Fluss: <b>{{ gewaesser }}</b><br>
+Station: <b>{{ station_name }}</b><br>
+Einstufung: <b>{{ aktuell == 'True' ? niedrigwasser_label : 'kein aktueller Messwert' }}</b><br>
+<br>
+Messdatum: <span style="color: #666; font-size: 0.95em; font-style: italic;">{{ display_messzeitpunkt }}</span><br>
+Stationsart: <span style="color: #666; font-size: 0.95em;">{{ station_type }}</span><br>
+Betreiber: <span style="color: #666; font-size: 0.95em;">{{ quelle }}</span>
+<hr style="border: none; border-top: 1px solid #ddd; margin: 15px 0px 4px 0px;">
+<table style="width: 100%; border-collapse: collapse; font-family: inherit; font-size: 0.95em;">
+  <tbody>
+    <tr>
+      <td style="width: 60%; padding: 1px 0; color: #333;">niedrig unter</td>
+      <td style="width: 40%; text-align: right; padding: 1px 0; font-weight: bold; color: #C9A227;">{{ display_hn7w }}</td>
+    </tr>
+    <tr>
+      <td style="padding: 1px 0; color: #333;">sehr niedrig unter</td>
+      <td style="text-align: right; padding: 1px 0; font-weight: bold; color: #D99A3C;">{{ display_mn7w }}</td>
+    </tr>
+    <tr>
+      <td style="padding: 1px 0; color: #333;">Minimum unter</td>
+      <td style="text-align: right; padding: 1px 0; font-weight: bold; color: #8C4A1C;">{{ display_n7w }}</td>
+    </tr>
+  </tbody>
+</table>
+<div style="margin-top: 6px; color: #666; font-size: 0.85em; font-style: italic; line-height: 1.3;">
+  Schwellen: höchstes, mittleres und niedrigstes 7-Tages-Mittel der Jahrestiefststände. Eingestuft wird der letzte Messwert.
+</div>

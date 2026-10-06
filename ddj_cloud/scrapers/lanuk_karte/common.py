@@ -57,6 +57,14 @@ WARNSTUFE_COLORS: dict[Literal[0, 1, 2, 3, 4, 5], str] = {
 }
 
 
+NIEDRIGWASSER_LABELS: dict[int, str] = {
+    0: "kein Niedrigwasser",
+    1: "niedrig",
+    2: "sehr niedrig",
+    3: "Minimum",
+}
+
+
 @dataclass
 class StationRow:
     station_id: str
@@ -84,3 +92,8 @@ class StationRow:
     operator: str
     display_wasserstand: str
     display_messzeitpunkt: str
+    # Low-water thresholds (LANUK only)
+    n7w: float | None = None
+    mn7w: float | None = None
+    hn7w: float | None = None
+    niedrigwasser_stufe: int | None = None

@@ -57,6 +57,9 @@ class Station(BaseModel):
     LANUV_Info_1: float | None = None
     LANUV_Info_2: float | None = None
     LANUV_Info_3: float | None = None
+    LANUV_N7W: float | None = None
+    LANUV_MN7W: float | None = None
+    LANUV_HN7W: float | None = None
 
     @field_validator(
         "LANUV_MHW",
@@ -70,6 +73,16 @@ class Station(BaseModel):
     @classmethod
     def normalize_string_floats(cls, v: Any) -> float | None:
         if v in ("", "0.0"):
+            return None
+        if "," in v and "." not in v:
+            return v.replace(",", ".")
+        return v
+
+    # Unlike the fields above, "0.0" is a real value here (e.g. MN7W at Kapellen)
+    @field_validator("LANUV_N7W", "LANUV_MN7W", "LANUV_HN7W", mode="before")
+    @classmethod
+    def normalize_low_water_floats(cls, v: Any) -> float | None:
+        if v == "":
             return None
         if "," in v and "." not in v:
             return v.replace(",", ".")
@@ -212,6 +225,25 @@ def _build_pegel_url(station_id: str, station_name: str) -> str:
     )
 
 
+def _niedrigwasser_stufe(
+    value: float, n7w: float | None, mn7w: float | None, hn7w: float | None
+) -> int | None:
+    """Classify like the portal's Niedrigwasser layer: latest value vs. thresholds, strict <.
+
+    0 = kein Niedrigwasser, 1 = niedrig (<HN7W), 2 = sehr niedrig (<MN7W), 3 = Minimum (<N7W),
+    None = not classifiable (missing thresholds).
+    """
+    if n7w is not None and value < n7w:
+        return 3
+    if mn7w is not None and value < mn7w:
+        return 2
+    if hn7w is not None and value < hn7w:
+        return 1
+    if None in (n7w, mn7w, hn7w):
+        return None
+    return 0
+
+
 def run(session: requests.Session) -> list[StationRow]:  # noqa: PLR0912
     now = local_now()
 
@@ -332,6 +364,12 @@ def run(session: requests.Session) -> list[StationRow]:  # noqa: PLR0912
                 abrufdatum=now,
                 display_wasserstand=f"{value:.0f} cm",
                 display_messzeitpunkt=timestamp.strftime("%d.%m.%Y, %H:%M Uhr"),
+                n7w=station.LANUV_N7W,
+                mn7w=station.LANUV_MN7W,
+                hn7w=station.LANUV_HN7W,
+                niedrigwasser_stufe=_niedrigwasser_stufe(
+                    value, station.LANUV_N7W, station.LANUV_MN7W, station.LANUV_HN7W
+                ),
             )
         )
 

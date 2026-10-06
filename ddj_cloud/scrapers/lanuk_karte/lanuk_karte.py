@@ -28,6 +28,9 @@ OPERATOR_SPECIAL_CASES = {
 
 LOW_WATER_COLUMNS = ["n7w", "mn7w", "hn7w", "niedrigwasser_stufe"]
 
+# Map color class for readings older than 24h, gets its own legend entry in Datawrapper
+STUFE_NICHT_AKTUELL = -1
+
 
 def run():
     session = requests.Session()
@@ -57,21 +60,23 @@ def run():
     filtered_rows = [row for row in all_rows if is_in_nrw(row.latitude, row.longitude)]
 
     df_all = pd.DataFrame([dataclasses.asdict(row) for row in filtered_rows])
+    # The portal shows readings older than 24h as "nicht aktuell"
+    df_all["aktuell"] = df_all["abrufdatum"] - df_all["messzeitpunkt"] <= pd.Timedelta(hours=24)
 
     df = df_all.drop(columns=["warnstufe_color", *LOW_WATER_COLUMNS])
+    df["warnstufe"] = df["warnstufe"].where(df["aktuell"], STUFE_NICHT_AKTUELL)
     upload_dataframe(
         df,
         "lanuk-karte/data.csv",
         datawrapper_datetimes=True,
     )
 
-    # Low-water map: only stations with low-water thresholds (LANUK only, EGLV has none)
-    df_nw = df_all[df_all[["n7w", "mn7w", "hn7w"]].notna().any(axis=1)].copy()
-    # The portal shows readings older than 24h as "nicht aktuell"
-    df_nw["aktuell"] = df_nw["abrufdatum"] - df_nw["messzeitpunkt"] <= pd.Timedelta(hours=24)
-    df_nw["niedrigwasser_stufe"] = df_nw["niedrigwasser_stufe"].astype("Int64")
-    df_nw["niedrigwasser_label"] = (
-        df_nw["niedrigwasser_stufe"].map(NIEDRIGWASSER_LABELS).fillna("keine Einstufung")
+    # Low-water map: only classifiable stations (LANUK only, EGLV has no low-water thresholds)
+    df_nw = df_all[df_all["niedrigwasser_stufe"].notna()].copy()
+    df_nw["niedrigwasser_stufe"] = df_nw["niedrigwasser_stufe"].astype(int)
+    df_nw["niedrigwasser_label"] = df_nw["niedrigwasser_stufe"].map(NIEDRIGWASSER_LABELS)
+    df_nw["niedrigwasser_stufe"] = df_nw["niedrigwasser_stufe"].where(
+        df_nw["aktuell"], STUFE_NICHT_AKTUELL
     )
     for col in ("n7w", "mn7w", "hn7w"):
         df_nw[f"display_{col}"] = df_nw[col].map(lambda v: "–" if pd.isna(v) else f"{v:.0f} cm")

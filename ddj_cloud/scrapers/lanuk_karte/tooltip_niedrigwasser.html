@@ -1,5 +1,5 @@
 <span style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
-  <span style="background-color: {{ aktuell == 'False' or niedrigwasser_label == 'keine Einstufung' ? '#BDBDBD' : (niedrigwasser_label == 'Minimum' ? '#8C4A1C' : (niedrigwasser_label == 'sehr niedrig' ? '#D99A3C' : (niedrigwasser_label == 'niedrig' ? '#F5D78E' : '#168FC6'))) }}; color: {{ aktuell == 'True' and (niedrigwasser_label == 'Minimum' or niedrigwasser_label == 'kein Niedrigwasser') ? 'white' : 'black' }}; border: 2px solid #333; padding: 3px 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; font-size: 1.2em; line-height: 1;">{{ display_wasserstand }}</span>
+  <span style="background-color: {{ aktuell == 'False' ? '#BDBDBD' : (niedrigwasser_label == 'Minimum' ? '#8C4A1C' : (niedrigwasser_label == 'sehr niedrig' ? '#D99A3C' : (niedrigwasser_label == 'niedrig' ? '#F5D78E' : '#168FC6'))) }}; color: {{ aktuell == 'True' and (niedrigwasser_label == 'Minimum' or niedrigwasser_label == 'kein Niedrigwasser') ? 'white' : 'black' }}; border: 2px solid #333; padding: 3px 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; font-size: 1.2em; line-height: 1;">{{ display_wasserstand }}</span>
   <span style="font-size: 1.2em; font-weight: bold; line-height: 1;">Wasserhöhe</span>
 </span>
 Fluss: <b>{{ gewaesser }}</b><br>

@@ -1,11 +1,11 @@
 <span style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
-  <span style="background-color: {{ warnstufe >= 5 ? '#E30614' : (warnstufe >= 4 ? '#FFAA00' : (warnstufe >= 3 ? '#FFF126' : (warnstufe >= 2 ? '#168FC6' : (warnstufe >= 1 ? '#7BD4A5' : '#F1F1EA')))) }}; color: {{ warnstufe >= 5 ? 'white' : (warnstufe >= 4 ? 'black' : (warnstufe >= 3 ? 'black' : (warnstufe >= 2 ? 'white' : 'black'))) }}; border: 2px solid #333; padding: 3px 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; font-size: 1.2em; line-height: 1;">{{ display_wasserstand }}</span>
+  <span style="background-color: {{ aktuell == 'False' ? '#BDBDBD' : (warnstufe >= 5 ? '#E30614' : (warnstufe >= 4 ? '#FFAA00' : (warnstufe >= 3 ? '#FFF126' : (warnstufe >= 2 ? '#168FC6' : (warnstufe >= 1 ? '#7BD4A5' : '#F1F1EA'))))) }}; color: {{ aktuell == 'False' ? 'black' : (warnstufe >= 5 ? 'white' : (warnstufe >= 4 ? 'black' : (warnstufe >= 3 ? 'black' : (warnstufe >= 2 ? 'white' : 'black')))) }}; border: 2px solid #333; padding: 3px 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; font-size: 1.2em; line-height: 1;">{{ display_wasserstand }}</span>
   <span style="font-size: 1.2em; font-weight: bold; line-height: 1;">Wasserhöhe</span>
 </span>
 Fluss: <b>{{ gewaesser }}</b><br>
 Station: <b>{{ station_name }}</b><br>
 <br>
-Messdatum: <span style="color: #666; font-size: 0.95em; font-style: italic;">{{ display_messzeitpunkt }}</span><br>
+Messdatum: <span style="color: #666; font-size: 0.95em; font-style: italic;">{{ display_messzeitpunkt }}{{ aktuell == 'False' ? ' – kein aktueller Messwert' : '' }}</span><br>
 Stationsart: <span style="color: #666; font-size: 0.95em;">{{ station_type }}</span><br>
 Betreiber: <span style="color: #666; font-size: 0.95em;">{{ quelle }}</span>
 <hr style="border: none; border-top: 1px solid #ddd; margin: 15px 0px 4px 0px;">

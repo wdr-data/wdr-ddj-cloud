@@ -36,7 +36,7 @@ color_map_text = {
     0: "white",
     25: "black",
     50: "black",
-    75: "black",
+    75: "white",
     90: "white",
     100: "white",
 }
@@ -50,11 +50,13 @@ def _get_color(fill_percent: float, color_map: dict) -> str:
     return color_map[0]
 
 
+# Below this fill level, the label doesn't fit into the bar and is placed next to it
+LABEL_INSIDE_MIN_PERCENT = 40
+
+
 def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
-    bar_text = format_number(current["fill_percent"], places=1) + "     %"
+    bar_text = format_number(current["fill_percent"], places=1) + "&nbsp;%"
     bar_color = _get_color(current["fill_percent"], color_map_fill)
-    bar_text_color = _get_color(current["fill_percent"], color_map_text)
-    bar_text_margin = "28px" if current["fill_percent"] < 25 else "3px"  # noqa: PLR2004
 
     name = RESERVOIR_RENAMES.get(current["name"], current["name"])
     fill_percent = max(min(current["fill_percent"], 100), 0)
@@ -74,13 +76,21 @@ def _make_tooltip(current: dict, variant: Literal["desktop", "mobile"]) -> str:
 
     main_purpose = current["main_purpose"]
 
+    label_inside = fill_percent >= LABEL_INSIDE_MIN_PERCENT
+    label_color = _get_color(fill_percent, color_map_text) if label_inside else "black"
+    label = (
+        f'<b style="flex: none; white-space: nowrap; color: {label_color}; '
+        f'font-size: {font_size_bar}; margin: 0px {margin_narrow};">{bar_text}</b>'
+    )
+
     tooltip_html = f"""
 <u style="display: block; text-decoration: none; min-width: {width}; max-width: {width}; margin: {margin_outer}; overflow:hidden; font-size: {font_size_text}; line-height: 1.25;">
     <b style="display: block; font-size: {font_size_header}; margin-bottom: {margin_wide};">{name}</b>
     <u style="display: flex; text-decoration: none; align-items: center; background: #f2f2f2; width: 100%; height: {height_bar}; ">
-        <u style="display: flex; text-decoration: none; background: {bar_color}; align-items: center; height: 100%; width: {fill_percent}%">
-            <b style="color: {bar_text_color}; font-size: {font_size_bar}; margin: 0px {margin_narrow}; margin-left: {bar_text_margin};"> {bar_text}</b>
+        <u style="display: flex; flex: none; text-decoration: none; background: {bar_color}; align-items: center; height: 100%; width: {fill_percent}%">
+            {label if label_inside else ""}
         </u>
+        {"" if label_inside else label}
     </u>
     <u style="display: block; text-decoration: none; margin-top: 2px; margin-bottom: {margin_wide};">{content_mio_m3} von {capacity_mio_m3} Mio. m³</u>
     <u style="display: grid; text-decoration: none; gap: {margin_narrow};">

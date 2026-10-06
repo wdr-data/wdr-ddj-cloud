@@ -1,6 +1,51 @@
-<b>{{ gewaesser }}</b> · {{ station_type }}<br>
-<big>{{ display_wasserstand }}</big><br>
-{{ display_messzeitpunkt }}
-<hr>
-{{ display_info }}<br>
-{{ display_stats }}
+<span style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+  <span style="background-color: {{ warnstufe >= 5 ? '#E30614' : (warnstufe >= 4 ? '#FFAA00' : (warnstufe >= 3 ? '#FFF126' : (warnstufe >= 2 ? '#168FC6' : (warnstufe >= 1 ? '#7BD4A5' : '#F1F1EA')))) }}; color: {{ warnstufe >= 5 ? 'white' : (warnstufe >= 4 ? 'black' : (warnstufe >= 3 ? 'black' : (warnstufe >= 2 ? 'white' : 'black'))) }}; border: 2px solid #333; padding: 3px 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; font-size: 1.2em; line-height: 1;">{{ display_wasserstand }}</span>
+  <span style="font-size: 1.2em; font-weight: bold; line-height: 1;">Wasserhöhe</span>
+</span>
+Fluss: <b>{{ gewaesser }}</b><br>
+Station: <b>{{ station_name }}</b><br>
+<br>
+Messdatum: <span style="color: #666; font-size: 0.95em; font-style: italic;">{{ display_messzeitpunkt }}</span><br>
+Stationsart: <span style="color: #666; font-size: 0.95em;">{{ station_type }}</span><br>
+Betreiber: <span style="color: #666; font-size: 0.95em;">{{ quelle }}</span>
+<hr style="border: none; border-top: 1px solid #ddd; margin: 15px 0px 4px 0px;">
+<table style="width: 100%; border-collapse: collapse; font-family: inherit; font-size: 0.95em;">
+  <tbody style="display: {{ has_info == 'True' ? 'table-row-group' : 'none' }};">
+    <tr>
+      <td style="width: 60%; padding: 1px 0; color: #333;">Warnstufe 1</td>
+      <td style="width: 40%; text-align: right; padding: 1px 0; font-weight: bold; color: #DADA46;">{{ info_1 }} cm</td>
+    </tr>
+    <tr>
+      <td style="padding: 1px 0; color: #333;">Warnstufe 2</td>
+      <td style="text-align: right; padding: 1px 0; font-weight: bold; color: #FFAA00;">{{ info_2 }} cm</td>
+    </tr>
+    <tr>
+      <td style="padding: 1px 0; color: #333;">Warnstufe 3</td>
+      <td style="text-align: right; padding: 1px 0; font-weight: bold; color: #E30614;">{{ info_3 }} cm</td>
+    </tr>
+  </tbody>
+  <tbody style="display: {{ has_info == 'False' ? 'table-row-group' : 'none' }};">
+    <tr>
+      <td colspan="2" style="padding: 1px 0; color: #666; font-style: italic;">Keine Warnstufen vorhanden</td>
+    </tr>
+  </tbody>
+  <tbody style="display: {{ has_stats == 'True' ? 'table-row-group' : 'none' }};">
+    <tr>
+      <td style="padding: 1px 0; color: #333;">MNW</td>
+      <td style="text-align: right; padding: 1px 0; font-weight: bold; color: #333;">{{ mnw }} cm</td>
+    </tr>
+    <tr>
+      <td style="padding: 1px 0; color: #333;">MW</td>
+      <td style="text-align: right; padding: 1px 0; font-weight: bold; color: #168FC6;">{{ mw }} cm</td>
+    </tr>
+    <tr>
+      <td style="padding: 1px 0; color: #333;">MHW</td>
+      <td style="text-align: right; padding: 1px 0; font-weight: bold; color: #333;">{{ mhw }} cm</td>
+    </tr>
+  </tbody>
+  <tbody style="display: {{ has_stats == 'False' ? 'table-row-group' : 'none' }};">
+    <tr>
+      <td colspan="2" style="padding: 1px 0; color: #666; font-style: italic;">Keine Vergleichsdaten vorhanden</td>
+    </tr>
+  </tbody>
+</table>

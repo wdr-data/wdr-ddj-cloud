@@ -38,9 +38,10 @@ from bisect import bisect_left  # fast "nearest earlier position" lookup
 from datetime import datetime
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError  # time zone handling
 
-import pandas as pd  
+import pandas as pd
 import requests  # HTTP download
-from bs4 import BeautifulSoup, NavigableString, Tag  # HTML parsing
+from bs4 import BeautifulSoup, Tag  # HTML parsing
+from bs4.element import NavigableString  # HTML parsing
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry  # automatic retries on network errors
 
@@ -130,11 +131,11 @@ STOP_TEXT = "Weiteres"
 MAX_TOKENS_PER_RECORD = 500  # safety cap so a broken page can't make us read forever
 MAX_LABEL_LENGTH = 80  # a text ending in ":" and at most this long counts as a label
 
-# If more than 5 % of the records lack in frauenhaus:status, ort, bundesland, art_der_einrichtung, the run is aborted. Normally all are filled in 
+# If more than 5 % of the records lack in frauenhaus:status, ort, bundesland, art_der_einrichtung, the run is aborted. Normally all are filled in
 MAX_MISSING_SHARE = 0.05
 
 # explicit list of columns and types to guarantee the same layout every
-# day. 
+# day.
 
 DTYPES = {
     "scrape_date": "object",
@@ -163,7 +164,7 @@ def clean(text: str) -> str:
 
 
 def now_berlin() -> datetime:
-    """Current time """
+    """Current time"""
     try:
         return datetime.now(ZoneInfo(TZ_NAME)).replace(microsecond=0, tzinfo=None)
     except ZoneInfoNotFoundError:
@@ -176,7 +177,7 @@ def now_berlin() -> datetime:
 # 4. Download
 # --------------------------------------------------------------------------- #
 def fetch_html(url: str = URL) -> str:
-    """Download the page once and return it as text.  """
+    """Download the page once and return it as text."""
     retry = Retry(
         total=4,  # up to 4 retries
         backoff_factor=2,  # wait 2s, 4s, 8s, ...
@@ -197,7 +198,7 @@ def fetch_html(url: str = URL) -> str:
 # 5. Parsing
 # --------------------------------------------------------------------------- #
 def status_of_img(img: Tag) -> str | None:
-    """Return the status text for the four traffic-light status icons  """
+    """Return the status text for the four traffic-light status icons"""
     src = img.get("src") or img.get("data-src") or ""  # data-src = lazy-loaded images
     m = ICON_RE.search(src)
     if m:
@@ -438,8 +439,7 @@ def parse_page(html: str) -> tuple[list[dict], int | None]:
 # 6. Validation and DataFrame
 # --------------------------------------------------------------------------- #
 def validate(records: list[dict], announced: int | None) -> tuple[list[str], list[str]]:
-    """Check the parsed data. Returns (fatal_problems, warnings).
-    """
+    """Check the parsed data. Returns (fatal_problems, warnings)."""
     fatal: list[str] = []
     warnings: list[str] = []
     n = len(records)
@@ -502,8 +502,7 @@ def validate(records: list[dict], announced: int | None) -> tuple[list[str], lis
 
 
 def build_dataframe(records: list[dict], scraped_at: datetime) -> pd.DataFrame:
-    """Turn the records into a pandas DataFrame with the fixed column types.
-    """
+    """Turn the records into a pandas DataFrame with the fixed column types."""
     scrape_date = scraped_at.strftime("%Y-%m-%d")  # e.g. "2026-10-12"
     scrape_time = scraped_at.strftime("%H:%M:%S")  # e.g. "10:40:09"
     rows = [

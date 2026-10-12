@@ -281,5 +281,27 @@
         ],
         "extra_env": [],
         "deploy": true
+    },
+    {
+        "display_name": "frauenhaus-suche-scraper",
+        "module_name": "frauenhaus_suche_scraper",
+        "description": "Speichert den Status aller Frauenhäuser in der bundesweiten Frauenhaussuche der Zentralen Informationsstelle Frauenhäuser. ",
+        "contact_name": "Leonhard Eckwert",
+        "contact_email": "Leonhard.Eckwert@fm.wdr.de",
+        "memory_size": "512",
+        "ephemeral_storage": "512",
+        "preset": "pandas",
+        "events": [
+            {
+                "type": "schedule",
+                "enabled": true,
+                "data": {
+                    "interval": "daily",
+                    "interval_custom": null
+                }
+            }
+        ],
+        "extra_env": [],
+        "deploy": true
     }
 ]

@@ -376,7 +376,18 @@ def run():
     )
 
     # Latest per municipality, last so it can't block the other exports
-    df_latest_regio = pd.DataFrame(load_tageswerte_regio_latest(bigquery_client))
+    # Keep the schema even when the query returns no rows.
+    df_latest_regio = pd.DataFrame(
+        load_tageswerte_regio_latest(bigquery_client),
+        columns=[
+            "ags",
+            "type",
+            "day",
+            *(f"tages_{stat}" for stat in STATS),
+            "abrufdatum",
+            "datenstand",
+        ],
+    )
 
     # Expand data
     latest_regio_expanded_dfs = [
@@ -405,7 +416,8 @@ def run():
         validate="one_to_one",
     )
     df_latest_regio = df_latest_regio.sort_values("ags", ignore_index=True)
-    df_latest_regio = df_latest_regio.replace({np.nan: None})
+    # Preserve datetime dtypes so upload_dataframe can convert them to Berlin time.
+    # Missing values are written as empty CSV fields by pandas.
 
     upload_dataframe(
         df_latest_regio,

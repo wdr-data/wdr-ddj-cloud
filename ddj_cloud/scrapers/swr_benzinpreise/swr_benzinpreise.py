@@ -3,7 +3,6 @@ import json
 import os
 from functools import partial, reduce
 
-import numpy as np
 import pandas as pd
 from google.cloud import bigquery
 
@@ -70,7 +69,7 @@ def _clean_tageswerte(df: pd.DataFrame, id_columns: list[str]) -> pd.DataFrame:
             "datenstand",
         ]
     ]
-    return df.replace({np.nan: None})
+    return df
 
 
 def load_tageswerte(client: bigquery.Client):
@@ -162,7 +161,7 @@ def load_aufloesung(client: bigquery.Client):
         df["abrufdatum"] = df["abrufdatum"].dt.floor("s").dt.tz_localize(UTC)
 
         df = df[["type", "datenstand", *(f"auflsg_{stat}" for stat in STATS), "abrufdatum"]]
-        return df.replace({np.nan: None})
+        return df
 
     yield from bigquery_utils.iter_results(
         client,
@@ -226,7 +225,7 @@ def load_rohoel(client: bigquery.Client):
         df.drop_duplicates(subset=["day"], inplace=True, ignore_index=True)
         df.reset_index(drop=True)
 
-        return df.replace({np.nan: None})
+        return df
 
     yield from bigquery_utils.iter_results(
         client,

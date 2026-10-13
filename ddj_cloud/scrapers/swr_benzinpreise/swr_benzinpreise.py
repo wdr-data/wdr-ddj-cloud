@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from google.cloud import bigquery
 
+from ddj_cloud.data.gemeinden_nrw import gemeinden_nrw
 from ddj_cloud.utils import bigquery as bigquery_utils
 from ddj_cloud.utils.date_and_time import BERLIN, UTC, local_now, local_today
 from ddj_cloud.utils.storage import upload_dataframe
@@ -14,6 +15,7 @@ from ddj_cloud.utils.storage import upload_dataframe
 PROJECT = "swr-datalab-prod"
 DATASET_BUNDESKARTELLAMT = bigquery.DatasetReference(PROJECT, "spritpreise_refined")
 TABLE_TAGESWERTE = "stats_daily_by_fuel_type"
+TABLE_TAGESWERTE_REGIO = "stats_daily_regio_by_fuel_type"
 TABLE_AUFLOESUNG = "resolution_by_fuel_type"
 
 DATASET_SPRITPREISE_TRUSTED = bigquery.DatasetReference(PROJECT, "spritpreise_trusted")
@@ -46,6 +48,31 @@ def _rename_stats(df: pd.DataFrame, source_prefix: str, target_prefix: str) -> p
     return df
 
 
+def _clean_tageswerte(df: pd.DataFrame, id_columns: list[str]) -> pd.DataFrame:
+    df = _rename_stats(df, "daily", "tages")
+    df["type"] = df["type"].map(FUEL_TYPES)
+    df = df.drop_duplicates(subset=[*id_columns, "type", "meldedatum"], ignore_index=True)
+
+    # Backwards compatibility
+    df = df.rename(columns={"meldedatum": "day"})
+    df["datenstand"] = df["datenstand"].dt.date
+
+    # Tag datetimes
+    df["abrufdatum"] = df["abrufdatum"].dt.floor("s").dt.tz_localize(UTC)
+
+    df = df[
+        [
+            *id_columns,
+            "type",
+            "day",
+            *(f"tages_{stat}" for stat in STATS),
+            "abrufdatum",
+            "datenstand",
+        ]
+    ]
+    return df.replace({np.nan: None})
+
+
 def load_tageswerte(client: bigquery.Client):
     query = "SELECT * FROM `@table_name` WHERE ags = @ags ORDER BY meldedatum DESC, type ASC"
     query = bigquery_utils.insert_table_name(query, TABLE_TAGESWERTE, "@table_name")
@@ -58,26 +85,54 @@ def load_tageswerte(client: bigquery.Client):
         labels=LABELS,
     )
 
-    def df_cleaner(df: pd.DataFrame) -> pd.DataFrame:
-        df = _rename_stats(df, "daily", "tages")
-        df["type"] = df["type"].map(FUEL_TYPES)
-        df = df.drop_duplicates(subset=["type", "meldedatum"], ignore_index=True)
+    yield from bigquery_utils.iter_results(
+        client,
+        query,
+        job_config,
+        partial(_clean_tageswerte, id_columns=[]),
+    )
 
-        # Backwards compatibility
-        df = df.rename(columns={"meldedatum": "day"})
-        df["datenstand"] = df["datenstand"].dt.date
 
-        # Tag datetimes
-        df["abrufdatum"] = df["abrufdatum"].dt.floor("s").dt.tz_localize(UTC)
+def load_tageswerte_regio_latest(client: bigquery.Client):
+    """Latest daily stats per NRW municipality (8-digit AGS)."""
+    # Table is partitioned by `meldedatum` but not clustered by `ags`,
+    # so the date window and column selection keep scanned bytes low
+    query = """
+        SELECT
+            meldedatum,
+            datenstand,
+            abrufdatum,
+            ags,
+            type,
+            daily_min,
+            daily_max,
+            daily_mean,
+            daily_median,
+            daily_percentil_10,
+            daily_percentil_90
+        FROM `@table_name`
+        WHERE STARTS_WITH(ags, @ags_prefix) AND meldedatum >= @meldedatum_start
+        QUALIFY meldedatum = MAX(meldedatum) OVER ()
+        ORDER BY ags ASC, type ASC
+    """
+    query = bigquery_utils.insert_table_name(query, TABLE_TAGESWERTE_REGIO, "@table_name")
 
-        df = df[["type", "day", *(f"tages_{stat}" for stat in STATS), "abrufdatum", "datenstand"]]
-        return df.replace({np.nan: None})
+    job_config = bigquery.QueryJobConfig(
+        default_dataset=DATASET_BUNDESKARTELLAMT,
+        query_parameters=[
+            bigquery.ScalarQueryParameter("ags_prefix", "STRING", "05"),
+            bigquery.ScalarQueryParameter(
+                "meldedatum_start", "DATE", local_today() - dt.timedelta(days=7)
+            ),
+        ],
+        labels=LABELS,
+    )
 
     yield from bigquery_utils.iter_results(
         client,
         query,
         job_config,
-        df_cleaner,
+        partial(_clean_tageswerte, id_columns=["ags"]),
     )
 
 
@@ -317,5 +372,43 @@ def run():
     upload_dataframe(
         df_aufloesung_expanded_24_hours,
         "swr_benzinpreise/history_24_hours.csv",
+        datawrapper_datetimes=True,
+    )
+
+    # Latest per municipality, last so it can't block the other exports
+    df_latest_regio = pd.DataFrame(load_tageswerte_regio_latest(bigquery_client))
+
+    # Expand data
+    latest_regio_expanded_dfs = [
+        expand_column(df_latest_regio, "type", fuel_type, ["ags", "day"])
+        for fuel_type in ["octane95", "e10", "diesel"]
+    ]
+    df_latest_regio = reduce(
+        partial(
+            pd.merge,
+            how="outer",
+            on=["ags", "day"],
+            validate="one_to_one",
+        ),
+        latest_regio_expanded_dfs,
+    )
+
+    # Outer join so every municipality gets a map row and unknown AGS still show up
+    df_gemeinden = (
+        pd.DataFrame.from_dict(gemeinden_nrw, orient="index").rename_axis("ags").reset_index()
+    )
+    df_latest_regio = pd.merge(
+        df_gemeinden,
+        df_latest_regio,
+        how="outer",
+        on="ags",
+        validate="one_to_one",
+    )
+    df_latest_regio = df_latest_regio.sort_values("ags", ignore_index=True)
+    df_latest_regio = df_latest_regio.replace({np.nan: None})
+
+    upload_dataframe(
+        df_latest_regio,
+        "swr_benzinpreise/latest_regio.csv",
         datawrapper_datetimes=True,
     )
